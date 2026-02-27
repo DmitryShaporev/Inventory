@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Izm(models.Model):
-    title = models.CharField(max_length=50, unique=True,blank=False)
+    title = models.CharField("Ед.изм",max_length=50, unique=True,blank=False)
 
     def __str__(self):
         return self.title
@@ -15,7 +15,7 @@ class Izm(models.Model):
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField('Категория',max_length=100)
 
     def __str__(self):
         return self.title
@@ -28,17 +28,20 @@ class Category(models.Model):
 
 
 class Nom(models.Model):
-    title = models.CharField(max_length=200, blank=False, null=True)
+    title = models.CharField('Наименование',max_length=200, blank=False, null=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
-        null=True
+        null=True,
+        verbose_name='Категория'
+
     )
     izm = models.ForeignKey(
         Izm,
         on_delete=models.PROTECT,  # Нельзя удалить единицу измерения, если есть товары с ней
         blank=True,
-        null=True
+        null=True,
+        verbose_name='Ед.изм.'
     )
 
     def __str__(self):
@@ -52,7 +55,7 @@ class Nom(models.Model):
 
 
 class Podraz(models.Model):
-    title = models.CharField(max_length=100, unique=True,blank=False)
+    title = models.CharField('Подразделение',max_length=100, unique=True,blank=False)
 
     def __str__(self):
         return self.title
@@ -65,11 +68,12 @@ class Podraz(models.Model):
 
 
 class Obct(models.Model):
-    title = models.CharField(max_length=100)  # Добавил max_length
+    title = models.CharField('Объект',max_length=100)  # Добавил max_length
     idpodraz = models.ForeignKey(
         Podraz,
         on_delete=models.PROTECT,
-        db_column='idpodraz'
+        db_column='idpodraz',
+        verbose_name='Подразделение'
     )
 
     def __str__(self):
@@ -96,7 +100,7 @@ class Postav(models.Model):
 
 
 class Fio(models.Model):
-    title = models.CharField(max_length=100, unique=True)
+    title = models.CharField('Подотчетное лицо',max_length=100, unique=True)
 
     def __str__(self):
         return self.title
@@ -104,19 +108,19 @@ class Fio(models.Model):
     class Meta:
         managed = False
         db_table = 'fio'
-        verbose_name = 'Сотрудник'
-        verbose_name_plural = 'Сотрудники'
+        verbose_name = 'Подотчетное лицо'
+        verbose_name_plural = 'Подотчетные лица'
 
 
 class Doc(models.Model):
-    nomer = models.CharField(max_length=50)
-    datadoc = models.CharField(max_length=50)
-    postav = models.ForeignKey(Postav, on_delete=models.PROTECT)
-    obct = models.ForeignKey(Obct, on_delete=models.SET_NULL, blank=True, null=True)
-    fio = models.ForeignKey(Fio, on_delete=models.PROTECT)
-    oper = models.IntegerField()
+    nomer = models.CharField('Номер',max_length=50)
+    datadoc = models.CharField('Дата',max_length=50)
+    postav = models.ForeignKey(Postav, on_delete=models.PROTECT,verbose_name='Поставщик')
+    obct = models.ForeignKey(Obct, on_delete=models.SET_NULL, blank=True, null=True,verbose_name='Объект')
+    fio = models.ForeignKey(Fio, on_delete=models.PROTECT,verbose_name='Подотчет')
+    oper = models.IntegerField('Операция')
     update_date = models.DateTimeField(blank=True, null=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  # Числовое поле
+    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,verbose_name='Итого')  # Числовое поле
 
     def __str__(self):
         return f"Документ №{self.nomer} от {self.datadoc}"
@@ -142,12 +146,13 @@ class Detail(models.Model):
         on_delete=models.PROTECT,  # Нельзя удалить товар, если он есть в деталях
         db_column='id_nom',
         blank=True,
-        null=True
+        null=True,
+        verbose_name='Наименование'
     )
-    kolvo = models.DecimalField(max_digits=12, decimal_places=4)  # Количество
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Цена
-    cost = models.DecimalField(max_digits=10, decimal_places=2)  # Стоимость
-    oper = models.IntegerField(blank=True, null=True)
+    kolvo = models.DecimalField('Количество',max_digits=12, decimal_places=4)  # Количество
+    price = models.DecimalField('Цена',max_digits=10, decimal_places=2)  # Цена
+    cost = models.DecimalField('Стоимость',max_digits=10, decimal_places=2)  # Стоимость
+    oper = models.IntegerField('Тип документа',blank=True, null=True)
 
     def __str__(self):
         return f"{self.id_nom} - {self.kolvo} x {self.price}"
@@ -155,8 +160,8 @@ class Detail(models.Model):
     class Meta:
         managed = False
         db_table = 'detail'
-        verbose_name = 'Деталь документа'
-        verbose_name_plural = 'Детали документа'
+        verbose_name = 'Табличная часть документа'
+        verbose_name_plural = 'Табличная часть документов'
 
 
 # class Akt(models.Model):

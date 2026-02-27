@@ -8,9 +8,9 @@ from .models import (
 # Простая регистрация (базовый вид)
 admin.site.register(Izm)
 admin.site.register(Category)
-admin.site.register(Nom)
+# admin.site.register(Nom)
 admin.site.register(Podraz)
-admin.site.register(Obct)
+# admin.site.register(Obct)
 admin.site.register(Postav)
 admin.site.register(Fio)
 admin.site.register(Spis)
@@ -25,9 +25,20 @@ class DetailInline(admin.TabularInline):
 
 @admin.register(Doc)
 class DocAdmin(admin.ModelAdmin):
-    list_display = ['nomer', 'datadoc', 'postav', 'obct', 'fio', 'total']
-    list_filter = ['postav', 'obct', 'fio', 'datadoc']
+    list_display = ['nomer', 'datadoc', 'postav', 'obct', 'fio', 'total','oper']
+    list_filter = ['postav', 'obct', 'fio', 'datadoc','oper']
     search_fields = ['nomer']
+
+    def operation_name(self, obj):
+        operations = {
+            1: 'Остатки',
+            2: 'Поступление',
+            3: 'Перемещение',
+            4: 'Списание',  # добавьте свои значения
+        }
+        return operations.get(obj.oper, f'Неизвестно ({obj.oper})')
+
+    operation_name.short_description = 'Операция'
 
     inlines = [DetailInline]  # Показываем детали документа внутри карточки документа
 
@@ -36,3 +47,19 @@ class DetailAdmin(admin.ModelAdmin):
     list_display = ['id_doc', 'id_nom', 'kolvo', 'price', 'cost']
     list_filter = ['id_doc__postav', 'id_nom']  # Фильтр по поставщику документа и товару
     search_fields = ['id_doc__nomer', 'id_nom__title']
+
+
+@admin.register(Obct)
+class ObctAdmin(admin.ModelAdmin):
+    list_display = ['title', 'idpodraz']  # Просто указываем поле ForeignKey
+    list_display_links = ['title']  # Делаем title ссылкой
+    search_fields = ['title']  # Поиск по названию объекта
+    list_filter = ['idpodraz']  # Фильтр по подразделению
+
+
+@admin.register(Nom)
+class NomAdmin(admin.ModelAdmin):
+    list_display = ['title', 'category']  # Просто указываем поле ForeignKey
+    list_display_links = ['title']  # Делаем title ссылкой
+    search_fields = ['title','category']  # Поиск по названию объекта
+    list_filter = ['category']  # Фильтр по подразделению
