@@ -1,0 +1,17 @@
+# Применяем 0001
+python manage.py migrate inventory 0001
+
+# Применяем 0002
+python manage.py migrate inventory 0002
+
+# Применяем 0003
+python manage.py migrate inventory 0003
+
+# Применяем 0004 (после этой миграции запускаем скрипт с датами)
+python manage.py migrate inventory 0004
+
+# ЗДЕСЬ ЗАПУСКАЕТЕ СКРИПТ ПЕРЕНОСА ДАТ
+python migrate_dates.py
+
+# Применяем 0005 (финальная)
+python manage.py migrate inventory 0005

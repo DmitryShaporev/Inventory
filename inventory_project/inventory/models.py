@@ -114,19 +114,19 @@ class Fio(models.Model):
 
 class Doc(models.Model):
     nomer = models.CharField('Номер',max_length=50)
-    datadoc = models.CharField('Дата',max_length=50)
-    postav = models.ForeignKey(Postav, on_delete=models.PROTECT,verbose_name='Поставщик')
+    # datadoc = models.CharField('Дата',max_length=50)
+    postav = models.ForeignKey(Postav, on_delete=models.PROTECT,verbose_name='Поставщик',blank=True,null=True)
     obct = models.ForeignKey(Obct, on_delete=models.SET_NULL, blank=True, null=True,verbose_name='Объект')
-    fio = models.ForeignKey(Fio, on_delete=models.PROTECT,verbose_name='Подотчет')
+    fio = models.ForeignKey(Fio, on_delete=models.PROTECT,verbose_name='Подотчет',blank=True,null=True)
     oper = models.IntegerField('Операция')
     update_date = models.DateTimeField(blank=True, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,verbose_name='Итого')  # Числовое поле
-
+    datadoc = models.DateField()
     def __str__(self):
         return f"Документ №{self.nomer} от {self.datadoc}"
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'doc'
         verbose_name = 'Документ'
         verbose_name_plural = 'Документы'

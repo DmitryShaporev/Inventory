@@ -1,5 +1,7 @@
 # myapp/admin.py
 from django.contrib import admin
+from django.db.models.functions import Substr, Concat
+from django.db.models import IntegerField, F, Value
 from .models import (
     Izm, Category, Nom, Podraz, Obct, Postav,
     Fio, Doc, Detail,  Spis
@@ -23,24 +25,26 @@ class DetailInline(admin.TabularInline):
     fields = ['id_nom', 'kolvo', 'price', 'cost', 'oper']
     readonly_fields = ['cost']  # Стоимость можно сделать только для чтения
 
+
 @admin.register(Doc)
 class DocAdmin(admin.ModelAdmin):
-    list_display = ['nomer', 'datadoc', 'postav', 'obct', 'fio', 'total','oper']
-    list_filter = ['postav', 'obct', 'fio', 'datadoc','oper']
-    search_fields = ['nomer']
+    list_display = ['nomer', 'datadoc', 'postav', 'obct', 'fio', 'total', 'oper']
+    list_filter = ['postav', 'obct', 'fio', 'datadoc', 'oper']
+    search_fields = ['nomer', 'postav__title', 'obct__title', 'fio__title']
 
-    def operation_name(self, obj):
+    def get_oper_display(self, obj):
         operations = {
             1: 'Остатки',
             2: 'Поступление',
             3: 'Перемещение',
-            4: 'Списание',  # добавьте свои значения
+            4: 'Списание',
         }
         return operations.get(obj.oper, f'Неизвестно ({obj.oper})')
 
-    operation_name.short_description = 'Операция'
+    get_oper_display.short_description = 'Операция'
+    get_oper_display.admin_order_field = 'oper'
 
-    inlines = [DetailInline]  # Показываем детали документа внутри карточки документа
+    inlines = [DetailInline]
 
 @admin.register(Detail)
 class DetailAdmin(admin.ModelAdmin):
