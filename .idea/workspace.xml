@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Окончательные миграции.Скрипт для переноса дат в нормальное поле Date">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/static/warehouse.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/about.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/data_partial.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/bootstrap/css/bootstrap.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/bootstrap/js/bootstrap.bundle.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/htmx/htmx.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/warehouse.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/warehouse2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/warehouse3.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/warehouse4.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/wrh.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory_project/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory_project/urls.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;DmitryShaporev&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/DmitryShaporev/Inventory.git&quot;,
+    &quot;accountId&quot;: &quot;d2c757c1-9b46-45dc-a905-4d97274ecd67&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="3ACDNcRACG4HJ3711HCE7o8iawp" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Inventory2026/inventory_project/static",
+    "settings.editor.selected.configurable": "vcs.Git"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Inventory2026\inventory_project\static" />
+      <recent name="C:\Inventory2026\inventory_project\inventory\static" />
+      <recent name="C:\Inventory2026\inventory_project\static\htmx" />
+      <recent name="C:\Inventory2026\inventory_project\static\bootstrap\js" />
+      <recent name="C:\Inventory2026\inventory_project\static\bootstrap\css" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Inventory2026\inventory_project" />
+      <recent name="C:\Inventory2026" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-53e2683a6804-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26094.141" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="" />
+      <created>1772087621292</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1772087621292</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Start project Inventory!">
+      <option name="closed" value="true" />
+      <created>1772088311212</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1772088311212</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Start project Inventory!">
+      <option name="closed" value="true" />
+      <created>1772089027957</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1772089027957</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Start project Inventory!">
+      <option name="closed" value="true" />
+      <created>1772089410616</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1772089410616</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Start project Inventory!">
+      <option name="closed" value="true" />
+      <created>1772089460801</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1772089460801</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Перенос базы из Фласка">
+      <option name="closed" value="true" />
+      <created>1772162967257</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1772162967257</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Предварительная настройка админки">
+      <option name="closed" value="true" />
+      <created>1772176649133</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1772176649133</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Окончательные миграции.Скрипт для переноса дат в нормальное поле Date">
+      <option name="closed" value="true" />
+      <created>1772423157581</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1772423157581</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Окончательные миграции.Скрипт для переноса дат в нормальное поле Date">
+      <option name="closed" value="true" />
+      <created>1772423185437</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1772423185437</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Start project Inventory!" />
+    <MESSAGE value="Перенос базы из Фласка" />
+    <MESSAGE value="Предварительная настройка админки" />
+    <MESSAGE value="Окончательные миграции.Скрипт для переноса дат в нормальное поле Date" />
+    <option name="LAST_COMMIT_MESSAGE" value="Окончательные миграции.Скрипт для переноса дат в нормальное поле Date" />
+  </component>
+</project>
