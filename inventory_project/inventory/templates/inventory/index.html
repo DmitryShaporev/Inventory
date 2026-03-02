@@ -1,0 +1,23 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+<div id="data-container" class="mt-3">
+                    <!-- Сюда будут загружаться данные -->
+                    <img src="{% static 'warehouse.jpg' %}"
+             alt="Склад"
+             class="img-fluid rounded shadow"
+             height="200">
+                </div>
+{% block content %}
+<main class="container my-1">
+
+                    <!-- Сюда будут загружаться данные -->
+                    <img src="{% static 'warehouse3.jpg' %}"
+             alt="Склад"
+             style="width: 100%; height: auto;"
+              >
+
+
+    </main>
+{% endblock %}

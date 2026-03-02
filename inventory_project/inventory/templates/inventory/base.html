@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Мой сайт{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Твои дополнительные CSS -->
+    <link href="{% static 'inventory/css/style.css' %}" rel="stylesheet">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'about' %}">
+            <span class="first-letter" style="color: #ffe66d;">С</span>правочники
+        </a>
+        <a class="navbar-brand" href="/">
+            <span class="first-letter" style="color: #ffe66d;">Д</span>окументы
+        </a>
+        <a class="navbar-brand" href="/">
+            <span class="first-letter" style="color: #ffe66d;">О</span>тчеты
+        </a>
+        <a class="navbar-brand" href="/">
+            <span class="first-letter" style="color: #ffe66d;">П</span>ечать QR
+        </a>
+
+    </div>
+</nav>
+<div class="row">
+
+    <div class="col-md-12">
+
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- htmx -->
+    <script src="{% static 'htmx/htmx.js' %}"></script>
+
+    <!-- Твои дополнительные скрипты -->
+    <script src="{% static 'inventory/js/main.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        });
+    </script>
+</body>
+</html>

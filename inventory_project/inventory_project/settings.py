@@ -63,6 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.static',
             ],
         },
     },
@@ -116,9 +117,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # общая папка статики проекта
+]
+
+# Куда собирать статику при деплое (для production)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+MEDIA_URL = '/media/'  # URL для доступа к медиафайлам
+MEDIA_ROOT = BASE_DIR.parent / 'media'  # папка для хранения файлов
