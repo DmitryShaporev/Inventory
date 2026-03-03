@@ -44,3 +44,52 @@ def about(request):
     """
     return render(request, 'inventory/about.html', {'title': 'О нас'})
 
+def menu(request,section):
+    """
+    Страница "Справочники"
+    """
+    spr={'nom':'Номенклатура',
+          'izm':'Единицы измерения',
+          'kat':'Категории ТМЦ',
+          'postav':'Поставщики',
+          'podraz':'Подразделения',
+          'obkt':'Объекты',
+          'fio':'Подотчетные лица',
+         'spis':'Списание'
+          }
+    docs={'incom':'Поступление ТМЦ',
+          'move':'Передача ТМЦ',
+          'ret':'Возврат ТМЦ',
+          'spis':'Списание ТМЦ'}
+    reports={'incom':'Поступление ТМЦ',
+             'move':'Передача ТМЦ',
+             'nal':'Наличие ТМЦ',
+             'spis':'Списание ТМЦ',
+             'obkt':'По объектам',
+             'podraz':'По подразделениям',
+             'kat':'По категориям',
+             'fio':'По подотчету',
+             'postav':'По поставщикам'}
+
+    if section == 'spr':
+        context = {
+            'data': spr,
+            'title': 'Справочники'
+        }
+    elif section == 'docs':
+        context = {
+            'data': docs,
+            'title': 'Документы'
+        }
+    elif section == 'reports':
+        context = {
+            'data': reports,
+            'title': 'Отчеты'
+        }
+    else:
+        context = {
+            'data': {},
+            'title': 'Раздел не найден'
+        }
+
+    return render(request, 'inventory/menu.html', context)

@@ -1,0 +1,38 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4 text-dark border-bottom pb-3">{{ title }}</h3>
+
+    <div class="row g-4">
+        {% for key, value in data.items %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100 border-0 shadow">
+                <div class="card-body text-center p-4">
+                    <h5 class="card-title fw-bold mb-3 secondary">{{ value }}</h5>
+
+                    <a href="#" class="btn btn-secondary px-4 mt-4"
+                       style="border-width: 2px; color: white;">
+                        Открыть
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.shadow {
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    transition: box-shadow .2s ease-in-out;
+}
+.shadow:hover {
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.2)!important;
+}
+
+.card {
+    border-radius: 1rem;
+}
+</style>
+{% endblock %}

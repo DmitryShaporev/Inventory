@@ -17,13 +17,13 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'about' %}">
+        <a class="navbar-brand" href="{% url 'menu' 'spr' %}">
             <span class="first-letter" style="color: #ffe66d;">С</span>правочники
         </a>
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="{% url 'menu' 'docs' %}">
             <span class="first-letter" style="color: #ffe66d;">Д</span>окументы
         </a>
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="{% url 'menu' 'reports' %}">
             <span class="first-letter" style="color: #ffe66d;">О</span>тчеты
         </a>
         <a class="navbar-brand" href="/">
