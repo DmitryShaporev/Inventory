@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Основные шаблоны меню">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Разработка единого шаблона для простых справочников">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views.py" afterDir="false" />
     </list>
@@ -175,7 +175,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772510499505</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Разработка единого шаблона для простых справочников">
+      <option name="closed" value="true" />
+      <created>1772527763879</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1772527763879</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -185,6 +193,7 @@
     <MESSAGE value="Окончательные миграции.Скрипт для переноса дат в нормальное поле Date" />
     <MESSAGE value="Первые шаблоны" />
     <MESSAGE value="Основные шаблоны меню" />
-    <option name="LAST_COMMIT_MESSAGE" value="Основные шаблоны меню" />
+    <MESSAGE value="Разработка единого шаблона для простых справочников" />
+    <option name="LAST_COMMIT_MESSAGE" value="Разработка единого шаблона для простых справочников" />
   </component>
 </project>

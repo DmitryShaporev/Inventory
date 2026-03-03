@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.template.defaultfilters import title
 from django.template.loader import render_to_string
+from django.db.models import Q
 from .models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom
 
 
@@ -120,7 +121,48 @@ def spr(request,section):
 
     context = {
        'data': data,
-       'title': title
+       'title': title,
+        'section': section,
         }
 
     return render(request,'inventory/comon_spr.html',context)
+
+
+def search_spr(request, section):
+    """Поиск по справочнику"""
+    search_query = request.GET.get('search', '')
+
+    # Словарь моделей
+    tables = {
+        'izm': [Izm, 'Единицы измерения'],
+        'fio': [Fio, "Подотчетные лица"],
+        'podraz': [Podraz, "Подразделения"],
+        'postav': [Postav, "Поставщики"],
+        'spis': [Spis, "Списание"],
+        'kat': [Category, "Категории ТМЦ"],
+        'obkt': [Obct, "Объекты"],
+        'nom': [Nom, "Номенклатура"],
+    }
+
+    if section in tables:
+        model, title = tables[section]
+
+        # Фильтрация по полю title (или name - зависит от модели)
+        if search_query:
+            # Предполагаем, что поле называется title или name
+            if hasattr(model, 'title'):
+                data = model.objects.filter(title__icontains=search_query)
+            else:
+                data = model.objects.filter(name__icontains=search_query)
+        else:
+            data = model.objects.all()
+
+        # Сортируем
+        data = data.order_by('title' if hasattr(model, 'title') else 'name')
+    else:
+        data = []
+
+    # Рендерим только таблицу
+    html = render_to_string('inventory/partials/spr_table.html', {'data': data})
+    return HttpResponse(html)
+

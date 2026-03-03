@@ -1,0 +1,28 @@
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Наименование</th>
+            <th style="width: 60px" class="text-center">✕</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in data %}
+        <tr>
+            <td>
+                <a href="edit/{{ item.id }}/" class="text-dark text-decoration-none">
+                    {{ item.title }}
+                </a>
+            </td>
+            <td class="text-center">
+                <a href="delete/{{ item.id }}/" class="text-danger text-decoration-none">✕</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2" class="text-center py-3">
+                Ничего не найдено. <a href="#" class="text-success text-decoration-none">Добавить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
