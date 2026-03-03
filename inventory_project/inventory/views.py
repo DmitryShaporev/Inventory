@@ -1,7 +1,11 @@
+from msilib.schema import tables
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
+from django.template.defaultfilters import title
 from django.template.loader import render_to_string
+from .models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom
+
 
 # Create your views here.
 
@@ -91,5 +95,32 @@ def menu(request,section):
             'data': {},
             'title': 'Раздел не найден'
         }
-
+    print(context)
     return render(request, 'inventory/menu.html', context)
+
+
+def spr(request,section):
+    tables={
+        'izm':[Izm,'Единицы измерения'],
+        'fio':[Fio,"Подотчетные лица"],
+        'podraz':[Podraz,"Подразделения"],
+        'postav':[Postav,"Поставщики"],
+        'spis':[Spis,"Списание"],
+        'kat':[Category,"Категории ТМЦ"],
+        'obkt':[Obct,"Объекты"],
+        'nom':[Nom,"Номенклатура"],
+    }
+
+    if section in tables:
+        model, title = tables[section]  # распаковываем список в две переменные
+        data = model.objects.all().order_by('title')
+    else:
+        data = []
+        title = 'Раздел не найден'
+
+    context = {
+       'data': data,
+       'title': title
+        }
+
+    return render(request,'inventory/comon_spr.html',context)
