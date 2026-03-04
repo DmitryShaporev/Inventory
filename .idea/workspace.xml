@@ -4,11 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Разработка единого шаблона для простых справочников">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Поиск в шаблонах справочников">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/warehouse5.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/warehouse6.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/warehouse7.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -183,7 +189,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772527763879</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Поиск в шаблонах справочников">
+      <option name="closed" value="true" />
+      <created>1772529264457</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1772529264457</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -194,6 +208,7 @@
     <MESSAGE value="Первые шаблоны" />
     <MESSAGE value="Основные шаблоны меню" />
     <MESSAGE value="Разработка единого шаблона для простых справочников" />
-    <option name="LAST_COMMIT_MESSAGE" value="Разработка единого шаблона для простых справочников" />
+    <MESSAGE value="Поиск в шаблонах справочников" />
+    <option name="LAST_COMMIT_MESSAGE" value="Поиск в шаблонах справочников" />
   </component>
 </project>

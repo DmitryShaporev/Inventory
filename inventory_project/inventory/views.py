@@ -65,7 +65,8 @@ def menu(request,section):
     docs={'incom':'Поступление ТМЦ',
           'move':'Передача ТМЦ',
           'ret':'Возврат ТМЦ',
-          'spis':'Списание ТМЦ'}
+          'spis':'Списание ТМЦ',
+          }
     reports={'incom':'Поступление ТМЦ',
              'move':'Передача ТМЦ',
              'nal':'Наличие ТМЦ',
@@ -96,7 +97,7 @@ def menu(request,section):
             'data': {},
             'title': 'Раздел не найден'
         }
-    print(context)
+
     return render(request, 'inventory/menu.html', context)
 
 
@@ -114,7 +115,14 @@ def spr(request,section):
 
     if section in tables:
         model, title = tables[section]  # распаковываем список в две переменные
-        data = model.objects.all().order_by('title')
+        if section == 'nom':
+            data = model.objects.select_related('category', 'izm').all().order_by('title')
+        elif section == 'obkt':
+            data = model.objects.select_related('idpodraz').all().order_by('title')
+        else:
+            data = model.objects.all().order_by('title')
+
+
     else:
         data = []
         title = 'Раздел не найден'
@@ -147,22 +155,30 @@ def search_spr(request, section):
     if section in tables:
         model, title = tables[section]
 
+        # Базовый запрос
+        if section == 'nom':
+            queryset = model.objects.select_related('category', 'izm').all()
+        elif section == 'obkt':
+            queryset = model.objects.select_related('idpodraz').all()
+        else:
+            queryset = model.objects.all()
+
         # Фильтрация по полю title (или name - зависит от модели)
         if search_query:
-            # Предполагаем, что поле называется title или name
             if hasattr(model, 'title'):
-                data = model.objects.filter(title__icontains=search_query)
+                data = queryset.filter(title__icontains=search_query)
             else:
-                data = model.objects.filter(name__icontains=search_query)
+                data = queryset.filter(name__icontains=search_query)
         else:
-            data = model.objects.all()
+            data = queryset
 
         # Сортируем
         data = data.order_by('title' if hasattr(model, 'title') else 'name')
     else:
         data = []
 
-    # Рендерим только таблицу
-    html = render_to_string('inventory/partials/spr_table.html', {'data': data})
+    html = render_to_string('inventory/partials/spr_table.html', {
+        'data': data,
+        'section': section
+    })
     return HttpResponse(html)
-

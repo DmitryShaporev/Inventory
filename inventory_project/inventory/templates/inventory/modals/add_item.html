@@ -1,0 +1,23 @@
+<!-- Модальное окно для добавления записи -->
+<!-- Модальное окно для добавления записи -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Добавление записи</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Поле ввода -->
+                <div class="mb-3">
+                    <label for="itemName" class="form-label">Наименование</label>
+                    <input type="text" class="form-control" id="itemName" placeholder="Введите наименование" autofocus>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-success" id="saveItemBtn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>

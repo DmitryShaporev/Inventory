@@ -1,8 +1,8 @@
-<table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover mt-0">
     <thead class="table-light">
         <tr>
             <th>Наименование</th>
-            <th style="width: 60px" class="text-center">✕</th>
+            <th style="width: 60px" class="text-center"></th>
         </tr>
     </thead>
     <tbody>
@@ -10,11 +10,17 @@
         <tr>
             <td>
                 <a href="edit/{{ item.id }}/" class="text-dark text-decoration-none">
+                   {% if item.izm.title %}
+                    {{ item.title }}, {{item.izm.title}}
+                    {% else %}
                     {{ item.title }}
+                    {% endif %}
+
+
                 </a>
             </td>
             <td class="text-center">
-                <a href="delete/{{ item.id }}/" class="text-danger text-decoration-none">✕</a>
+                <a href="delete/{{ item.id }}/" class="text-secondary text-decoration-none">✕</a>
             </td>
         </tr>
         {% empty %}
