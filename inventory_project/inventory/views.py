@@ -1,5 +1,5 @@
 
-import pandas as pd
+
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from datetime import datetime
@@ -184,57 +184,3 @@ def search_spr(request, section):
     return HttpResponse(html)
 
 
-def export_to_excel(request, section):
-    """Простой экспорт справочника в Excel"""
-
-    # Словарь моделей (как и везде)
-    tables = {
-        'izm': [Izm, 'Единицы измерения', ['id', 'title']],
-        'fio': [Fio, "Подотчетные лица", ['id', 'title']],
-        'podraz': [Podraz, "Подразделения", ['id', 'title']],
-        'postav': [Postav, "Поставщики", ['id', 'title']],
-        'spis': [Spis, "Списание", ['id', 'title']],
-        'kat': [Category, "Категории ТМЦ", ['id', 'title']],
-        'obkt': [Obct, "Объекты", ['id', 'title', 'idpodraz']],
-        'nom': [Nom, "Номенклатура", ['id', 'title', 'category', 'izm']],
-    }
-
-    if section not in tables:
-        return HttpResponse("Раздел не найден", status=404)
-
-    model, title, fields = tables[section]
-
-    # Получаем данные с оптимизацией
-    if section == 'nom':
-        data = model.objects.select_related('category', 'izm').all().order_by('title')
-    elif section == 'obkt':
-        data = model.objects.select_related('idpodraz').all().order_by('title')
-    else:
-        data = model.objects.all().order_by('title')
-
-    # Преобразуем в список словарей
-    rows = []
-    for item in data:
-        row = {'Наименование': item.title}
-
-        # Добавляем связанные поля
-        if section == 'nom':
-            row['Категория'] = item.category.title if item.category else ''
-            row['Ед. измерения'] = item.izm.title if item.izm else ''
-        elif section == 'obkt':
-            row['Подразделение'] = item.idpodraz.title if item.idpodraz else ''
-
-        rows.append(row)
-
-    # Создаем DataFrame
-    df = pd.DataFrame(rows)
-
-    # Создаем HTTP-ответ с Excel-файлом
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = f'attachment; filename="Inventory_{datetime.now().strftime("%Y%m%d_%H%M")}.xlsx"'
-
-    # Записываем DataFrame в Excel
-    with pd.ExcelWriter(response, engine='openpyxl') as writer:
-        df.to_excel(writer, sheet_name=title, index=False)
-
-    return response

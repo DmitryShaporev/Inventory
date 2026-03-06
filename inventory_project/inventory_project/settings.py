@@ -80,7 +80,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+     # 'old': {  # это название для подключения к старой БД
+     #     'ENGINE': 'django.db.backends.sqlite3',
+     #     'NAME': BASE_DIR / 'warehouse.db',  # старая БД
+     # }
 }
 
 
@@ -108,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Krasnoyarsk'
 
 USE_I18N = True
 

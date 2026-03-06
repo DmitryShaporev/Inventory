@@ -4,18 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Модальное окно для добавления записей (шаблон)">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/emo.txt" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Поиск в шаблонах справочников">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/management/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/management/commands/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/management/commands/migrate_old.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/migrations/0002_delete_akt_alter_detail_options_alter_fio_options.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/migrations/0003_alter_doc_options_alter_fio_options.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/migrations/0004_doc_datadoc_temp_doc_fio_doc_obct_doc_postav_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/migrations/0005_remove_doc_datadoc_temp_doc_fio_doc_obct_doc_postav_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/Порядок переноса.txt" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/Порядок переноса.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirments.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,13 +32,14 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -42,7 +50,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/DmitryShaporev/Inventory.git&quot;,
-    &quot;accountId&quot;: &quot;d2c757c1-9b46-45dc-a905-4d97274ecd67&quot;
+    &quot;accountId&quot;: &quot;99ff5f59-0b44-4475-b8cd-265ab3cf3444&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -53,18 +61,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Inventory2026/inventory_project/static",
-    "settings.editor.selected.configurable": "vcs.Git"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Inventory2026/inventory_project/static&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Inventory2026\inventory_project\static" />
@@ -81,10 +89,11 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-53e2683a6804-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26094.141" />
+        <option value="bundled-python-sdk-495700d161d3-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.22562.220" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="" />
@@ -197,15 +206,7 @@
       <option name="project" value="LOCAL" />
       <updated>1772529264457</updated>
     </task>
-    <task id="LOCAL-00014" summary="Модальное окно для добавления записей (шаблон)">
-      <option name="closed" value="true" />
-      <created>1772612728403</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1772612728403</updated>
-    </task>
-    <option name="localTasksCounter" value="15" />
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -217,7 +218,6 @@
     <MESSAGE value="Основные шаблоны меню" />
     <MESSAGE value="Разработка единого шаблона для простых справочников" />
     <MESSAGE value="Поиск в шаблонах справочников" />
-    <MESSAGE value="Модальное окно для добавления записей (шаблон)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Модальное окно для добавления записей (шаблон)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Поиск в шаблонах справочников" />
   </component>
 </project>
