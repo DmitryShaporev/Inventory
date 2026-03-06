@@ -1,7 +1,6 @@
 # myapp/admin.py
 from django.contrib import admin
-from django.db.models.functions import Substr, Concat
-from django.db.models import IntegerField, F, Value
+
 from .models import (
     Izm, Category, Nom, Podraz, Obct, Postav,
     Fio, Doc, Detail,  Spis
@@ -67,3 +66,4 @@ class NomAdmin(admin.ModelAdmin):
     list_display_links = ['title']  # Делаем title ссылкой
     search_fields = ['title','category']  # Поиск по названию объекта
     list_filter = ['category']  # Фильтр по подразделению
+

@@ -1,0 +1,45 @@
+❌, ✖
+📝,
+✅, ✔️
+✖, ↩️
+🔎, ⌕
+🗑️	❌, ✖
+	✏️	📝, ✍️
+	💾	✅, ✔️
+	❌	✖, ↩️
+	🔍
+🏠⚠️📊
+<!-- Чекбокс с эмодзи (вместо стандартного) -->
+<label class="d-flex align-items-center">
+    <span style="font-size: 1.2rem; cursor: pointer;">⬜ Не выбрано</span>
+</label>
+<label class="d-flex align-items-center">
+    <span style="font-size: 1.2rem; cursor: pointer;">✅ Выбрано</span>
+</label>
+
+<!-- Радио-кнопки эмодзи -->
+<label class="me-3"><span style="font-size: 1.2rem;">⚪</span> Вариант 1</label>
+<label><span style="font-size: 1.2rem;">🔘</span> Вариант 2</label>
+
+    ➕	➕, ✚
+	🗑️	❌, ✖
+	✏️	📝, ✍️
+	💾	✅, ✔️
+	❌	✖, ↩️
+	🔍	🔎, ⌕
+	🖨️	📄
+	📊	📈, 📉
+	📄	📑
+	🔽	⚙️, 🧲
+	⚙️	🔧, 🛠️
+	👤	👥
+	🚪	🔚
+	◀	⬅️
+	▶	➡️
+	▲	⬆️
+	▼	⬇️
+	ℹ️	❗
+	✅	✔️
+	❌	⚠️
+	⚠️	❗
+
