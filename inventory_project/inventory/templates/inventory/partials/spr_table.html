@@ -7,20 +7,61 @@
     </thead>
     <tbody>
         {% for item in data %}
-        <tr>
-            <td>
-                <a href="edit/{{ item.id }}/" class="text-dark text-decoration-none">
-                   {% if item.izm.title %}
-                    {{ item.title }}, {{item.izm.title}}
-                    {% else %}
-                    {{ item.title }}
-                    {% endif %}
-                </a>
-            </td>
-            <td class="text-center">
-                <a href="delete/{{ item.id }}/" class="text-secondary text-decoration-none">✕</a>
-            </td>
-        </tr>
+ <tr id="row-{{ section }}-{{ item.id }}">
+        {% if section == 'obkt' %}
+
+    <td style="cursor: pointer;"
+        hx-get="{% url 'edit_spr_row' section item.id %}"
+        hx-target="#modal-content"
+        data-bs-toggle="modal"
+        data-bs-target="#editModal">
+
+        <div style="display: flex; justify-content: space-between;">
+            <span>{{ item.title }}</span>
+            <span class="text-secondary">{{ item.idpodraz.title }}</span>
+        </div>
+
+    </td>
+      {% elif section == 'nom' %}
+
+    <td style="cursor: pointer;"
+        hx-get="{% url 'edit_spr_row' section item.id %}"
+        hx-target="#modal-content"
+        data-bs-toggle="modal"
+        data-bs-target="#editModal">
+
+        <div style="display: flex; justify-content: space-between;">
+            <span>{{ item.title }},  {{ item.izm.title }}</span>
+            <span class="text-secondary">{{ item.category.title }}</span>
+        </div>
+
+    </td>
+{% else %}
+
+    <td style="cursor: pointer;"
+        hx-get="{% url 'edit_spr_row' section item.id %}"
+        hx-target="#modal-content"
+        data-bs-toggle="modal"
+        data-bs-target="#editModal">
+
+        {{ item.title }}
+    </td>
+{% endif %}
+
+
+
+    <td class="text-center">
+
+        <span style="cursor: pointer; color: #dc3545;"
+              hx-delete="{% url 'delete_spr_row' section item.id %}"
+              hx-confirm="Удалить запись?"
+              hx-target="#row-{{ section }}-{{ item.id }}"
+              hx-swap="outerHTML">
+            ✕
+        </span>
+    </td>
+
+</tr>
         {% empty %}
         <tr>
             <td colspan="2" class="text-center py-3">

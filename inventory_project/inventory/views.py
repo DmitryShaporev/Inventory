@@ -165,15 +165,14 @@ def search_spr(request, section):
 
         # Фильтрация по полю title (или name - зависит от модели)
         if search_query:
-            if hasattr(model, 'title'):
-                data = queryset.filter(title__icontains=search_query)
-            else:
-                data = queryset.filter(name__icontains=search_query)
+
+            data = queryset.filter(title__icontains=search_query)
+
         else:
             data = queryset
 
         # Сортируем
-        data = data.order_by('title' if hasattr(model, 'title') else 'name')
+        data = data.order_by('title')
     else:
         data = []
 
@@ -184,3 +183,11 @@ def search_spr(request, section):
     return HttpResponse(html)
 
 
+
+
+def edit_spr_row(request, section, pk):
+    return HttpResponse(f"Редактирование: раздел {section}, ID записи {pk}")
+
+
+def delete_spr_row(request,section,pk):
+    pass

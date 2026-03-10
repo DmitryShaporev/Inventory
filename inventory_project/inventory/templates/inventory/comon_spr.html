@@ -7,67 +7,94 @@
         top: 0;
         background-color: #f8f9fa;
         z-index: 10;
-        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+
     }
+
     /* Убираем двойные границы */
     .table {
         margin-bottom: 0;
     }
-    /* Стили для скролла */
+
+    /* Стили для скролла - плоские */
     #search-results::-webkit-scrollbar {
         width: 8px;
     }
     #search-results::-webkit-scrollbar-track {
         background: #f1f1f1;
-        border-radius: 4px;
     }
     #search-results::-webkit-scrollbar-thumb {
         background: #c0c0c0;
-        border-radius: 4px;
     }
     #search-results::-webkit-scrollbar-thumb:hover {
         background: #a0a0a0;
     }
+
+    /* Плоские инпуты */
+    .form-control, .form-control-sm {
+        border-radius: 0;
+        border: 1px solid #ced4da;
+    }
+
+    .form-control:focus {
+        border-color: #6c757d;
+        box-shadow: none; /* Убираем свечение */
+    }
+
+    /* Плоские кнопки */
+    .btn {
+        border-radius: 0;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border: 1px solid #28a745;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+    #spr_title {color:DimGrey}
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-md-2"></div>
 
     <div class="col-md-8 mt-4">
         <!-- Заголовок и блок с поиском + кнопка -->
-        <div class="d-flex justify-content-between align-items-start mb-2">
-            <h4 class="mb-0">{{ title }}</h4>
-
+        <div class="d-flex justify-content-between align-items-start mb-0">
+            <h5 id='spr_title' class="mb-0">Справочник: {{ title }} </h5>
 
             <!-- Контейнер для поиска и кнопки -->
             <div class="d-flex">
                 <input type="text"
                        class="form-control form-control-sm"
                        placeholder="Поиск"
-                       style="width: 400px; border-top-right-radius: 1; border-bottom-right-radius: 1;"
+                       style="width: 400px;"
                        name="search"
                        hx-get="{% url 'search_spr' section %}"
                        hx-trigger="keyup changed delay:300ms"
                        hx-target="#search-results"
                        hx-indicator="#spinner">
 
-
-                <button type="button" class="btn btn-success btn-sm p-0"
-                        style="width: 60px; height: 36px; margin-top: 0px; margin-left: 10px; border-top-left-radius: 2; border-bottom-left-radius: 1; display: flex; align-items: center; justify-content: center;color:white;"
+                <button type="button"
+                        class="btn btn-outline-success btn-sm ms-2 px-3"
+                        style="height: 31px;"
                         data-bs-toggle="modal"
-                        data-bs-target="#addModal">➕ </button>
-
+                        data-bs-target="#addModal">Добавить</button>
             </div>
         </div>
 
-        <!-- Индикатор загрузки с часами -->
-<div id="spinner" class="htmx-indicator text-center py-2 text-secondary" style="margin-top: -40px;">
-    <span style="font-size: 1.2rem;"></span> Подождите,ищем...
-</div>
+        <!-- Индикатор загрузки -->
+        <div id="spinner" class="htmx-indicator text-center py-2 text-secondary" style="margin-top: -10px;">
+            <span>Подождите, ищем...</span>
+        </div>
 
         <!-- Таблица с результатами поиска -->
-       <div id="search-results" style="max-height: 82vh; overflow-y: auto; overflow-x: hidden; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px;">
+        <div id="search-results"
+             style="max-height: 75vh; overflow-y: auto; overflow-x: hidden; border: 1px solid #dee2e6; margin-bottom: 20px;">
             {% include 'inventory/partials/spr_table.html' %}
         </div>
     </div>

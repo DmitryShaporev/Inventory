@@ -2,17 +2,16 @@
 {% load static %}
 {% block content %}
 <div class="container mt-3 mb-4">
-    <h3 class="mb-4 text-dark border-bottom pb-3">{{ title }}</h3>
+    <h3 class="mb-4 text-dark border-bottom pb-2">{{ title }}</h3>
 
-    <div class="row g-4 pb-3">
+    <div class="row g-3 pb-3">
         {% for key, value in data.items %}
         <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card h-100 border-0 shadow">
+            <div class="card h-100 border">
                 <div class="card-body text-center p-4">
-                    <h5 class="card-title fw-bold mb-3 secondary">{{ value }}</h5>
-
-                    <a href="{% url 'spr' key %}" class="btn btn-secondary px-4 mt-4"
-                       style="border-width: 2px; color: white;">
+                    <h5 class="card-title fw-normal mb-3 ">{{ value }}</h5>
+                    <a href="{% url 'spr' key %}"
+                       class="btn btn-outline-secondary px-4 mt-2 border-1">
                         Открыть
                     </a>
                 </div>
@@ -23,16 +22,32 @@
 </div>
 
 <style>
-.shadow {
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
-    transition: box-shadow .2s ease-in-out;
-}
-.shadow:hover {
-    box-shadow: 0 1rem 2rem rgba(0,0,0,.2)!important;
+/* Минималистичный плоский дизайн */
+.card {
+    border-radius: 0; /* Убираем скругление */
+    background-color: #fff;
+    transition: background-color 0.1s ease;
 }
 
-.card {
-    border-radius: 1rem;
+.card:hover {
+    background-color: #fafafa; /* Едва заметная реакция при наведении */
+}
+
+.btn-outline-secondary {
+    border-radius: 0; /* Квадратная кнопка */
+    border-width: 1px;
+    color: black;
+    transition: all 0.1s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Минималистичная линия под заголовком */
+.border-bottom {
+    border-bottom: 1px solid black !important;
 }
 </style>
 {% endblock %}
