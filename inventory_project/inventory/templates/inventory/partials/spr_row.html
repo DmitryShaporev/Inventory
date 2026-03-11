@@ -1,0 +1,23 @@
+<!-- partials/spr_row.html -->
+<tr id="row-{{ section }}-{{ item.id }}">
+    <td style="cursor: pointer;"
+        hx-get="{% url 'edit_spr_row' section item.id %}"
+        hx-target="#modal-content"
+        data-bs-toggle="modal"
+        data-bs-target="#editModal">
+        {% if item.izm %}
+            {{ item.title }}, {{ item.izm.title }}
+        {% else %}
+            {{ item.title }}
+        {% endif %}
+    </td>
+    <td class="text-center">
+        <span style="cursor: pointer; color: #dc3545;"
+              hx-delete="{% url 'delete_spr_row' section item.id %}"
+              hx-confirm="Удалить запись?"
+              hx-target="#row-{{ section }}-{{ item.id }}"
+              hx-swap="outerHTML">
+            ✕
+        </span>
+    </td>
+</tr>

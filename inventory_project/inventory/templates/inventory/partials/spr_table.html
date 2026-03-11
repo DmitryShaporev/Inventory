@@ -1,71 +1,35 @@
-<table class="table table-bordered table-hover mt-0">
+<table class="table table-bordered mb-0">
     <thead class="table-light">
         <tr>
             <th>Наименование</th>
             <th style="width: 60px" class="text-center"></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="search-results-tbody">  <!-- Добавлен id -->
         {% for item in data %}
- <tr id="row-{{ section }}-{{ item.id }}">
-        {% if section == 'obkt' %}
-
-    <td style="cursor: pointer;"
-        hx-get="{% url 'edit_spr_row' section item.id %}"
-        hx-target="#modal-content"
-        data-bs-toggle="modal"
-        data-bs-target="#editModal">
-
-        <div style="display: flex; justify-content: space-between;">
-            <span>{{ item.title }}</span>
-            <span class="text-secondary">{{ item.idpodraz.title }}</span>
-        </div>
-
-    </td>
-      {% elif section == 'nom' %}
-
-    <td style="cursor: pointer;"
-        hx-get="{% url 'edit_spr_row' section item.id %}"
-        hx-target="#modal-content"
-        data-bs-toggle="modal"
-        data-bs-target="#editModal">
-
-        <div style="display: flex; justify-content: space-between;">
-            <span>{{ item.title }},  {{ item.izm.title }}</span>
-            <span class="text-secondary">{{ item.category.title }}</span>
-        </div>
-
-    </td>
-{% else %}
-
-    <td style="cursor: pointer;"
-        hx-get="{% url 'edit_spr_row' section item.id %}"
-        hx-target="#modal-content"
-        data-bs-toggle="modal"
-        data-bs-target="#editModal">
-
-        {{ item.title }}
-    </td>
-{% endif %}
-
-
-
-    <td class="text-center">
-
-        <span style="cursor: pointer; color: #dc3545;"
-              hx-delete="{% url 'delete_spr_row' section item.id %}"
-              hx-confirm="Удалить запись?"
-              hx-target="#row-{{ section }}-{{ item.id }}"
-              hx-swap="outerHTML">
-            ✕
-        </span>
-    </td>
-
-</tr>
+        <tr id="row-{{ section }}-{{ item.id }}">
+            <td style="cursor: pointer;"
+                hx-get="{% url 'edit_spr_row' section item.id %}"
+                hx-target="#modal-content"
+                data-bs-toggle="modal"
+                data-bs-target="#editModal">
+                {{ item.title }}
+            </td>
+            <td class="text-center">
+                <span style="cursor: pointer; color: #dc3545;"
+                      hx-delete="{% url 'delete_spr_row' section item.id %}"
+                      hx-confirm="Удалить запись?"
+                      hx-target="#row-{{ section }}-{{ item.id }}"
+                      hx-swap="outerHTML">
+                    ✕
+                </span>
+            </td>
+        </tr>
         {% empty %}
         <tr>
-            <td colspan="2" class="text-center py-3">
-                Ничего не найдено. <a href="#" class="text-success text-decoration-none">Добавить</a>
+            <td colspan="2" class="text-center py-4 text-secondary">
+                Ничего не найдено
+
             </td>
         </tr>
         {% endfor %}

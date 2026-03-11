@@ -1,0 +1,32 @@
+<form hx-post="{% url 'update_spr_row' section item.id %}"
+      hx-target="#row-{{ section }}-{{ item.id }}"
+      hx-swap="outerHTML"
+      hx-on::after-request="
+          if(event.detail.successful) {
+              bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+          } else {
+              document.getElementById('edit-error-message').innerHTML = event.detail.xhr.response;
+              document.getElementById('edit-error-message').style.display = 'block';
+          }">
+
+    {% csrf_token %}
+
+    <div class="modal-body">
+        <div id="edit-error-message" class="alert alert-danger" style="display: none;"></div>
+
+        <div class="mb-3">
+            <label class="form-label">Наименование</label>
+            <input type="text"
+                   class="form-control"
+                   name="title"
+                   value="{{ item.title }}"
+                   autofocus
+                   required>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-success">Обновить</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+    </div>
+</form>

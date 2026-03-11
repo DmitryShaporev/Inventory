@@ -1,23 +1,50 @@
-<!-- Модальное окно для добавления записи -->
-<!-- Модальное окно для добавления записи -->
-<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addModalLabel">Добавление записи</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <!-- Поле ввода -->
-                <div class="mb-3">
-                    <label for="itemName" class="form-label">Наименование</label>
-                    <input type="text" class="form-control" id="itemName" placeholder="Введите наименование" autofocus>
+
+            <form hx-post="{% url 'add_spr_row' section %}"
+                  hx-target="#search-results-tbody"
+                  hx-swap="beforeend"
+                  hx-on::after-request="
+                      if(event.detail.successful) {
+                          this.reset();
+                          bootstrap.Modal.getInstance(document.getElementById('addModal')).hide();
+                      } else {
+                          // Показываем ошибку в модальном окне
+                          document.getElementById('error-message').innerHTML = event.detail.xhr.response;
+                          document.getElementById('error-message').style.display = 'block';
+                      }">
+
+                {% csrf_token %}
+
+                <div class="modal-body">
+                    <!-- Добавлен контейнер для ошибки -->
+                    <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+
+                    <div class="mb-3">
+                        <label for="itemName" class="form-label">Наименование</label>
+                        <input type="text"
+                               class="form-control"
+                               name="title"
+                               id="itemName"
+                               placeholder="Введите наименование"
+                               autofocus
+                               required
+                               oninput="document.getElementById('error-message').style.display='none'"
+                        >
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-success" id="saveItemBtn">Сохранить</button>
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
-            </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-success">Сохранить</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

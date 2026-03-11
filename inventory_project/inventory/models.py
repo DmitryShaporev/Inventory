@@ -15,7 +15,7 @@ class Izm(models.Model):
 
 
 class Category(models.Model):
-    title = models.CharField('Категория',max_length=100,db_index=True)
+    title = models.CharField('Категория',max_length=100,db_index=True,unique=True)
 
     def __str__(self):
         return self.title
@@ -33,7 +33,8 @@ class Nom(models.Model):
         Category,
         on_delete=models.PROTECT,
         null=True,
-        verbose_name='Категория'
+        verbose_name='Категория',
+
 
     )
     izm = models.ForeignKey(
@@ -41,7 +42,8 @@ class Nom(models.Model):
         on_delete=models.PROTECT,  # Нельзя удалить единицу измерения, если есть товары с ней
         blank=True,
         null=True,
-        verbose_name='Ед.изм.'
+        verbose_name='Ед.изм.',
+
     )
 
     def __str__(self):

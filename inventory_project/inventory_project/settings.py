@@ -81,10 +81,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
-     # 'old': {  # это название для подключения к старой БД
-     #     'ENGINE': 'django.db.backends.sqlite3',
-     #     'NAME': BASE_DIR / 'warehouse.db',  # старая БД
-     # }
+     'old': {  # это название для подключения к старой БД
+         'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': BASE_DIR / 'warehouse.db',  # старая БД
+     }
 }
 
 
