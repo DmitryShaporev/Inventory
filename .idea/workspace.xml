@@ -4,19 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Исправления в шаблонах и стилях">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_item.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_row.html" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Обновлена база. Добавлен функционал по добавлению и редактированию простых справочников">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/delete_item.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/views/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/views/base_views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,8 +27,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -208,7 +209,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773132979834</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Обновлена база. Добавлен функционал по добавлению и редактированию простых справочников">
+      <option name="closed" value="true" />
+      <created>1773217458909</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1773217458909</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -221,6 +230,7 @@
     <MESSAGE value="Разработка единого шаблона для простых справочников" />
     <MESSAGE value="Поиск в шаблонах справочников" />
     <MESSAGE value="Исправления в шаблонах и стилях" />
-    <option name="LAST_COMMIT_MESSAGE" value="Исправления в шаблонах и стилях" />
+    <MESSAGE value="Обновлена база. Добавлен функционал по добавлению и редактированию простых справочников" />
+    <option name="LAST_COMMIT_MESSAGE" value="Обновлена база. Добавлен функционал по добавлению и редактированию простых справочников" />
   </component>
 </project>

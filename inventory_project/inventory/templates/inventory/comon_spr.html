@@ -53,6 +53,12 @@
         border-color: #1e7e34;
     }
     #spr_title {color:DimGrey}
+
+    .table thead th {
+    font-weight: normal;
+    font-size: 18px;
+}
+
 </style>
 {% endblock %}
 
@@ -101,4 +107,5 @@
 </div>
 {% include 'inventory/modals/add_item.html' %}
 {% include 'inventory/modals/edit_item.html' %}
+{% include 'inventory/modals/delete_item.html' %}
 {% endblock %}

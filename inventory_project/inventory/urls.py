@@ -1,16 +1,20 @@
 from django.urls import path
-from . import views
+
+from .views import base_views, spr_views, doc_views, report_views
 
 urlpatterns = [
-    path('', views.index, name='index'),  # Главная страница с картинкой:)
+    path('', base_views.index, name='index'),  # Главная страница с картинкой:)
 
-    path('menu/<str:section>/', views.menu, name='menu'),  # Страница меню
-    path('menu/spr/<str:section>/', views.spr, name='spr'),  # Открытие страницы справочника
-    path('search/<str:section>/', views.search_spr, name='search_spr'),  # поиск по справочнику
-    path('spr/<str:section>/edit/<int:pk>', views.edit_spr_row, name='edit_spr_row'), # Вызывает модальное окно для редактирования
-    path('spr/<str:section>/<int:pk>/update/', views.update_spr_row, name='update_spr_row'), # Сохраняет изменения в строке справочника
-    path('spr/<str:section>/<int:pk>/delete/', views.delete_spr_row, name='delete_spr_row'),
-    path('spr/<str:section>/add/', views.add_spr_row, name='add_spr_row'),
+    path('menu/<str:section>/', base_views.menu, name='menu'),  # Страница меню
+path('menu/spr/<str:section>/', spr_views.spr, name='spr'),
+    path('menu/docs/<str:section>/', doc_views.docs, name='docs'),        # Добавь
+    path('menu/reports/<str:section>/', report_views.reports, name='reports'), #
+
+    path('search/<str:section>/', spr_views.search_spr, name='search_spr'),  # поиск по справочнику
+    path('spr/<str:section>/edit/<int:pk>', spr_views.edit_spr_row, name='edit_spr_row'), # Вызывает модальное окно для редактирования
+    path('spr/<str:section>/<int:pk>/update/', spr_views.update_spr_row, name='update_spr_row'), # Сохраняет изменения в строке справочника
+    path('spr/<str:section>/<int:pk>/delete/', spr_views.delete_spr_row, name='delete_spr_row'),
+    path('spr/<str:section>/add/', spr_views.add_spr_row, name='add_spr_row'),
 
 
 ]

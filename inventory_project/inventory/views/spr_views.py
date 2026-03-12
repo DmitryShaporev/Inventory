@@ -1,106 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponse
-from datetime import datetime
 from django.template.loader import render_to_string
-from django.db.models import Q
-from .models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom
-
+from ..models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom
 
 # Create your views here.
-
-def index(request):
-    """
-    Главная страница
-    """
-    context = {
-        'title': 'Главная страница',
-        'message': 'Добро пожаловать на сайт!'
-    }
-    return render(request, 'inventory/index.html', context)
-
-
-def get_data(request):
-    """
-    Пример представления для htmx запроса
-    """
-
-    data = {
-        'items': [
-            {'id': 1, 'name': 'Ноутбук'},
-            {'id': 2, 'name': 'Монитор'},
-            {'id': 3, 'name': 'Клавиатура'},
-            {'id': 4, 'name': 'Мышь'},
-        ]
-    }
-
-    if request.headers.get('HX-Request') == 'true':
-        # Это htmx запрос
-        html = render_to_string('inventory/data_partial.html', data)
-        return HttpResponse(html)
-    else:
-        # Обычный запрос
-        return JsonResponse(data)
-
-
-def about(request):
-    """
-    Страница "О нас"
-    """
-    return render(request, 'inventory/about.html', {'title': 'О нас'})
-
-
-def menu(request, section):
-    """
-    Страница "Справочники"
-    """
-    spr = {'nom': 'Номенклатура',
-           'izm': 'Единицы измерения',
-           'kat': 'Категории ТМЦ',
-           'postav': 'Поставщики',
-           'podraz': 'Подразделения',
-           'obkt': 'Объекты',
-           'fio': 'Подотчетные лица',
-           'spis': 'Списание'
-           }
-    docs = {'incom': 'Поступление ТМЦ',
-            'move': 'Передача ТМЦ',
-            'ret': 'Возврат ТМЦ',
-            'spis': 'Списание ТМЦ',
-            }
-    reports = {'incom': 'Поступление ТМЦ',
-               'move': 'Передача ТМЦ',
-               'nal': 'Наличие ТМЦ',
-               'spis': 'Списание ТМЦ',
-               'obkt': 'По объектам',
-               'podraz': 'По подразделениям',
-               'kat': 'По категориям',
-               'fio': 'По подотчету',
-               'postav': 'По поставщикам'}
-
-    if section == 'spr':
-        context = {
-            'data': spr,
-            'title': 'Справочники'
-        }
-    elif section == 'docs':
-        context = {
-            'data': docs,
-            'title': 'Документы'
-        }
-    elif section == 'reports':
-        context = {
-            'data': reports,
-            'title': 'Отчеты'
-        }
-    else:
-        context = {
-            'data': {},
-            'title': 'Раздел не найден'
-        }
-
-    return render(request, 'inventory/menu.html', context)
-
-
 def spr(request, section):
     tables = {
         'izm': [Izm, 'Единицы измерения'],
@@ -134,6 +36,11 @@ def spr(request, section):
     }
 
     return render(request, 'inventory/comon_spr.html', context)
+
+
+
+
+
 
 
 def search_spr(request, section):
@@ -183,11 +90,51 @@ def search_spr(request, section):
     return HttpResponse(html)
 
 
+from django.db.models.deletion import ProtectedError
+from django.http import HttpResponse
 
 
 def delete_spr_row(request, section, pk):
-    pass
+    '''Удаление записи из справочника'''
+    models = {
+        'izm': Izm,
+        'fio': Fio,
+        'podraz': Podraz,
+        'postav': Postav,
+        'spis': Spis,
+        'kat': Category,
+        'obkt': Obct,
+        'nom': Nom,
+    }
 
+    if section not in models:
+        return HttpResponse(status=404)
+
+    if request.method == 'DELETE':
+        model = models[section]
+        try:
+            item = model.objects.get(pk=pk)
+            item.delete()
+            return HttpResponse(status=200)  # Успешно удалено
+
+        except ProtectedError:
+            html = f'''
+                <tr id="row-{section}-{pk}" style="background-color: #fff3f3;">
+                    <td colspan="2" class="text-center py-3">
+                        <span class="text-danger">❌ Нельзя удалить - есть связанные записи</span>
+                        <button class="btn btn-sm btn-outline-secondary ms-3" 
+                                onclick="location.reload()"
+                                style="border-radius: 0;">
+                            ⟲ Обновить
+                        </button>
+                    </td>
+                </tr>
+            '''
+            return HttpResponse(html, status=200)
+        except model.DoesNotExist:
+            return HttpResponse(status=404)
+
+    return HttpResponse(status=405)
 
 def add_spr_row(request, section):
     '''Добавление новой записи в простые справочники'''
@@ -275,3 +222,5 @@ def update_spr_row(request, section, pk):
             return HttpResponse(html)
 
     return HttpResponse(status=400)
+
+

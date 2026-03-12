@@ -18,10 +18,10 @@
             <td class="text-center">
                 <span style="cursor: pointer; color: #dc3545;"
                       hx-delete="{% url 'delete_spr_row' section item.id %}"
-                      hx-confirm="Удалить запись?"
-                      hx-target="#row-{{ section }}-{{ item.id }}"
-                      hx-swap="outerHTML">
-                    ✕
+          hx-target="#row-{{ section }}-{{ item.id }}"
+          hx-swap="outerHTML"
+          hx-confirm="Удалить запись '{{ item.title }}'?">
+        ✕
                 </span>
             </td>
         </tr>
