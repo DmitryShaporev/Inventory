@@ -118,7 +118,7 @@ class Doc(models.Model):
     nomer = models.CharField('Номер',max_length=50)
     # datadoc = models.CharField('Дата',max_length=50)
     postav = models.ForeignKey(Postav, on_delete=models.PROTECT,verbose_name='Поставщик',blank=True,null=True,db_index=True)
-    obct = models.ForeignKey(Obct, on_delete=models.SET_NULL, blank=True, null=True,verbose_name='Объект',db_index=True)
+    obct = models.ForeignKey(Obct, on_delete=models.PROTECT, blank=True, null=True,verbose_name='Объект',db_index=True)
     fio = models.ForeignKey(Fio, on_delete=models.PROTECT,verbose_name='Подотчет',blank=True,null=True,db_index=True)
     oper = models.IntegerField('Операция',db_index=True)
     update_date = models.DateTimeField(blank=True, null=True)

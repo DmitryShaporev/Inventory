@@ -119,7 +119,7 @@ class Command(BaseCommand):
                         id=row[0],
                         defaults={'title': row[1]}
                     )
-            self.stdout.write(f'  ➡ Перенесено {len(rows)} записей')
+            self.stdout.write(f'  ➡ Перенесено {len(rows)} записей ✔️' )
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'  ❌ Ошибка: {e}'))
 
@@ -134,7 +134,7 @@ class Command(BaseCommand):
                         id=row[0],
                         defaults={'title': row[1]}
                     )
-            self.stdout.write(f'  ➡ Перенесено {len(rows)} записей')
+            self.stdout.write(f'  ➡ Перенесено {len(rows)} записей ✔️')
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'  ❌ Ошибка: {e}'))
 
@@ -162,7 +162,7 @@ class Command(BaseCommand):
                     errors += 1
                     self.stdout.write(self.style.WARNING(f'    ⚠ Объект id={row[0]}: {e}'))
 
-            self.stdout.write(f'  ➡ Успешно: {success}, Пропущено: {errors}')
+            self.stdout.write(f'  ➡ Успешно: {success}, Пропущено: {errors} ✔️')
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'  ❌ Ошибка: {e}'))
 
@@ -190,7 +190,7 @@ class Command(BaseCommand):
                     errors += 1
                     self.stdout.write(self.style.WARNING(f'    ⚠ Номенклатура id={row[0]}: {e}'))
 
-            self.stdout.write(f'  ➡ Успешно: {success}, Пропущено: {errors}')
+            self.stdout.write(f'  ➡ Успешно: {success}, Пропущено: {errors} ✔️')
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'  ❌ Ошибка: {e}'))
 
@@ -229,12 +229,12 @@ class Command(BaseCommand):
                     errors += 1
                     self.stdout.write(self.style.WARNING(f'    ⚠ Документ id={row[0]}: {e}'))
 
-            self.stdout.write(f'  ➡ Успешно: {success}, Ошибок: {errors}')
+            self.stdout.write(f'  ➡ Успешно: {success}, Ошибок: {errors} ✔️')
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'  ❌ Ошибка: {e}'))
 
     def migrate_detail(self, cursor):
-        self.stdout.write('Перенос деталей документов...')
+        self.stdout.write('Перенос строк документов...')
         try:
             cursor.execute("""
                 SELECT id, id_doc, id_nom, kolvo, price, cost, oper 
@@ -244,19 +244,19 @@ class Command(BaseCommand):
             success = 0
             errors = 0
 
-            self.stdout.write(f'  Найдено записей в старой БД: {len(rows)}')
+            self.stdout.write(f'  Найдено записей в старой БД: {len(rows)} ✔️')
 
             # Проверим, сколько уже есть в новой БД
             from ...models import Detail
 
             existing_count = Detail.objects.count()
-            self.stdout.write(f'  Существующих записей в новой БД: {existing_count}')
+            self.stdout.write(f'  Существующих записей в новой БД: {existing_count} ✔️')
 
             for row in rows:
                 try:
                     # Проверяем, существует ли уже такая деталь
                     if Detail.objects.filter(id=row[0]).exists():
-                        self.stdout.write(f'    ⚠ Деталь id={row[0]} уже существует, пропускаем')
+                        self.stdout.write(f'    ⚠ Строка id={row[0]} уже существует, пропускаем')
                         continue
 
                     if not self.dry_run:
@@ -266,13 +266,13 @@ class Command(BaseCommand):
 
                         if not doc_exists:
                             self.stdout.write(
-                                self.style.WARNING(f'    ⚠ Документ {row[1]} не найден для детали {row[0]}'))
+                                self.style.WARNING(f'    ⚠ Документ {row[1]} не найден для строки {row[0]}'))
                             errors += 1
                             continue
 
                         if not nom_exists:
                             self.stdout.write(
-                                self.style.WARNING(f'    ⚠ Номенклатура {row[2]} не найдена для детали {row[0]}'))
+                                self.style.WARNING(f'    ⚠ Номенклатура {row[2]} не найдена для строки {row[0]}'))
                             errors += 1
                             continue
 
@@ -293,14 +293,14 @@ class Command(BaseCommand):
 
                 except Exception as e:
                     errors += 1
-                    self.stdout.write(self.style.ERROR(f'    ❌ Деталь id={row[0]}: {e}'))
+                    self.stdout.write(self.style.ERROR(f'    ❌ Строка id={row[0]}: {e}'))
 
             self.stdout.write(f'  ➡ Успешно: {success}, Ошибок: {errors}')
 
             # Финальная проверка
             if not self.dry_run:
                 final_count = Detail.objects.count()
-                self.stdout.write(f'  ➡ Всего в новой БД после переноса: {final_count}')
+                self.stdout.write(f'  ➡ Всего в новой БД после переноса: {final_count} ✔️')
 
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'  ❌ Ошибка: {e}'))

@@ -14,7 +14,17 @@ def spr(request, section):
         'obkt': [Obct, "Объекты"],
         'nom': [Nom, "Номенклатура"],
     }
+    if section == 'obkt':
+        # Для объектов передаем список подразделений в модальное окно
+        data = Obct.objects.select_related('idpodraz').all().order_by('title')
+        podraz_list = Podraz.objects.all().order_by('title')  # Получаем все подразделения
 
+        return render(request, 'inventory/comon_spr.html', {
+            'data': data,
+            'title': 'Объекты',
+            'section': section,
+            'podraz_list': podraz_list,  # Передаем в шаблон
+        })
     if section in tables:
         model, title = tables[section]  # распаковываем список в две переменные
         if section == 'nom':
@@ -224,3 +234,45 @@ def update_spr_row(request, section, pk):
     return HttpResponse(status=400)
 
 
+from ..models import Obct, Podraz  # Добавляем Podraz
+
+
+def add_obkt_row(request):
+    '''Добавление нового объекта'''
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        podraz_id = request.POST.get('podraz_id')
+
+        # Валидация
+        if not title:
+            return HttpResponse("❌ Название объекта не может быть пустым", status=400)
+
+        if not podraz_id:
+            return HttpResponse("❌ Выберите подразделение", status=400)
+
+        try:
+            podraz = Podraz.objects.get(id=podraz_id)
+
+            # Проверка на дубликат (объект с таким названием уже есть?)
+            if Obct.objects.filter(title=title).exists():
+                return HttpResponse("❌ Объект с таким названием уже существует", status=400)
+
+            # Создаем новый объект
+            new_obct = Obct.objects.create(
+                title=title,
+                idpodraz=podraz
+            )
+
+            # Возвращаем строку таблицы
+            html = render_to_string('inventory/partials/spr_row.html', {
+                'item': new_obct,
+                'section': 'obkt'
+            })
+            return HttpResponse(html)
+
+        except Podraz.DoesNotExist:
+            return HttpResponse("❌ Выбранное подразделение не существует", status=400)
+        except Exception as e:
+            return HttpResponse(f"❌ Ошибка при сохранении: {str(e)}", status=400)
+
+    return HttpResponse(status=405)

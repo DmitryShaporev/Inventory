@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import base_views, spr_views, doc_views, report_views
+from .views import base_views, spr_views, doc_views, report_views, qr_views
 
 urlpatterns = [
     path('', base_views.index, name='index'),  # Главная страница с картинкой:)
@@ -15,6 +15,8 @@ path('menu/spr/<str:section>/', spr_views.spr, name='spr'),
     path('spr/<str:section>/<int:pk>/update/', spr_views.update_spr_row, name='update_spr_row'), # Сохраняет изменения в строке справочника
     path('spr/<str:section>/<int:pk>/delete/', spr_views.delete_spr_row, name='delete_spr_row'),
     path('spr/<str:section>/add/', spr_views.add_spr_row, name='add_spr_row'),
+    path('obkt/add/', spr_views.add_obkt_row, name='add_obkt_row'),
+    path('qr-simple/', qr_views.qr_simple, name='qr_simple'),
 
 
 ]

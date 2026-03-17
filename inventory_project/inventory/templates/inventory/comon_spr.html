@@ -57,8 +57,74 @@
     .table thead th {
     font-weight: normal;
     font-size: 18px;
+
 }
 
+
+
+/* Стили для select */
+/* Стили для select */
+.form-select {
+    border-radius: 0;
+    border: 1px solid #ced4da;
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    background-color: #fff;
+    transition: all 0.1s ease;
+    cursor: pointer;
+    height: 38px;
+}
+
+.form-select:hover {
+    border-color: #6c757d;
+    background-color: #f8f9fa;
+}
+
+.form-select:focus {
+    border-color: #28a745;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Стили для опций - стандартное состояние */
+.form-select option {
+    padding: 8px;
+    background-color: white;
+    color: #333;
+}
+
+/* Стили для опций при наведении (синий → светло-серый) */
+.form-select option:hover {
+    background-color: #e9ecef !important;  /* Светло-серый */
+    color: #333 !important;
+}
+
+/* Стили для выбранной опции */
+.form-select option:checked {
+    background-color: #495057 !important;  /* Темно-серый для выбранного */
+    color: white !important;
+}
+
+/* Специально для disabled опции "Выберите подразделение" */
+.form-select option[disabled] {
+    background-color: #f8f9fa !important;  /* Очень светлый серый */
+    color: #6c757d !important;
+    font-style: italic;
+}
+
+/* Для браузеров на WebKit (Chrome, Safari) */
+.form-select option:checked,
+.form-select option[selected] {
+    background-color: #495057 !important;
+    color: white !important;
+}
+
+/* Для Firefox */
+@-moz-document url-prefix() {
+    .form-select option:checked {
+        background-color: #495057;
+        color: white;
+    }
+}
 </style>
 {% endblock %}
 
@@ -69,7 +135,7 @@
     <div class="col-md-8 mt-4">
         <!-- Заголовок и блок с поиском + кнопка -->
         <div class="d-flex justify-content-between align-items-start mb-0">
-            <h5 id='spr_title' class="mb-0">Справочник: {{ title }} </h5>
+            <h5 id='spr_title' class="mb-0">Справочник: {{ title }} {{section}}</h5>
 
             <!-- Контейнер для поиска и кнопки -->
             <div class="d-flex">
@@ -87,7 +153,15 @@
                         class="btn btn-outline-success btn-sm ms-2 px-3"
                         style="height: 31px;"
                         data-bs-toggle="modal"
-                        data-bs-target="#addModal">Добавить</button>
+                        data-bs-target="
+            {% if section == 'nom' %}
+                #addModalNom
+            {% elif section == 'obkt' %}
+                #addObktModal
+            {% else %}
+                #addModal
+            {% endif %}"
+                    >Добавить</button>
             </div>
         </div>
 
@@ -98,7 +172,7 @@
 
         <!-- Таблица с результатами поиска -->
         <div id="search-results"
-             style="max-height: 75vh; overflow-y: auto; overflow-x: hidden; border: 1px solid #dee2e6; margin-bottom: 20px;">
+             style="max-height: 78vh; overflow-y: auto; overflow-x: hidden; border: 1px solid #dee2e6; margin-bottom: 20px;">
             {% include 'inventory/partials/spr_table.html' %}
         </div>
     </div>
@@ -108,4 +182,5 @@
 {% include 'inventory/modals/add_item.html' %}
 {% include 'inventory/modals/edit_item.html' %}
 {% include 'inventory/modals/delete_item.html' %}
+{% include 'inventory/modals/add_item_obkt.html' %}
 {% endblock %}

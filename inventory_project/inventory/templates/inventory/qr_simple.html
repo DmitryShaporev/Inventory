@@ -1,0 +1,32 @@
+{% extends 'inventory/base.html' %}
+{% load qr_code %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card border-0">
+                <div class="card-header bg-white border-bottom">
+                    <h4 class="mb-0">Тест QR-кода</h4>
+                </div>
+                <div class="card-body text-center p-5">
+                    <!-- QR-код с любым текстом -->
+                    <div class="mb-4">
+                        {% qr_from_text "123345.47__487__2" size=10 border=2 %}
+                    </div>
+
+                    <p class="text-muted mb-3">
+                        Отсканируй код телефоном
+                    </p>
+
+                    <div class="mt-4">
+                        <a href="/" class="btn btn-outline-secondary px-4">
+                            На главную
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
