@@ -4,17 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Рефакторинг views, функционал удаления из простых справочников">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_obkt_content.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_obkt_modal.html" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Справочник объектов - редактирование и добавление записей">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/static/css/comon_spr.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item_obkt.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item_obkt.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_row.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_row.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +216,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773301123716</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Справочник объектов - редактирование и добавление записей">
+      <option name="closed" value="true" />
+      <created>1773822479893</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1773822479893</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -249,6 +250,7 @@
     <MESSAGE value="Исправления в шаблонах и стилях" />
     <MESSAGE value="Обновлена база. Добавлен функционал по добавлению и редактированию простых справочников" />
     <MESSAGE value="Рефакторинг views, функционал удаления из простых справочников" />
-    <option name="LAST_COMMIT_MESSAGE" value="Рефакторинг views, функционал удаления из простых справочников" />
+    <MESSAGE value="Справочник объектов - редактирование и добавление записей" />
+    <option name="LAST_COMMIT_MESSAGE" value="Справочник объектов - редактирование и добавление записей" />
   </component>
 </project>

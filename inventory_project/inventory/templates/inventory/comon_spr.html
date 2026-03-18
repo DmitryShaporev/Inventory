@@ -1,171 +1,9 @@
 {% extends 'inventory/base.html' %}
+{% load static %}
+
 {% block extra_css %}
-<style>
-    /* Фиксированная шапка при скролле */
-    .table thead th {
-        position: sticky;
-        top: 0;
-        background-color: #f8f9fa;
-        z-index: 10;
-    }
-    /* Убираем двойные границы */
-    .table {
-        margin-bottom: 0;
-    }
-
-    /* Стили для скролла - плоские */
-    #search-results::-webkit-scrollbar {
-        width: 8px;
-    }
-    #search-results::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-    #search-results::-webkit-scrollbar-thumb {
-        background: #c0c0c0;
-    }
-    #search-results::-webkit-scrollbar-thumb:hover {
-        background: #a0a0a0;
-    }
-
-    /* Плоские инпуты */
-    .form-control, .form-control-sm {
-        border-radius: 0;
-        border: 1px solid #ced4da;
-    }
-
-    .form-control:focus {
-        border-color: #6c757d;
-        box-shadow: none; /* Убираем свечение */
-    }
-
-    /* Плоские кнопки */
-    .btn {
-        border-radius: 0;
-    }
-
-    .btn-success {
-        background-color: #28a745;
-        border: 1px solid #28a745;
-    }
-
-    .btn-success:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-    }
-    #spr_title {color:DimGrey}
-
-    .table thead th {
-    font-weight: normal;
-    font-size: 18px;
-
-}
-
-
-
-/* Стили для select */
-/* Стили для select */
-.form-select {
-    border-radius: 0;
-    border: 1px solid #ced4da;
-    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
-    background-color: #fff;
-    transition: all 0.1s ease;
-    cursor: pointer;
-    height: 38px;
-}
-
-.form-select:hover {
-    border-color: #6c757d;
-    background-color: #f8f9fa;
-}
-
-.form-select:focus {
-    border-color: #28a745;
-    outline: none;
-    box-shadow: none;
-}
-
-/* Стили для опций - стандартное состояние */
-.form-select option {
-    padding: 8px;
-    background-color: white;
-    color: #333;
-}
-
-/* Стили для опций при наведении (синий → светло-серый) */
-.form-select option:hover {
-    background-color: #e9ecef !important;  /* Светло-серый */
-    color: #333 !important;
-}
-
-/* Стили для выбранной опции */
-.form-select option:checked {
-    background-color: #495057 !important;  /* Темно-серый для выбранного */
-    color: white !important;
-}
-
-/* Специально для disabled опции "Выберите подразделение" */
-.form-select option[disabled] {
-    background-color: #f8f9fa !important;  /* Очень светлый серый */
-    color: #6c757d !important;
-    font-style: italic;
-}
-
-/* Для браузеров на WebKit (Chrome, Safari) */
-.form-select option:checked,
-.form-select option[selected] {
-    background-color: #495057 !important;
-    color: white !important;
-}
-
-/* Для Firefox */
-@-moz-document url-prefix() {
-    .form-select option:checked {
-        background-color: #495057;
-        color: white;
-    }
-}
-
-   /* Общие стили для select */
-.form-select {
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
-    padding: 0.5rem 2rem 0.5rem 1rem;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: 15px;
-}
-
-/* При наведении на весь select */
-.form-select:hover {
-    border-color: #28a745;
-    background-color: #f8f9fa;
-}
-
-/* При фокусе */
-.form-select:focus {
-    border-color: #28a745;
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
-    outline: none;
-}
-
-/* Стили для опций (работает ограниченно) */
-.form-select option {
-    padding: 8px 12px;
-    background-color: white;
-    color: #333;
-}
-
-.form-select option:hover {
-    background-color: #28a745 !important;
-    color: white !important;
-}
-
-.form-select option:checked {
-    background-color: #28a745;
-    color: white;
-}
-
-</style>
+    <!-- Подключаем внешний CSS файл -->
+    <link rel="stylesheet" href="{% static 'css/comon_spr.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -194,14 +32,15 @@
                         style="height: 31px;"
                         data-bs-toggle="modal"
                         data-bs-target="
-            {% if section == 'nom' %}
-                #addModalNom
-            {% elif section == 'obkt' %}
-                #addObktModal
-            {% else %}
-                #addModal
-            {% endif %}"
-                    >Добавить</button>
+                            {% if section == 'nom' %}
+                                #addModalNom
+                            {% elif section == 'obkt' %}
+                                #addObktModal
+                            {% else %}
+                                #addModal
+                            {% endif %}">
+                    Добавить
+                </button>
             </div>
         </div>
 
@@ -219,6 +58,8 @@
 
     <div class="col-md-2"></div>
 </div>
+
+<!-- Модальные окна -->
 {% include 'inventory/modals/add_item.html' %}
 {% include 'inventory/modals/edit_item.html' %}
 {% include 'inventory/modals/delete_item.html' %}
