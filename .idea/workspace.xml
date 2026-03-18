@@ -5,21 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Рефакторинг views, функционал удаления из простых справочников">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item_obkt.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/qr_simple.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/views/qr_views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_obkt_content.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_obkt_modal.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/management/commands/migrate_old.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/management/commands/migrate_old.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item_obkt.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item_obkt.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_row.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_row.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/Порядок переноса.txt" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/Порядок переноса.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,13 +24,14 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -229,6 +225,17 @@
     </task>
     <option name="localTasksCounter" value="17" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Start project Inventory!" />

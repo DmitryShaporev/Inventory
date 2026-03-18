@@ -1,16 +1,29 @@
 <!-- partials/spr_row.html -->
 <tr id="row-{{ section }}-{{ item.id }}">
     <td style="cursor: pointer;"
-        hx-get="{% url 'edit_spr_row' section item.id %}"
-        hx-target="#modal-content"
-        data-bs-toggle="modal"
-        data-bs-target="#editModal">
-        {% if item.izm %}
-            {{ item.title }}, {{ item.izm.title }}
+        {% if section == 'obkt' %}
+            hx-get="{% url 'edit_obkt_row' item.id %}"
+            hx-target="#obkt-modal-content"
+            data-bs-toggle="modal"
+            data-bs-target="#editObktModal"
         {% else %}
-            {{ item.title }}
-        {% endif %}
+            hx-get="{% url 'edit_spr_row' section item.id %}"
+            hx-target="#modal-content"
+            data-bs-toggle="modal"
+            data-bs-target="#editModal"
+        {% endif %}>
+        {{ item.title }}
     </td>
+
+    {% if section == 'obkt' %}
+        <td class="text-center">{{ item.idpodraz.title }}</td>
+    {% endif %}
+
+    {% if section == 'nom' %}
+        <td class="text-center">{{ item.izm.title }}</td>
+        <td class="text-center">{{ item.category.title }}</td>
+    {% endif %}
+
     <td class="text-center">
         <span style="cursor: pointer; color: #dc3545;"
               hx-delete="{% url 'delete_spr_row' section item.id %}"

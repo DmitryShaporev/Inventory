@@ -276,3 +276,55 @@ def add_obkt_row(request):
             return HttpResponse(f"❌ Ошибка при сохранении: {str(e)}", status=400)
 
     return HttpResponse(status=405)
+
+
+def edit_obkt_row(request, pk):
+    '''Загрузка формы редактирования объекта с данными'''
+    obkt = get_object_or_404(Obct, pk=pk)
+    podraz_list = Podraz.objects.all().order_by('title')
+
+    return render(request, 'inventory/modals/edit_obkt_content.html', {
+        'item': obkt,
+        'podraz_list': podraz_list
+    })
+
+
+def update_obkt_row(request):
+    '''Обновление объекта'''
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id')
+        title = request.POST.get('title', '').strip()
+        podraz_id = request.POST.get('podraz_id')
+
+        if not title:
+            return HttpResponse("❌ Название объекта не может быть пустым", status=400)
+
+        if not podraz_id:
+            return HttpResponse("❌ Выберите подразделение", status=400)
+
+        try:
+            obct = Obct.objects.get(id=item_id)
+            podraz = Podraz.objects.get(id=podraz_id)
+
+            # Проверка на дубликат (исключая текущую запись)
+            if Obct.objects.filter(title=title).exclude(id=item_id).exists():
+                return HttpResponse("❌ Объект с таким названием уже существует", status=400)
+
+            obct.title = title
+            obct.idpodraz = podraz
+            obct.save()
+
+            html = render_to_string('inventory/partials/spr_row.html', {
+                'item': obct,
+                'section': 'obkt'
+            })
+            return HttpResponse(html)
+
+        except Obct.DoesNotExist:
+            return HttpResponse("❌ Объект не найден", status=404)
+        except Podraz.DoesNotExist:
+            return HttpResponse("❌ Подразделение не найдено", status=400)
+        except Exception as e:
+            return HttpResponse(f"❌ Ошибка: {str(e)}", status=400)
+
+    return HttpResponse(status=405)

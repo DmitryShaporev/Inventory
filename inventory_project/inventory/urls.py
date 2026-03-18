@@ -16,6 +16,8 @@ path('menu/spr/<str:section>/', spr_views.spr, name='spr'),
     path('spr/<str:section>/<int:pk>/delete/', spr_views.delete_spr_row, name='delete_spr_row'),
     path('spr/<str:section>/add/', spr_views.add_spr_row, name='add_spr_row'),
     path('obkt/add/', spr_views.add_obkt_row, name='add_obkt_row'),
+path('obkt/edit/<int:pk>/', spr_views.edit_obkt_row, name='edit_obkt_row'),
+    path('obkt/update/', spr_views.update_obkt_row, name='update_obkt_row'),
     path('qr-simple/', qr_views.qr_simple, name='qr_simple'),
 
 

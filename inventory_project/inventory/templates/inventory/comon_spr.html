@@ -125,6 +125,46 @@
         color: white;
     }
 }
+
+   /* Общие стили для select */
+.form-select {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 15px;
+}
+
+/* При наведении на весь select */
+.form-select:hover {
+    border-color: #28a745;
+    background-color: #f8f9fa;
+}
+
+/* При фокусе */
+.form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+    outline: none;
+}
+
+/* Стили для опций (работает ограниченно) */
+.form-select option {
+    padding: 8px 12px;
+    background-color: white;
+    color: #333;
+}
+
+.form-select option:hover {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.form-select option:checked {
+    background-color: #28a745;
+    color: white;
+}
+
 </style>
 {% endblock %}
 
@@ -183,4 +223,5 @@
 {% include 'inventory/modals/edit_item.html' %}
 {% include 'inventory/modals/delete_item.html' %}
 {% include 'inventory/modals/add_item_obkt.html' %}
+{% include 'inventory/modals/edit_obkt_modal.html' %}
 {% endblock %}

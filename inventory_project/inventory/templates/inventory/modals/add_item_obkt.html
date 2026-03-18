@@ -1,9 +1,4 @@
 
-
-
-
-
-
 <div class="modal fade" id="addObktModal" tabindex="-1" aria-labelledby="addModalObktLabel" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
@@ -63,3 +58,30 @@
         </div>
     </div>
 </div>
+
+<script>
+// Сброс при открытии (на всякий случай)
+document.getElementById('addObktModal').addEventListener('show.bs.modal', function () {
+    // Принудительно сбрасываем select на первое значение
+    const select = document.getElementById('podrazSelect');
+    if (select) {
+        select.selectedIndex = 0;
+    }
+});
+
+// Сброс после успешного сохранения (у тебя уже есть в hx-on)
+// и дополнительно при закрытии
+document.getElementById('addObktModal').addEventListener('hidden.bs.modal', function () {
+    const form = this.querySelector('form');
+    form.reset();  // сброс всех полей
+
+    // Особенно для select (reset может не сработать на disabled option)
+    const select = document.getElementById('podrazSelect');
+    if (select) {
+        select.selectedIndex = 0;
+    }
+
+    // Прячем ошибку
+    document.getElementById('obkt-error-message').style.display = 'none';
+});
+</script>

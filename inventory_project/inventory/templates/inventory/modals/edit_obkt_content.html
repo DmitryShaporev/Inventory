@@ -1,0 +1,63 @@
+<form hx-post="{% url 'update_obkt_row' %}"
+      hx-target="#row-obkt-{{ item.id }}"
+      hx-swap="outerHTML"
+      hx-on::after-request="
+          if(event.detail.successful) {
+              bootstrap.Modal.getInstance(document.getElementById('editObktModal')).hide();
+          } else {
+              document.getElementById('obkt-edit-error').innerHTML = event.detail.xhr.response;
+              document.getElementById('obkt-edit-error').style.display = 'block';
+          }">
+
+    {% csrf_token %}
+    <input type="hidden" name="item_id" value="{{ item.id }}">
+
+    <div class="modal-body">
+        <div id="obkt-edit-error" class="alert alert-danger" style="display: none;"></div>
+
+        <div class="mb-3">
+            <label for="editObktName" class="form-label">Наименование объекта</label>
+            <input type="text"
+                   class="form-control"
+                   name="title"
+                   id="editObktName"
+                   value="{{ item.title }}"
+                   placeholder="Введите наименование"
+                   required
+                   oninput="document.getElementById('obkt-edit-error').style.display='none'">
+        </div>
+
+        <div class="mb-3">
+            <label for="editPodrazSelect" class="form-label">Подразделение</label>
+            <select class="form-select"
+                    name="podraz_id"
+                    id="editPodrazSelect"
+                    required>
+                <option value="" disabled>Выберите подразделение</option>
+                {% for podraz in podraz_list %}
+                    <option value="{{ podraz.id }}"
+                        {% if podraz.id == item.idpodraz.id %}selected{% endif %}>
+                        {{ podraz.title }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-success">Обновить</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+    </div>
+</form>
+
+<script>
+// Сброс ошибки при изменении полей
+document.getElementById('editObktName').addEventListener('input', function() {
+    document.getElementById('obkt-edit-error').style.display = 'none';
+});
+
+// Сброс при закрытии модального окна
+document.getElementById('editObktModal').addEventListener('hidden.bs.modal', function () {
+    document.getElementById('obkt-edit-error').style.display = 'none';
+});
+</script>

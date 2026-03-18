@@ -2,34 +2,71 @@
     <thead class="table-light">
         <tr>
             <th>Наименование</th>
+
+            {% if section == 'nom' %}
+            <th class="text-center">Ед.изм.</th>
+            <th class="text-center">Категория</th>
+            {% endif %}
+
+            {% if section == 'obkt' %}
+            <th class="text-center">Подразделение</th>
+            {% endif %}
+
             <th style="width: 60px" class="text-center">🗑️</th>
         </tr>
     </thead>
-    <tbody id="search-results-tbody">  <!-- Добавлен id -->
+    <tbody id="search-results-tbody">
         {% for item in data %}
         <tr id="row-{{ section }}-{{ item.id }}">
             <td style="cursor: pointer;"
-                hx-get="{% url 'edit_spr_row' section item.id %}"
-                hx-target="#modal-content"
-                data-bs-toggle="modal"
-                data-bs-target="#editModal">
+                {% if section == 'obkt' %}
+                    hx-get="{% url 'edit_obkt_row' item.id %}"
+                    hx-target="#obkt-modal-content"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editObktModal"
+                {% else %}
+                    hx-get="{% url 'edit_spr_row' section item.id %}"
+                    hx-target="#modal-content"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                {% endif %}>
                 {{ item.title }}
             </td>
+
+            {% if section == 'obkt' %}
+            <td class="text-center">
+                {{ item.idpodraz.title }}
+            </td>
+            {% endif %}
+
+            {% if section == 'nom' %}
+            <td class="text-center">
+                {{ item.izm.title }}
+            </td>
+            <td class="text-center">
+                {{ item.category.title }}
+            </td>
+            {% endif %}
+
             <td class="text-center">
                 <span style="cursor: pointer; color: #dc3545;"
                       hx-delete="{% url 'delete_spr_row' section item.id %}"
-          hx-target="#row-{{ section }}-{{ item.id }}"
-          hx-swap="outerHTML"
-          hx-confirm="Удалить запись '{{ item.title }}'?">
-        ✕
+                      hx-target="#row-{{ section }}-{{ item.id }}"
+                      hx-swap="outerHTML"
+                      hx-confirm="Удалить запись '{{ item.title }}'?">
+                    ✕
                 </span>
             </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="2" class="text-center py-4 text-secondary">
+            <td colspan="
+                {% if section == 'nom' %}4
+                {% elif section == 'obkt' %}3
+                {% else %}2
+                {% endif %}"
+                class="text-center py-4 text-secondary">
                 Ничего не найдено
-
             </td>
         </tr>
         {% endfor %}
