@@ -9,7 +9,7 @@
 
             <form hx-post="{% url 'add_spr_row' section %}"
                   hx-target="#search-results-tbody"
-                  hx-swap="beforeend"
+                  hx-swap="beforebegin"
                   hx-on::after-request="
                       if(event.detail.successful) {
                           this.reset();

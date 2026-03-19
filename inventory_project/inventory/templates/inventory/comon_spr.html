@@ -13,7 +13,7 @@
     <div class="col-md-8 mt-4">
         <!-- Заголовок и блок с поиском + кнопка -->
         <div class="d-flex justify-content-between align-items-start mb-0">
-            <h5 id='spr_title' class="mb-0">Справочник: {{ title }} {{section}}</h5>
+            <h5 id='spr_title' class="mb-0">Справочник: {{ title }} </h5>
 
             <!-- Контейнер для поиска и кнопки -->
             <div class="d-flex">
@@ -33,7 +33,7 @@
                         data-bs-toggle="modal"
                         data-bs-target="
                             {% if section == 'nom' %}
-                                #addModalNom
+                                #addNomModal
                             {% elif section == 'obkt' %}
                                 #addObktModal
                             {% else %}
@@ -63,6 +63,10 @@
 {% include 'inventory/modals/add_item.html' %}
 {% include 'inventory/modals/edit_item.html' %}
 {% include 'inventory/modals/delete_item.html' %}
+
 {% include 'inventory/modals/add_item_obkt.html' %}
 {% include 'inventory/modals/edit_obkt_modal.html' %}
+
+{% include 'inventory/modals/add_item_nom.html' %}
+{% include 'inventory/modals/edit_nom_modal.html' %}
 {% endblock %}

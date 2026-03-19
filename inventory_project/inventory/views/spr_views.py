@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
+from unicodedata import category
+
 from ..models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom
 
 # Create your views here.
@@ -24,6 +26,18 @@ def spr(request, section):
             'title': 'Объекты',
             'section': section,
             'podraz_list': podraz_list,  # Передаем в шаблон
+        })
+    if section == 'nom':
+        # Для номенклатуры передаем список категорий и единиц в модальное окно
+        data = Nom.objects.select_related('category','izm').all().order_by('title')
+        category_list = Category.objects.all().order_by('title')  # Получаем все категории
+        izm_list = Izm.objects.all().order_by('title')  # Получаем все единицы измерения
+        return render(request, 'inventory/comon_spr.html', {
+            'data': data,
+            'title': 'Объекты',
+            'section': section,
+            'category_list': category_list,
+            'izm_list': izm_list
         })
     if section in tables:
         model, title = tables[section]  # распаковываем список в две переменные
@@ -324,6 +338,116 @@ def update_obkt_row(request):
             return HttpResponse("❌ Объект не найден", status=404)
         except Podraz.DoesNotExist:
             return HttpResponse("❌ Подразделение не найдено", status=400)
+        except Exception as e:
+            return HttpResponse(f"❌ Ошибка: {str(e)}", status=400)
+
+    return HttpResponse(status=405)
+
+
+def add_nom_row(request):
+    '''Добавление новой номенклатуры'''
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        category_id = request.POST.get('category_id')
+        izm_id = request.POST.get('izm_id')
+
+        # Валидация
+        if not title:
+            return HttpResponse("❌ Название номенклатуры не может быть пустым", status=400)
+
+        if not category_id:
+            return HttpResponse("❌ Выберите категорию", status=400)
+
+        if not izm_id:
+            return HttpResponse("❌ Выберите единицу измерения", status=400)
+
+        try:
+            category = Category.objects.get(id=category_id)
+            izm = Izm.objects.get(id=izm_id)  # ← БЫЛО: category_id, ИСПРАВЛЕНО: izm_id
+
+            # Проверка на дубликат
+            if Nom.objects.filter(title=title).exists():
+                return HttpResponse("❌ Номенклатура с таким названием уже существует", status=400)
+
+            # Создаем новую номенклатуру
+            new_nom = Nom.objects.create(  # ← БЫЛО: Obct.objects, ИСПРАВЛЕНО: Nom.objects
+                title=title,
+                izm=izm,
+                category=category
+            )
+
+            html = render_to_string('inventory/partials/spr_row.html', {
+                'item': new_nom,
+                'section': 'nom'
+            })
+
+            return HttpResponse(html)
+
+        except Category.DoesNotExist:
+            return HttpResponse("❌ Выбранная категория не существует", status=400)
+        except Izm.DoesNotExist:
+            return HttpResponse("❌ Выбранная единица измерения не существует", status=400)
+        except Exception as e:
+            return HttpResponse(f"❌ Ошибка при сохранении: {str(e)}", status=400)
+
+    return HttpResponse(status=405)
+
+
+
+def edit_nom_row(request, pk):
+    '''Загрузка формы редактирования номенклатуры с данными'''
+    nom = get_object_or_404(Nom, pk=pk)
+    category_list = Category.objects.all().order_by('title')
+    izm_list = Izm.objects.all().order_by('title')
+
+
+    return render(request, 'inventory/modals/edit_nom_content.html', {
+        'item': nom,
+        'category_list': category_list,
+        'izm_list': izm_list
+    })
+
+
+def update_nom_row(request):
+    '''Обновление номенклатуры'''
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id')
+        title = request.POST.get('title', '').strip()
+        izm_id = request.POST.get('izm_id')
+        category_id = request.POST.get('category_id')
+
+        if not title:
+            return HttpResponse("❌ Название объекта не может быть пустым", status=400)
+
+        if not izm_id:
+            return HttpResponse("❌ Выберите единицу измерения", status=400)
+        if not category_id:
+            return HttpResponse("❌ Выберите категорию", status=400)
+
+        try:
+            nom = Nom.objects.get(id=item_id)
+            izm = Izm.objects.get(id=izm_id)
+            category=Category.objects.get(id=category_id)
+
+            # Проверка на дубликат (исключая текущую запись)
+            if Nom.objects.filter(title=title).exclude(id=item_id).exists():
+                return HttpResponse("❌ Номенклатура с таким названием уже существует", status=400)
+
+            nom.title = title
+            nom.izm = izm
+            nom.category=category
+            nom.save()
+
+            html = render_to_string('inventory/partials/spr_row.html', {
+                'item': nom,
+                'section': 'nom'
+            })
+            return HttpResponse(html)
+
+        except Nom.DoesNotExist:
+            return HttpResponse("❌ Номенклатура не найдена", status=404)
+        except Izm.DoesNotExist:
+            return HttpResponse("❌ Единица измерения не найдено", status=400)
         except Exception as e:
             return HttpResponse(f"❌ Ошибка: {str(e)}", status=400)
 

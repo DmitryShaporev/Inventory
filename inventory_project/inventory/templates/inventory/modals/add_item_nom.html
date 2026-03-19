@@ -1,0 +1,111 @@
+<div class="modal fade" id="addNomModal" tabindex="-1" aria-labelledby="addNomModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNomModalLabel">Добавление номенклатуры</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form hx-post="{% url 'add_nom_row' %}"
+                  hx-target="#search-results-tbody"
+                  hx-swap="afterbegin"
+                  hx-on::after-request="
+                      if(event.detail.successful) {
+                          this.reset();
+                          bootstrap.Modal.getInstance(document.getElementById('addNomModal')).hide();
+                      } else {
+                          document.getElementById('nom-error-message').innerHTML = event.detail.xhr.response;
+                          document.getElementById('nom-error-message').style.display = 'block';
+                      }">
+
+                {% csrf_token %}
+
+                <div class="modal-body">
+                    <div id="nom-error-message" class="alert alert-danger" style="display: none;"></div>
+
+                    <!-- Наименование -->
+                    <div class="mb-3">
+                        <label for="nomName" class="form-label text-success">Наименование</label>
+                        <input type="text"
+                               class="form-control"
+                               name="title"
+                               id="nomName"
+                               placeholder="Введите наименование"
+                               required
+                               oninput="document.getElementById('nom-error-message').style.display='none'">
+                    </div>
+
+                    <!-- Единица измерения -->
+                    <div class="mb-3">
+                        <label for="izmSelect" class="form-label text-success">Единица измерения</label>
+                        <select class="form-select"
+                                name="izm_id"
+                                id="izmSelect"
+                                required>
+                            <option value="" selected disabled>Выберите единицу измерения</option>
+                            {% for izm in izm_list %}
+                                <option value="{{ izm.id }}">{{ izm.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Категория -->
+                    <div class="mb-3">
+                        <label for="categorySelect" class="form-label text-success">Категория</label>
+                        <select class="form-select"
+                                name="category_id"
+                                id="categorySelect"
+                                required>
+                            <option value="" selected disabled>Выберите категорию</option>
+                            {% for category in category_list %}
+                                <option value="{{ category.id }}">{{ category.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>  <!-- Закрытие modal-body -->
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-success">Сохранить</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Сброс при открытии
+document.getElementById('addNomModal').addEventListener('show.bs.modal', function () {
+    // Сбрасываем все select'ы на первое значение
+    const izmSelect = document.getElementById('izmSelect');
+    if (izmSelect) {
+        izmSelect.selectedIndex = 0;
+    }
+
+    const categorySelect = document.getElementById('categorySelect');
+    if (categorySelect) {
+        categorySelect.selectedIndex = 0;
+    }
+});
+
+// Сброс при закрытии
+document.getElementById('addNomModal').addEventListener('hidden.bs.modal', function () {
+    const form = this.querySelector('form');
+    form.reset();  // сброс всех полей
+
+    // Явно сбрасываем select'ы
+    const izmSelect = document.getElementById('izmSelect');
+    if (izmSelect) {
+        izmSelect.selectedIndex = 0;
+    }
+
+    const categorySelect = document.getElementById('categorySelect');
+    if (categorySelect) {
+        categorySelect.selectedIndex = 0;
+    }
+
+    // Прячем ошибку
+    document.getElementById('nom-error-message').style.display = 'none';
+});
+</script>

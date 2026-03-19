@@ -1,11 +1,20 @@
 <!-- partials/spr_row.html -->
 <tr id="row-{{ section }}-{{ item.id }}">
-    <td style="cursor: pointer;"
+    <td style="cursor: pointer;
+               border-bottom: 1px solid #dee2e6;
+               border-left: 1px solid #dee2e6;
+               border-right: 1px solid #dee2e6;
+               padding: 8px 8px;"
         {% if section == 'obkt' %}
             hx-get="{% url 'edit_obkt_row' item.id %}"
             hx-target="#obkt-modal-content"
             data-bs-toggle="modal"
             data-bs-target="#editObktModal"
+        {% elif section == 'nom' %}
+            hx-get="{% url 'edit_nom_row' item.id %}"
+            hx-target="#nom-modal-content"
+            data-bs-toggle="modal"
+            data-bs-target="#editNomModal"
         {% else %}
             hx-get="{% url 'edit_spr_row' section item.id %}"
             hx-target="#modal-content"
@@ -16,18 +25,40 @@
     </td>
 
     {% if section == 'obkt' %}
-        <td class="text-center">{{ item.idpodraz.title }}</td>
+        <td class="text-center"
+            style="border-bottom: 1px solid #dee2e6;
+                   border-left: 1px solid #dee2e6;
+                   border-right: 1px solid #dee2e6;
+                   padding: 8px 8px;">
+            {{ item.idpodraz.title }}
+        </td>
     {% endif %}
 
     {% if section == 'nom' %}
-        <td class="text-center">{{ item.izm.title }}</td>
-        <td class="text-center">{{ item.category.title }}</td>
+        <td class="text-center"
+            style="border-bottom: 1px solid #dee2e6;
+                   border-left: 1px solid #dee2e6;
+                   border-right: 1px solid #dee2e6;
+                   padding: 8px 8px;">
+            {{ item.izm.title }}
+        </td>
+        <td class="text-center"
+            style="border-bottom: 1px solid #dee2e6;
+                   border-left: 1px solid #dee2e6;
+                   border-right: 1px solid #dee2e6;
+                   padding: 8px 8px;">
+            {{ item.category.title }}
+        </td>
     {% endif %}
 
-    <td class="text-center">
+    <td class="text-center"
+        style="border-bottom: 1px solid #dee2e6;
+               border-left: 1px solid #dee2e6;
+               border-right: 1px solid #dee2e6;
+               padding: 8px 8px;">
         <span style="cursor: pointer; color: #dc3545;"
               hx-delete="{% url 'delete_spr_row' section item.id %}"
-              hx-confirm="Удалить запись?"
+              hx-confirm="Удалить запись «{{ item.title }}»?"
               hx-target="#row-{{ section }}-{{ item.id }}"
               hx-swap="outerHTML">
             ✕

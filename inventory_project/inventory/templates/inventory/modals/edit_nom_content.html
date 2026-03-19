@@ -1,0 +1,79 @@
+<form hx-post="{% url 'update_nom_row' %}"
+      hx-target="#row-nom-{{ item.id }}"
+      hx-swap="outerHTML"
+      hx-on::after-request="
+          if(event.detail.successful) {
+              bootstrap.Modal.getInstance(document.getElementById('editNomModal')).hide();  // ИСПРАВЛЕНО
+          } else {
+              document.getElementById('nom-edit-error').innerHTML = event.detail.xhr.response;  // ИСПРАВЛЕНО
+              document.getElementById('nom-edit-error').style.display = 'block';
+          }">
+
+    {% csrf_token %}
+    <input type="hidden" name="item_id" value="{{ item.id }}">
+
+    <div class="modal-body">
+        <div id="nom-edit-error" class="alert alert-danger" style="display: none;"></div>  <!-- id изменен с obkt-edit-error -->
+
+        <div class="mb-3">
+            <label for="editNomName" class="form-label">Наименование номенклатуры</label>
+            <input type="text"
+                   class="form-control text-primary"
+                   name="title"
+                   id="editNomName"
+                   value="{{ item.title }}"
+                   placeholder="Введите наименование"
+                   required
+                   oninput="document.getElementById('nom-edit-error').style.display='none'">  <!-- ИСПРАВЛЕНО -->
+        </div>
+
+        <div class="mb-3">
+            <label for="editIzmSelect" class="form-label">Единица измерения</label>
+            <select class="form-select text-primary"
+                    name="izm_id"
+                    id="editIzmSelect"
+                    required>
+                <option value="" disabled>Выберите единицу измерения</option>
+                {% for izm in izm_list %}
+                    <option value="{{ izm.id }}"
+                        {% if izm.id == item.izm.id %}selected{% endif %}>
+                        {{ izm.title }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="editCategorySelect" class="form-label">Категория</label>  <!-- id изменен для единообразия -->
+            <select class="form-select text-primary"
+                    name="category_id"
+                    id="editCategorySelect"
+                    required>
+                <option value="" disabled>Выберите категорию</option>
+                {% for category in category_list %}
+                    <option value="{{ category.id }}"
+                        {% if category.id == item.category.id %}selected{% endif %}>
+                        {{ category.title }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-success">Обновить</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+    </div>
+</form>
+
+<script>
+// Сброс ошибки при изменении полей
+document.getElementById('editNomName').addEventListener('input', function() {
+    document.getElementById('nom-edit-error').style.display = 'none';
+});
+
+// Сброс при закрытии модального окна
+document.getElementById('editNomModal').addEventListener('hidden.bs.modal', function () {
+    document.getElementById('nom-edit-error').style.display = 'none';
+});
+</script>

@@ -1,0 +1,33 @@
+<div class="modal fade" id="editNomModal" tabindex="-1" aria-labelledby="editNomModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" id="editNomModalLabel">Редактирование номенклатуры</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="nom-modal-content">
+                <!-- Сюда загрузится форма из edit_obkt_content.html -->
+                <div class="text-center p-4">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Очищаем контент при закрытии модального окна
+document.getElementById('editNomModal').addEventListener('hidden.bs.modal', function () {
+    // Возвращаем спиннер в контент
+    document.getElementById('nom-modal-content').innerHTML = `
+        <div class="text-center p-4">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Загрузка...</span>
+            </div>
+        </div>
+    `;
+});
+</script>
