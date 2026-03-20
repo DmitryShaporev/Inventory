@@ -23,5 +23,6 @@ path('menu/spr/<str:section>/', spr_views.spr, name='spr'),
     path('nom/edit/<int:pk>', spr_views.edit_nom_row, name='edit_nom_row'),
     path('nom/update/', spr_views.update_nom_row, name='update_nom_row'),
 
+    path('search/', doc_views.search_doc, name='search_doc'),
 
 ]

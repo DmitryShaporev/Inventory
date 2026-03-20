@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from unicodedata import category
 
+from django.db.models.deletion import ProtectedError
+from django.http import HttpResponse
 from ..models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom
 
 # Create your views here.
@@ -34,7 +35,7 @@ def spr(request, section):
         izm_list = Izm.objects.all().order_by('title')  # Получаем все единицы измерения
         return render(request, 'inventory/comon_spr.html', {
             'data': data,
-            'title': 'Объекты',
+            'title': 'Номенклатура',
             'section': section,
             'category_list': category_list,
             'izm_list': izm_list
@@ -114,8 +115,7 @@ def search_spr(request, section):
     return HttpResponse(html)
 
 
-from django.db.models.deletion import ProtectedError
-from django.http import HttpResponse
+
 
 
 def delete_spr_row(request, section, pk):

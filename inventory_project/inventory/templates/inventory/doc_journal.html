@@ -1,0 +1,58 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <!-- Подключаем внешний CSS файл -->
+    <link rel="stylesheet" href="{% static 'css/comon_spr.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-2"></div>
+
+    <div class="col-md-8 mt-4">
+        <!-- Заголовок и блок с поиском + кнопка -->
+        <div class="d-flex justify-content-between align-items-start mb-0">
+            <h5 id='spr_title' class="mb-0">{{title}}</h5>
+
+            <!-- Контейнер для поиска и кнопки -->
+            <div class="d-flex">
+                <input type="text"
+                       class="form-control form-control-sm"
+                       placeholder="Поиск"
+                       style="width: 400px;"
+                       name="search"
+                       hx-get="{% url 'search_doc'  %}"
+                       hx-trigger="keyup changed delay:300ms"
+                       hx-target="#search-results"
+                       hx-indicator="#spinner">
+
+                <button type="button"
+                        class="btn btn-outline-success btn-sm ms-2 px-3"
+                        style="height: 31px;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addIncomeDoc">
+
+                    Добавить
+                </button>
+            </div>
+        </div>
+
+        <!-- Индикатор загрузки -->
+        <div id="spinner" class="htmx-indicator text-center py-2 text-secondary" style="margin-top: -10px;">
+            <span>Подождите, ищем...</span>
+        </div>
+
+        <!-- Таблица с результатами поиска -->
+        <div id="search-results"
+             style="max-height: 78vh; overflow-y: auto; overflow-x: hidden; border: 1px solid #dee2e6; margin-bottom: 20px;">
+            {% include 'inventory/partials/doc_table.html' %}
+        </div>
+    </div>
+
+    <div class="col-md-2"></div>
+</div>
+
+<!-- Модальные окна -->
+
+{% endblock %}

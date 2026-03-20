@@ -1,0 +1,89 @@
+<table class="table table-bordered table-striped mb-0">
+    <thead class="table-light">
+        <tr>
+            <th>Номер</th>
+            <th>Дата</th>
+            {% if section == 'incom' %}
+            <th class="text-center">Поставщик</th>
+            {% endif %}
+
+            {% if section == 'move' %}
+            <th class="text-center">Подотчет</th>
+            <th class="text-center">Подразделение</th>
+            <th class="text-center">Объект</th>
+            {% endif %}
+
+            {% if section == 'ret' %}
+            <th class="text-center">Подотчет</th>
+            <th class="text-center">Подразделение</th>
+            <th class="text-center">Объект</th>
+            {% endif %}
+
+
+            <th class="text-center">Сумма</th>
+            <th style="width: 60px" class="text-center"></th>
+        </tr>
+    </thead>
+    <tbody id="search-results-tbody">
+        {% for item in data %}
+        <tr id="row-{{ section }}-{{ item.id }}">
+            <td style="cursor: pointer;"
+                hx-get=""
+                hx-target="#obkt-modal-content"
+                data-bs-toggle="modal"
+                data-bs-target="#editObktModal">
+                {{ item.nomer }}
+            </td>
+
+            <td class="text-center">
+                {{ item.datadoc|date:"d.m.Y" }}
+            </td>
+
+            {% if section == 'incom' %}
+            <td class="text-center">
+                {{ item.postav.title }}
+            </td>
+
+            {% endif %}
+
+            {% if section == 'move' %}
+            <td class="text-center">
+                {{ item.fio.title }}
+            </td>
+            <td class="text-center">
+                {{ item.obct.idpodraz.title }}
+            </td>
+            <td class="text-center">
+                {{ item.obct.title }}
+            </td>
+            {% endif %}
+
+            {% if section == 'ret' %}
+            <td class="text-center">
+                {{ item.fio.title }}
+            </td>
+            <td class="text-center">
+                {{ item.obct.idpodraz.title }}
+            </td>
+            <td class="text-center">
+                {{ item.obct.title }}
+            </td>
+            {% endif %}
+
+            <td class="text-center">
+                {{ item.total|default:"0.00" }}
+            </td>
+
+            <td class="text-center">
+                <span style="cursor: pointer; color: #dc3545;"
+                      hx-delete=""
+                      hx-target="#row-{{ section }}-{{ item.id }}"
+                      hx-swap="outerHTML"
+                      hx-confirm="Удалить запись «{{ item.title }}»?">
+                    ✕
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
