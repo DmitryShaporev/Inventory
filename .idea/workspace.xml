@@ -4,8 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Начата работа с документами">
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Эмодзи:))">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/create_doc_inc.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/postav_choice_modal.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/search.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,7 +255,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773996281064</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Эмодзи:))">
+      <option name="closed" value="true" />
+      <created>1773997037783</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1773997037783</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -276,6 +293,7 @@
     <MESSAGE value="Отдельный css в справочниках" />
     <MESSAGE value="Закончил со справочниками!" />
     <MESSAGE value="Начата работа с документами" />
-    <option name="LAST_COMMIT_MESSAGE" value="Начата работа с документами" />
+    <MESSAGE value="Эмодзи:))" />
+    <option name="LAST_COMMIT_MESSAGE" value="Эмодзи:))" />
   </component>
 </project>

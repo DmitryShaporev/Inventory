@@ -1,0 +1,53 @@
+<div class="modal fade" id="postavChoiceModal" tabindex="-1" aria-labelledby="postavModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="postavModalLabel">Выбор поставщика</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Поиск -->
+                <input type="text"
+                       class="form-control mb-3"
+                       placeholder="Поиск поставщика..."
+                       id="postavSearch"
+                       onkeyup="filterPostav()">
+
+                <!-- Список поставщиков -->
+                <div id="postavList" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-hover table-striped table-bordered">
+                        <tbody>
+                            {% for postav in postav_list %}
+                            <tr style="cursor: pointer;"
+                                onclick="selectPostav({{ postav.id }}, '{{ postav.title|escapejs }}')">
+                                <td>{{ postav.title }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="text-center py-3">Нет поставщиков</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterPostav() {
+    const searchText = document.getElementById('postavSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#postavList tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchText) ? '' : 'none';
+    });
+}
+</script>

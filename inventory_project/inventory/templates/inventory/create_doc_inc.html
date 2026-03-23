@@ -1,0 +1,92 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/comon_spr.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12">
+            <h4 class="mb-3">Приходный документ</h4>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <!-- Номер документа -->
+                        <div class="col-md-3">
+                            <label class="form-label">Номер</label>
+                            <input type="text"
+                                   class="form-control"
+                                   name="nomer"
+                                   placeholder="Введите номер документа"
+                                   autofocus>
+                        </div>
+
+                        <!-- Дата документа -->
+                        <div class="col-md-3">
+                            <label class="form-label">Дата</label>
+                            <input type="date"
+                                   class="form-control"
+                                   name="datadoc"
+                                   value="{{ today|date:'Y-m-d' }}">
+                        </div>
+
+                        <!-- Поставщик (с кнопкой выбора) -->
+                        <div class="col-md-6">
+                            <label class="form-label">Поставщик</label>
+                            <div class="d-flex">
+                                <input type="text"
+                                       class="form-control"
+                                       id="postav_display"
+                                       readonly
+                                       placeholder="Выберите поставщика">
+                                <input type="hidden" name="postav_id" id="postav_id">
+                                <button type="button"
+        class="btn btn-outline-primary ms-2"
+        data-bs-toggle="modal"
+        data-bs-target="#postavChoiceModal">
+    Выбрать
+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Здесь будет таблица с товарами -->
+            <div class="card mt-3">
+                <div class="card-header d-flex justify-content-between">
+                    <span>Спецификация</span>
+                    <button class="btn btn-sm btn-success">+ Добавить строку</button>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted text-center">Нет добавленных товаров</p>
+                </div>
+            </div>
+
+            <!-- Кнопки действий -->
+            <div class="mt-3 text-end">
+                <button class="btn btn-success">Сохранить документ</button>
+                <a href="{% url 'docs' 'incom' %}" class="btn btn-outline-secondary">Отмена</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно выбора поставщика -->
+{% include 'inventory/modals/postav_choice_modal.html' %}
+
+<script>
+function openPostavModal() {
+    $('#postavChoiceModal').modal('show');
+}
+
+function selectPostav(id, title) {
+    document.getElementById('postav_display').value = title;
+    document.getElementById('postav_id').value = id;
+    $('#postavChoiceModal').modal('hide');
+}
+</script>
+{% endblock %}

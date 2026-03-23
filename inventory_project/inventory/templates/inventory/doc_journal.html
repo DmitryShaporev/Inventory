@@ -13,28 +13,28 @@
     <div class="col-md-8 mt-4">
         <!-- Заголовок и блок с поиском + кнопка -->
         <div class="d-flex justify-content-between align-items-start mb-0">
-            <h5 id='spr_title' class="mb-0">{{title}}</h5>
+            <h5 id='spr_title' class="mb-0">{{title}}{{section}}</h5>
 
             <!-- Контейнер для поиска и кнопки -->
             <div class="d-flex">
+                <input type="text" class="form-control global-search" placeholder="Поиск...">
                 <input type="text"
                        class="form-control form-control-sm"
                        placeholder="Поиск"
                        style="width: 400px;"
                        name="search"
-                       hx-get="{% url 'search_doc'  %}"
+                       hx-get="{% url 'search_doc' %}?section={{ section }}"
                        hx-trigger="keyup changed delay:300ms"
                        hx-target="#search-results"
                        hx-indicator="#spinner">
 
-                <button type="button"
+                <a href="/create_doc_inc" type="button"
                         class="btn btn-outline-success btn-sm ms-2 px-3"
                         style="height: 31px;"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addIncomeDoc">
+                        >
 
-                    Добавить
-                </button>
+                    Создать документ
+                </a>
             </div>
         </div>
 

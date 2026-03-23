@@ -115,23 +115,48 @@ class Fio(models.Model):
 
 
 class Doc(models.Model):
-    nomer = models.CharField('Номер',max_length=50)
-    # datadoc = models.CharField('Дата',max_length=50)
-    postav = models.ForeignKey(Postav, on_delete=models.PROTECT,verbose_name='Поставщик',blank=True,null=True,db_index=True)
-    obct = models.ForeignKey(Obct, on_delete=models.PROTECT, blank=True, null=True,verbose_name='Объект',db_index=True)
-    fio = models.ForeignKey(Fio, on_delete=models.PROTECT,verbose_name='Подотчет',blank=True,null=True,db_index=True)
-    oper = models.IntegerField('Операция',db_index=True)
+    nomer = models.CharField('Номер', max_length=50, db_index=True)  # ← Добавил индекс
+
+    postav = models.ForeignKey(
+        Postav,
+        on_delete=models.PROTECT,
+        verbose_name='Поставщик',
+        blank=True,
+        null=True,
+        db_index=True
+    )
+    obct = models.ForeignKey(
+        Obct,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        verbose_name='Объект',
+        db_index=True
+    )
+    fio = models.ForeignKey(
+        Fio,
+        on_delete=models.PROTECT,
+        verbose_name='Подотчет',
+        blank=True,
+        null=True,
+        db_index=True
+    )
+    oper = models.IntegerField('Операция', db_index=True)
     update_date = models.DateTimeField(blank=True, null=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,verbose_name='Итого')  # Числовое поле
+    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name='Итого')
     datadoc = models.DateField(db_index=True)
+
     def __str__(self):
         return f"Документ №{self.nomer} от {self.datadoc}"
 
     class Meta:
-
         db_table = 'doc'
         verbose_name = 'Документ'
         verbose_name_plural = 'Документы'
+        indexes = [
+            models.Index(fields=['datadoc', 'oper']),  # Составной индекс для фильтрации
+            models.Index(fields=['nomer']),
+        ]
 
 
 class Detail(models.Model):
@@ -141,7 +166,8 @@ class Detail(models.Model):
         db_column='id_doc',
         blank=True,
         null=True,
-        related_name='details'
+        related_name='details',
+        db_index=True  # ← Добавил индекс
     )
     id_nom = models.ForeignKey(
         Nom,
@@ -149,14 +175,14 @@ class Detail(models.Model):
         db_column='id_nom',
         blank=True,
         null=True,
-        verbose_name='Наименование'
+        verbose_name='Наименование',
+        db_index=True  # ← Добавил индекс
     )
     kolvo = models.DecimalField('Количество', max_digits=12, decimal_places=4)
     price = models.DecimalField('Цена', max_digits=10, decimal_places=2)
     cost = models.DecimalField('Стоимость', max_digits=10, decimal_places=2)
     oper = models.IntegerField('Тип документа', blank=True, null=True)
 
-    # Новые поля для НДС
     vat_rate = models.DecimalField(
         'Ставка НДС, %',
         max_digits=5,
@@ -186,14 +212,14 @@ class Detail(models.Model):
     def __str__(self):
         return f"{self.id_nom} - {self.kolvo} x {self.price}"
 
-
     class Meta:
-
         db_table = 'detail'
         verbose_name = 'Табличная часть документа'
         verbose_name_plural = 'Табличная часть документов'
-
-
+        indexes = [
+            models.Index(fields=['id_doc']),  # Для связей
+            models.Index(fields=['id_nom']),  # Для поиска по товарам
+        ]
 
 class Spis(models.Model):
     title = models.CharField(max_length=100, unique=True,blank=False)
