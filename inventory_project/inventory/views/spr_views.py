@@ -68,51 +68,6 @@ def spr(request, section):
 
 
 
-def search_spr(request, section):
-    """Поиск по справочнику"""
-    search_query = request.GET.get('search', '')
-
-    # Словарь моделей
-    tables = {
-        'izm': [Izm, 'Единицы измерения'],
-        'fio': [Fio, "Подотчетные лица"],
-        'podraz': [Podraz, "Подразделения"],
-        'postav': [Postav, "Поставщики"],
-        'spis': [Spis, "Списание"],
-        'kat': [Category, "Категории ТМЦ"],
-        'obkt': [Obct, "Объекты"],
-        'nom': [Nom, "Номенклатура"],
-    }
-
-    if section in tables:
-        model, title = tables[section]
-
-        # Базовый запрос
-        if section == 'nom':
-            queryset = model.objects.select_related('category', 'izm').all()
-        elif section == 'obkt':
-            queryset = model.objects.select_related('idpodraz').all()
-        else:
-            queryset = model.objects.all()
-
-        # Фильтрация по полю title (или name - зависит от модели)
-        if search_query:
-
-            data = queryset.filter(title__icontains=search_query)
-
-        else:
-            data = queryset
-
-        # Сортируем
-        data = data.order_by('title')
-    else:
-        data = []
-
-    html = render_to_string('inventory/partials/spr_table.html', {
-        'data': data,
-        'section': section
-    })
-    return HttpResponse(html)
 
 
 

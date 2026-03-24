@@ -6,11 +6,11 @@ urlpatterns = [
     path('', base_views.index, name='index'),  # Главная страница с картинкой:)
 
     path('menu/<str:section>/', base_views.menu, name='menu'),  # Страница меню
-path('menu/spr/<str:section>/', spr_views.spr, name='spr'),
+    path('menu/spr/<str:section>/', spr_views.spr, name='spr'),
     path('menu/docs/<str:section>/', doc_views.docs, name='docs'),        # Добавь
     path('menu/reports/<str:section>/', report_views.reports, name='reports'), #
 
-    path('search/<str:section>/', spr_views.search_spr, name='search_spr'),  # поиск по справочнику
+
     path('spr/<str:section>/edit/<int:pk>', spr_views.edit_spr_row, name='edit_spr_row'), # Вызывает модальное окно для редактирования
     path('spr/<str:section>/<int:pk>/update/', spr_views.update_spr_row, name='update_spr_row'), # Сохраняет изменения в строке справочника
     path('spr/<str:section>/<int:pk>/delete/', spr_views.delete_spr_row, name='delete_spr_row'),
@@ -23,7 +23,7 @@ path('menu/spr/<str:section>/', spr_views.spr, name='spr'),
     path('nom/edit/<int:pk>', spr_views.edit_nom_row, name='edit_nom_row'),
     path('nom/update/', spr_views.update_nom_row, name='update_nom_row'),
 
-    path('search/', doc_views.search_doc, name='search_doc'),
+
     path('create_doc_inc/', doc_views.create_doc_inc, name='create_doc_inc')
 
 
