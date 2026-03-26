@@ -34,8 +34,14 @@ def docs(request, section):
 
 
 def create_doc_inc(request):
-    postav_list=Postav.objects.all()
+    postav_list=Postav.objects.all().order_by('title')
+    nom_list=Nom.objects.select_related('izm').order_by('title')
+    izm_list=Izm.objects.all()
+    category_list=Category.objects.all()
     content={
-        'postav_list':postav_list
+        'postav_list':postav_list,
+        'nom_list':nom_list,
+        'category_list':category_list,
+        'izm_list':izm_list
     }
     return render(request,'inventory/create_doc_inc.html',context=content)

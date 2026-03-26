@@ -1,8 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 from django.db.models.deletion import ProtectedError
 from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+
 from ..models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom
 
 # Create your views here.
@@ -407,3 +411,63 @@ def update_nom_row(request):
             return HttpResponse(f"❌ Ошибка: {str(e)}", status=400)
 
     return HttpResponse(status=405)
+
+
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+import json
+
+
+@csrf_exempt
+@require_POST
+def add_nom_ajax(request):
+    """Добавление новой номенклатуры через AJAX"""
+    print("=== add_nom_ajax вызван ===")
+
+    try:
+        # Пробуем получить данные из POST
+        title = request.POST.get('title', '').strip()
+        izm_id = request.POST.get('izm_id')
+        category_id = request.POST.get('category_id')
+
+        print(f"title: {title}, izm_id: {izm_id}, category_id: {category_id}")
+
+        # Валидация
+        if not title:
+            return JsonResponse({'error': 'Введите наименование'}, status=400)
+        if not izm_id:
+            return JsonResponse({'error': 'Выберите единицу измерения'}, status=400)
+        if not category_id:
+            return JsonResponse({'error': 'Выберите категорию'}, status=400)
+
+        # Проверяем существование
+        if Nom.objects.filter(title=title).exists():
+            return JsonResponse({'error': 'Товар с таким названием уже существует'}, status=400)
+
+        # Создаем
+        izm = Izm.objects.get(id=izm_id)
+        category = Category.objects.get(id=category_id)
+
+        new_nom = Nom.objects.create(
+            title=title,
+            izm=izm,
+            category=category
+        )
+
+        print(f"Создан: {new_nom.id} - {new_nom.title}")
+
+        return JsonResponse({
+            'status': 'ok',
+            'id': new_nom.id,
+            'title': new_nom.title,
+            'izm': new_nom.izm.title
+        })
+
+    except Izm.DoesNotExist:
+        return JsonResponse({'error': 'Единица измерения не найдена'}, status=400)
+    except Category.DoesNotExist:
+        return JsonResponse({'error': 'Категория не найдена'}, status=400)
+    except Exception as e:
+        print(f"Ошибка: {e}")
+        return JsonResponse({'error': str(e)}, status=400)

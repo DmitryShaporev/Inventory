@@ -1,0 +1,189 @@
+<div class="modal fade" id="nomChoiceModal" tabindex="-1" aria-labelledby="nomModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nomModalLabel">Выбор номенклатуры</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Поиск -->
+                <div class="mb-3">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="🔍 Поиск товаров..."
+                           id="nomSearch"
+                           onkeyup="filterNom()">
+                </div>
+
+                <!-- Список номенклатуры -->
+                <div id="nomList" style="max-height: 350px; overflow-y: auto;">
+                    <table class="table table-hover table-striped table-bordered">
+                        <thead>
+                             <tr>
+                                <th>Наименование</th>
+                                <th style="width: 80px">Ед.изм.</th>
+                             </tr>
+                        </thead>
+                        <tbody id="nomTableBody">
+                            {% for nom in nom_list %}
+                            <tr style="cursor: pointer;"
+                                onclick="selectExistingNom({{ nom.id }}, '{{ nom.title|escapejs }}', '{{ nom.izm.title|escapejs }}')">
+                                <td>{{ nom.title }}</td>
+                                <td class="text-center">{{ nom.izm.title }}</td>
+                             </tr>
+                            {% empty %}
+                            <tr id="no-nom-row">
+                                <td colspan="2" class="text-center py-3 text-muted">Нет номенклатуры</td>
+                             </tr>
+                            {% endfor %}
+                        </tbody>
+                     </table>
+                </div>
+
+                <!-- Кнопка добавления нового товара -->
+                <div class="mt-3 pt-2 border-top">
+                    <button type="button" class="btn btn-outline-success w-100"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addNomModal"
+                            onclick="$('#nomChoiceModal').modal('hide')">
+                        + Добавить новый товар
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модалка для добавления нового товара -->
+<div class="modal fade" id="addNomModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Новый товар</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Наименование</label>
+                    <input type="text" class="form-control" id="newNomName" placeholder="Введите наименование">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Единица измерения</label>
+                    <select class="form-select" id="newNomIzm">
+                        <option value="">-- Выберите единицу измерения --</option>
+                        {% for izm in izm_list %}
+                            <option value="{{ izm.id }}">{{ izm.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Категория</label>
+                    <select class="form-select" id="newNomCategory">
+                        <option value="">-- Выберите категорию --</option>
+                        {% for cat in category_list %}
+                            <option value="{{ cat.id }}">{{ cat.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-success" id="saveNewNomBtn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+console.log('Скрипт загружен');
+console.log('jQuery:', typeof $);
+
+// Функции поиска и выбора
+function filterNom() {
+    const searchText = document.getElementById('nomSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#nomTableBody tr');
+    rows.forEach(row => {
+        if (row.id === 'no-nom-row') return;
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchText) ? '' : 'none';
+    });
+}
+
+function selectExistingNom(id, title, izm) {
+    console.log('Выбран товар:', id, title, izm);
+    if (window.selectNom) {
+        window.selectNom(id, title, izm);
+    }
+    $('#nomChoiceModal').modal('hide');
+}
+
+// Ждем загрузки DOM
+$(document).ready(function() {
+    console.log('DOM готов');
+
+    // Находим кнопку
+    const $saveBtn = $('#saveNewNomBtn');
+    console.log('Кнопка Сохранить найдена:', $saveBtn.length);
+
+    // Обработчик кнопки
+    $saveBtn.on('click', function() {
+        console.log('🔴 Кнопка Сохранить НАЖАТА!');
+
+        const name = $('#newNomName').val().trim();
+        const izmId = $('#newNomIzm').val();
+        const categoryId = $('#newNomCategory').val();
+
+        console.log('Данные:', {name, izmId, categoryId});
+
+        if (!name) {
+            alert('Введите наименование товара');
+            $('#newNomName').focus();
+            return;
+        }
+        if (!izmId) {
+            alert('Выберите единицу измерения');
+            return;
+        }
+        if (!categoryId) {
+            alert('Выберите категорию');
+            return;
+        }
+
+        // Отправляем на сервер
+        $.ajax({
+            url: '/nom/add-ajax/',
+            method: 'POST',
+            data: {
+                title: name,
+                izm_id: izmId,
+                category_id: categoryId,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                console.log('Успех:', response);
+                if (response.status === 'ok') {
+                    if (window.selectNom) {
+                        window.selectNom(response.id, response.title, response.izm);
+                    }
+                    $('#addNomModal').modal('hide');
+                    $('#newNomName').val('');
+                    $('#newNomIzm').val('');
+                    $('#newNomCategory').val('');
+                } else {
+                    alert(response.error || 'Ошибка при сохранении');
+                }
+            },
+            error: function(xhr) {
+                console.error('Ошибка AJAX:', xhr);
+                alert('Ошибка: ' + xhr.responseText);
+            }
+        });
+    });
+});
+</script>

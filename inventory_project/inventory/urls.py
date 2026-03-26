@@ -24,7 +24,7 @@ urlpatterns = [
     path('nom/update/', spr_views.update_nom_row, name='update_nom_row'),
 
 
-    path('create_doc_inc/', doc_views.create_doc_inc, name='create_doc_inc')
-
+    path('create_doc_inc/', doc_views.create_doc_inc, name='create_doc_inc'),
+    path('nom/add-ajax/', spr_views.add_nom_ajax, name='add_nom_ajax'),
 
 ]
