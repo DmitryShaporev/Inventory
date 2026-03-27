@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body bg-warning bg-opacity-25">
                 <!-- Поиск -->
                 <div class="mb-3">
                     <input type="text"
@@ -44,7 +44,7 @@
 
                 <!-- Кнопка добавления нового товара -->
                 <div class="mt-3 pt-2 border-top">
-                    <button type="button" class="btn btn-outline-success w-100"
+                    <button type="button" class="btn btn-warning w-100"
                             data-bs-toggle="modal"
                             data-bs-target="#addNomModal"
                             onclick="$('#nomChoiceModal').modal('hide')">
@@ -68,7 +68,7 @@
                 <h5 class="modal-title">Новый товар</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body bg-warning bg-opacity-25">
                 <div class="mb-3">
                     <label class="form-label">Наименование</label>
                     <input type="text" class="form-control" id="newNomName" placeholder="Введите наименование">
@@ -93,8 +93,9 @@
                 </div>
             </div>
             <div class="modal-footer">
+
+                <button type="button" class="btn btn-warning" id="saveNewNomBtn">Сохранить</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-success" id="saveNewNomBtn">Сохранить</button>
             </div>
         </div>
     </div>

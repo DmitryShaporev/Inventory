@@ -1,27 +1,27 @@
-<table class="table table-bordered table-striped mb-0">
+<table class="table table-bordered table-striped  mb-0">
     <thead class="table-light">
         <tr>
-            <th>Номер</th>
-            <th>Дата</th>
+            <th class="bg-warning bg-opacity-25">Номер</th>
+            <th class="bg-warning bg-opacity-25">Дата</th>
             {% if section == 'incom' %}
-            <th class="text-center">Поставщик</th>
+            <th class="text-center bg-warning bg-opacity-25">Поставщик</th>
             {% endif %}
 
             {% if section == 'move' %}
-            <th class="text-center">Подотчет</th>
-            <th class="text-center">Подразделение</th>
-            <th class="text-center">Объект</th>
+            <th class="text-center bg-warning bg-opacity-25">Подотчет</th>
+            <th class="text-center bg-warning bg-opacity-25">Подразделение</th>
+            <th class="text-center bg-warning bg-opacity-25">Объект</th>
             {% endif %}
 
             {% if section == 'ret' %}
-            <th class="text-center">Подотчет</th>
-            <th class="text-center">Подразделение</th>
-            <th class="text-center">Объект</th>
+            <th class="text-center bg-warning bg-opacity-25">Подотчет</th>
+            <th class="text-center bg-warning bg-opacity-25">Подразделение</th>
+            <th class="text-center bg-warning bg-opacity-25">Объект</th>
             {% endif %}
 
 
-            <th class="text-center">Сумма</th>
-            <th style="width: 60px" class="text-center"></th>
+            <th class="text-center bg-warning bg-opacity-25">Сумма</th>
+            <th style="width: 60px" class="text-center bg-warning bg-opacity-25"></th>
         </tr>
     </thead>
     <tbody id="search-results-tbody">
