@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from .models import (
     Izm, Category, Nom, Podraz, Obct, Postav,
-    Fio, Doc, Detail,  Spis
+    Fio, Doc, Detail,  Spis, Manage
 )
 
 # Простая регистрация (базовый вид)
@@ -15,7 +15,7 @@ admin.site.register(Podraz)
 admin.site.register(Postav)
 admin.site.register(Fio)
 admin.site.register(Spis)
-# admin.site.register(Akt)
+
 
 # Для Doc и Detail сделаем более красивое отображение
 class DetailInline(admin.TabularInline):
@@ -67,3 +67,7 @@ class NomAdmin(admin.ModelAdmin):
     search_fields = ['title','category']  # Поиск по названию объекта
     list_filter = ['category']  # Фильтр по подразделению
 
+@admin.register(Manage)
+class ManageAdmin(admin.ModelAdmin):
+    search_fields = ['fio', 'obkt']
+    list_display = [ 'fio', 'obkt']

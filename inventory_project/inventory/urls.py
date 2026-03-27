@@ -26,5 +26,8 @@ urlpatterns = [
 
     path('create_doc_inc/', doc_views.create_doc_inc, name='create_doc_inc'),
     path('nom/add-ajax/', spr_views.add_nom_ajax, name='add_nom_ajax'),
+    path('postav/add-ajax/', spr_views.add_postav_ajax, name='add_postav_ajax'),
+
+    path('docs/incom/save/', doc_views.save_incom_doc, name='save_incom_doc'),
 
 ]

@@ -471,3 +471,31 @@ def add_nom_ajax(request):
     except Exception as e:
         print(f"Ошибка: {e}")
         return JsonResponse({'error': str(e)}, status=400)
+
+
+@csrf_exempt
+def add_postav_ajax(request):
+    """Добавление нового поставщика через AJAX"""
+    print("=== add_postav_ajax вызван ===")
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+
+        if not title:
+            return JsonResponse({'error': 'Введите наименование поставщика'}, status=400)
+
+        # Проверка на дубликат
+        if Postav.objects.filter(title=title).exists():
+            return JsonResponse({'error': 'Поставщик с таким названием уже существует'}, status=400)
+
+        try:
+            new_postav = Postav.objects.create(title=title)
+            return JsonResponse({
+                'status': 'ok',
+                'id': new_postav.id,
+                'title': new_postav.title
+            })
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+    return JsonResponse({'error': 'Метод не поддерживается'}, status=405)

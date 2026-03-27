@@ -21,7 +21,7 @@
                         <tbody>
                             {% for postav in postav_list %}
                             <tr style="cursor: pointer;"
-                                onclick="selectPostav({{ postav.id }}, '{{ postav.title|escapejs }}')">
+                                onclick="window.selectPostav({{ postav.id }}, '{{ postav.title|escapejs }}')">
                                 <td>{{ postav.title }}</td>
                             </tr>
                             {% empty %}
@@ -32,6 +32,14 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="mt-3 pt-2 border-top">
+                    <button type="button" class="btn btn-outline-success w-100"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addPostavModal"
+                            onclick="$('#postavChoiceModal').modal('hide')">
+                        + Добавить поставщика
+                    </button>
+                </div>
             </div>
 
             <div class="modal-footer">
@@ -41,7 +49,37 @@
     </div>
 </div>
 
+<!-- Модалка для добавления нового поставщика -->
+<div class="modal fade" id="addPostavModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Новый поставщик</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Наименование</label>
+                    <input type="text" class="form-control" id="newPostavName" placeholder="Введите наименование">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-success" id="saveNewPostavBtn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+// Глобальная функция выбора поставщика
+window.selectPostav = function(id, title) {
+    console.log('Выбран поставщик:', id, title);
+    $('#postav_display').val(title);
+    $('#postav_id').val(id);
+    $('#postavChoiceModal').modal('hide');
+};
+
 function filterPostav() {
     const searchText = document.getElementById('postavSearch').value.toLowerCase();
     const rows = document.querySelectorAll('#postavList tbody tr');

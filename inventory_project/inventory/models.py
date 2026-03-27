@@ -232,3 +232,31 @@ class Spis(models.Model):
         db_table = 'spis'
         verbose_name = 'Списание'
         verbose_name_plural = 'Списания'
+
+
+class Manage(models.Model):
+    obkt=models.ForeignKey(
+        Obct,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        verbose_name='Объект',
+        db_index=True
+    )
+
+
+    fio = models.ForeignKey(
+        Fio,
+        on_delete=models.PROTECT,
+        db_column='fio',
+        verbose_name='Подотчетное лицо',
+        blank=True,
+        null=True
+)
+
+
+    class Meta:
+
+        verbose_name = 'Управление складом'
+        verbose_name_plural = 'Управление складом'
+

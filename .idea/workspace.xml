@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Поиск на Jquery везде">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/nom_choice_modal.html" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Новый приходный документ">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/create_doc_inc.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/create_doc_inc.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/postav_choice_modal.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/postav_choice_modal.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" afterDir="false" />
@@ -279,7 +281,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774337983900</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Новый приходный документ">
+      <option name="closed" value="true" />
+      <created>1774514389027</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1774514389027</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -312,6 +322,7 @@
     <MESSAGE value="Эмодзи:))" />
     <MESSAGE value="Поиск на Jquery" />
     <MESSAGE value="Поиск на Jquery везде" />
-    <option name="LAST_COMMIT_MESSAGE" value="Поиск на Jquery везде" />
+    <MESSAGE value="Новый приходный документ" />
+    <option name="LAST_COMMIT_MESSAGE" value="Новый приходный документ" />
   </component>
 </project>

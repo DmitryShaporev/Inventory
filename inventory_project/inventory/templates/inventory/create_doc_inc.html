@@ -33,7 +33,8 @@
                                    name="nomer"
                                    placeholder="Введите номер документа"
                                    autofocus
-                                   id="input-nomer">
+                                   id="input-nomer"
+                                   required>
                         </div>
 
                         <!-- Дата документа -->
@@ -95,7 +96,17 @@
                             </thead>
                             <tbody id="items-tbody">
                                 <!-- Строки будут добавляться сюда -->
+
                             </tbody>
+                            <tfoot class="table-light" id="items-tfoot">
+        <tr >
+            <td colspan="4" class="text-end">ИТОГО:</td>
+            <td class="text-end" id="total-cost-without-vat">0.00</td>
+            <td></td>
+            <td class="text-end" id="total-vat-amount">0.00</td>
+            <td class="text-end" id="total-total-with-vat">0.00</td>
+        </tr>
+    </tfoot>
                          </table>
                     </div>
 
@@ -118,21 +129,360 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Подключаем jQuery прямо здесь, если не загружается из base -->
+<!-- Подключаем jQuery -->
 
 
 <script>
-// Ждем загрузки DOM
-$(document).ready(function() {
-    console.log('DOM готов, jQuery работает!');
+// Проверка загрузки jQuery
+console.log('jQuery загружен:', typeof $);
 
-    // Номер документа
-    $('#input-nomer').on('change input', function() {
-        let val = $(this).val();
-        $('#title-nomer').text(val);
+//Функция для сбора данных для отправки на сервер=======
+function collectDocumentData() {
+    // 1. Собираем шапку документа
+    const docData = {
+        nomer: $('#input-nomer').val().trim(),          // значение поля "Номер"
+        datadoc: $('#input-datadoc').val(),             // значение поля "Дата"
+        postav_id: $('#postav_id').val()                // ID поставщика из скрытого поля
+    };
+
+    // 2. Собираем строки
+    const items = [];
+
+    // Находим все строки таблицы с классом .item-row
+    $('.item-row').each(function() {
+        const $row = $(this);  // текущая строка
+
+        // Извлекаем данные из каждого поля
+        const item = {
+            nom_id: $row.find('.nom-id').val(),              // ID товара
+            kolvo: $row.find('.item-kolvo').val(),           // Количество
+            price: $row.find('.item-price').val(),           // Цена
+            vat_rate: $row.find('.item-vat-rate').val(),      // Ставка НДС
+            cost_without_vat: $row.find('.item-cost-without-vat').val(),    //Сумма без налога
+            vat_amount: $row.find('.item-vat-amount').val(),     // Сумма налога
+            total_with_vat: $row.find('.item-total-with-vat').val() //Сумма налога
+
+        };
+
+        items.push(item);
     });
 
-    // Дата документа
+    // Возвращаем собранные данные
+    return {
+        doc: docData,
+        items: items
+    };
+}
+// ===============================================//
+
+//=============AJAX для сохранения================//
+function saveDocument() {
+    // 1. Собираем данные
+    const data = collectDocumentData();
+
+    // 2. Проверяем, что данные заполнены
+    if (!data.doc.nomer) {
+        alert('Введите номер документа');
+        $('#input-nomer').focus();
+        return;
+    }
+
+    if (!data.doc.postav_id) {
+        alert('Выберите поставщика');
+        return;
+    }
+
+    if (data.items.length === 0) {
+        alert('Добавьте хотя бы одну строку');
+        return;
+    }
+
+    // 3. Отправляем на сервер
+    $.ajax({
+        url: '/docs/incom/save/',           // куда отправляем
+        method: 'POST',                     // метод POST (создание данных)
+        contentType: 'application/json',    // отправляем JSON
+        data: JSON.stringify(data),         // превращаем объект в строку JSON
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'  // защита от подделки запросов
+        },
+        success: function(response) {
+            // 4. Если всё хорошо — переходим в журнал
+            window.location.href = '/menu/docs/incom/';
+        },
+        error: function(xhr) {
+            // 5. Если ошибка — показываем сообщение
+            alert('Ошибка: ' + xhr.responseText);
+        }
+    });
+}
+
+// ========== Расчет суммы строки ==========
+function calculateRow(row) {
+    const $row = $(row);
+
+    // Вспомогательная функция для парсинга
+    function parseLocalNumber(str) {
+        if (!str) return 0;
+        // Заменяем запятую на точку, удаляем пробелы
+        const cleaned = str.replace(',', '.').trim();
+        const num = parseFloat(cleaned);
+        return isNaN(num) ? 0 : num;
+    }
+
+    const kolvo = parseLocalNumber($row.find('.item-kolvo').val());
+    const price = parseLocalNumber($row.find('.item-price').val());
+    const vatRate = parseLocalNumber($row.find('.item-vat-rate').val());
+
+    // Стоимость без налога
+    const costWithoutVat = kolvo * price;
+    // Сумма налога
+    const vatAmount = costWithoutVat * vatRate / 100;
+    // Стоимость с налогом
+    const totalWithVat = costWithoutVat + vatAmount;
+
+    // Заполняем поля с форматированием (точка → запятая)
+    $row.find('.item-cost-without-vat').val(costWithoutVat.toFixed(2).replace('.', ','));
+    $row.find('.item-vat-amount').val(vatAmount.toFixed(2).replace('.', ','));
+    $row.find('.item-total-with-vat').val(totalWithVat.toFixed(2).replace('.', ','));
+
+    // Пересчитываем общий итог
+    calculateTotal();
+}
+
+// ========== Расчет общего итога ==========
+function calculateTotal() {
+    let totalCostWithoutVat = 0;
+    let totalVatAmount = 0;
+    let totalTotalWithVat = 0;
+
+    // Вспомогательная функция для парсинга локального числа
+    function parseLocalNumber(str) {
+        if (!str) return 0;
+        // Удаляем пробелы, заменяем запятую на точку
+        const cleaned = str.toString().replace(/\s/g, '').replace(',', '.');
+        const num = parseFloat(cleaned);
+        return isNaN(num) ? 0 : num;
+    }
+
+    $('.item-row').each(function() {
+        const $row = $(this);
+
+        const costWithoutVat = parseLocalNumber($row.find('.item-cost-without-vat').val());
+        const vatAmount = parseLocalNumber($row.find('.item-vat-amount').val());
+        const totalWithVat = parseLocalNumber($row.find('.item-total-with-vat').val());
+
+        totalCostWithoutVat += costWithoutVat;
+        totalVatAmount += vatAmount;
+        totalTotalWithVat += totalWithVat;
+    });
+
+    // Обновляем итоговые строки (с форматированием для отображения)
+    $('#total-cost-without-vat').text(totalCostWithoutVat.toFixed(2).replace('.', ','));
+    $('#total-vat-amount').text(totalVatAmount.toFixed(2).replace('.', ','));
+    $('#total-total-with-vat').text(totalTotalWithVat.toFixed(2).replace('.', ','));
+
+    // Обновляем заголовок документа
+    $('#title-sum').text(totalTotalWithVat.toFixed(2).replace('.', ','));
+}
+// ========== Навигация по Enter ==========
+function setupRowNavigation() {
+    $(document).on('keypress', '.item-kolvo, .item-price, .item-vat-rate', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            const $row = $(this).closest('tr');
+            const $inputs = $row.find('.item-kolvo, .item-price, .item-vat-rate');
+            const currentIndex = $inputs.index(this);
+
+            if (currentIndex < $inputs.length - 1) {
+                $inputs.eq(currentIndex + 1).focus();
+            } else {
+                const $nextRow = $row.next('.item-row');
+                if ($nextRow.length) {
+                    $nextRow.find('.item-kolvo').focus();
+                } else {
+                    $('#addRowBtn').focus();
+                }
+            }
+        }
+    });
+}
+
+// ========== Функции для работы с номенклатурой ==========
+let rowCounter = 0;
+
+function selectNom(id, title, izm) {
+    rowCounter++;
+    let newRow = `
+        <tr id="row-${rowCounter}" class="item-row">
+             <td style="width: 30%">
+                <input type="text" class="form-control form-control-sm nom-name"
+                       value="${title}" readonly>
+                <input type="hidden" class="nom-id" value="${id}">
+                </td>
+             <td style="width: 8%">
+                <input type="text" class="form-control form-control-sm item-izm"
+                       value="${izm}" readonly>
+                </td>
+             <td style="width: 8%">
+                <input type="text" class="form-control form-control-sm item-kolvo"
+                       value="1" onfocus="this.select()" onchange="calculateRow(this.closest('tr'))"
+                       style="text-align: right;">
+                </td>
+             <td style="width: 10%">
+                <input type="text" class="form-control form-control-sm item-price"
+                       value="0" onfocus="this.select()" onchange="calculateRow(this.closest('tr'))"
+                       style="text-align: right;">
+                </td>
+             <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-cost-without-vat"
+                       value="0" readonly style="text-align: right;">
+                </td>
+             <td style="width: 10%">
+                <input type="text" class="form-control form-control-sm item-vat-rate"
+                       value="22" onfocus="this.select()" onchange="calculateRow(this.closest('tr'))"
+                       style="text-align: right;">
+                </td>
+             <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-vat-amount"
+                       value="0" readonly style="text-align: right;">
+                </td>
+             <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-total-with-vat"
+                       value="0" readonly style="text-align: right;">
+                </td>
+            <td class="text-center" style="width: 5%">
+                <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✕</button>
+                </td>
+         </tr>
+    `;
+    $('#items-tbody').append(newRow);
+
+    const $newRow = $(`#row-${rowCounter}`);
+    calculateRow($newRow);
+
+
+
+    $('#nomChoiceModal').modal('hide');
+}
+function removeRow(btn) {
+    $(btn).closest('tr').remove();
+    calculateTotal();
+}
+
+function selectPostav(id, title) {
+    $('#postav_display').val(title);
+    $('#postav_id').val(id);
+    $('#postavChoiceModal').modal('hide');
+}
+
+// ========== Ждем загрузки DOM ==========
+$(document).ready(function() {
+    console.log('DOM готов, jQuery работает! WOW');
+
+    setupRowNavigation();
+// Выделение всего текста при фокусе ИЛИ клике
+    $(document).on('focus click', '.item-kolvo, .item-price, .item-vat-rate', function() {
+        this.select();
+    });
+
+   // ========== НАВИГАЦИЯ ПО ENTER В ШАПКЕ ДОКУМЕНТА ==========
+
+    // Поле "Номер" → Enter → переходим на поле "Дата"
+    $('#input-nomer').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            $('#input-datadoc').focus();
+            // Открываем календарик (вызываем клик по полю даты)
+            $('#input-datadoc').click();
+        }
+    });
+
+    // Поле "Дата" → Enter → переходим на кнопку "Выбрать поставщика"
+    $('#input-datadoc').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            // Находим кнопку выбора поставщика и ставим на нее фокус
+            const $postavBtn = $('#postav_display').closest('.d-flex').find('button');
+            $postavBtn.focus();
+        }
+    });
+
+    // Кнопка "Выбрать поставщика" → Enter → открываем модалку
+    $('#postav_display').closest('.d-flex').find('button').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            // Открываем модалку выбора поставщика
+            $('#postavChoiceModal').modal('show');
+        }
+    });
+
+    // После выбора поставщика → фокус на кнопку "Добавить строку"
+    $('#postavChoiceModal').on('hidden.bs.modal', function() {
+        if ($('#postav_id').val()) {
+            // Если поставщик выбран, фокус на кнопку добавления строки
+            $('#addRowBtn').focus();
+        }
+    });
+
+    // Кнопка "Добавить строку" → Enter → открываем модалку выбора номенклатуры
+    $('#addRowBtn').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            $('#nomChoiceModal').modal('show');
+        }
+    });
+
+// Обработчик кнопки "Сохранить"
+$('#saveDocBtn').on('click', function() {
+    saveDocument();
+});
+
+
+// Обработчик кнопки добавления поставщика
+$(document).on('click', '#saveNewPostavBtn', function() {
+    console.log('🔴 Кнопка Сохранить (поставщик) НАЖАТА!');
+
+    const name = $('#newPostavName').val().trim();
+    console.log('Данные:', {name});
+
+    if (!name) {
+        alert('Введите наименование поставщика');
+        $('#newPostavName').focus();
+        return;
+    }
+
+    $.ajax({
+        url: '/postav/add-ajax/',
+        method: 'POST',
+        data: {
+            title: name,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function(response) {
+            console.log('Успех:', response);
+            if (response.status === 'ok') {
+                window.selectPostav(response.id, response.title);
+                $('#addPostavModal').modal('hide');
+                $('#newPostavName').val('');
+            } else {
+                alert(response.error || 'Ошибка при сохранении');
+            }
+        },
+        error: function(xhr) {
+            console.error('Ошибка AJAX:', xhr);
+            alert('Ошибка: ' + xhr.responseText);
+        }
+    });
+});
+    $(document).on('focus', '.item-kolvo, .item-price, .item-vat-rate', function() {
+        this.select();
+    });
+
+    $('#input-nomer').on('change input', function() {
+        $('#title-nomer').text($(this).val());
+    });
+
     $('#input-datadoc').on('change', function() {
         let dateValue = $(this).val();
         if (dateValue) {
@@ -155,122 +505,57 @@ $(document).ready(function() {
         $('#nomChoiceModal').modal('show');
     });
 
-    // ========== Обработка кнопки "Сохранить" в модалке добавления товара ==========
-    $(document).on('click', '#saveNewNomBtn', function() {
-        console.log('🔴 Кнопка Сохранить НАЖАТА!');
-
-        const name = $('#newNomName').val().trim();
-        const izmId = $('#newNomIzm').val();
-        const categoryId = $('#newNomCategory').val();
-
-        console.log('Данные:', {name, izmId, categoryId});
-
-        if (!name) {
-            alert('Введите наименование товара');
-            $('#newNomName').focus();
-            return;
-        }
-        if (!izmId) {
-            alert('Выберите единицу измерения');
-            return;
-        }
-        if (!categoryId) {
-            alert('Выберите категорию');
-            return;
-        }
-
-        $.ajax({
-            url: '/nom/add-ajax/',
-            method: 'POST',
-            data: {
-                title: name,
-                izm_id: izmId,
-                category_id: categoryId,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            success: function(response) {
-                console.log('Успех:', response);
-                if (response.status === 'ok') {
-                    if (window.selectNom) {
-                        window.selectNom(response.id, response.title, response.izm);
-                    }
-                    $('#addNomModal').modal('hide');
-                    $('#newNomName').val('');
-                    $('#newNomIzm').val('');
-                    $('#newNomCategory').val('');
-                } else {
-                    alert(response.error || 'Ошибка при сохранении');
-                }
-            },
-            error: function(xhr) {
-                console.error('Ошибка AJAX:', xhr);
-                alert('Ошибка: ' + xhr.responseText);
-            }
-        });
-    });
+    calculateTotal();
 });
 
-// ========== Функции для работы с номенклатурой ==========
-let currentRowId = null;
-let rowCounter = 0;
+// ========== Обработка кнопки "Сохранить" в модалке добавления товара ==========
+$(document).on('click', '#saveNewNomBtn', function() {
+    console.log('🔴 Кнопка Сохранить НАЖАТА!');
 
-function openNomModal() {
-    $('#nomChoiceModal').modal('show');
-}
+    const name = $('#newNomName').val().trim();
+    const izmId = $('#newNomIzm').val();
+    const categoryId = $('#newNomCategory').val();
 
-function selectNom(id, title, izm) {
-    rowCounter++;
-    let newRow = `
-        <tr id="row-${rowCounter}" class="item-row">
-            <td>
-                <input type="text" class="form-control form-control-sm nom-name"
-                       value="${title}" readonly>
-                <input type="hidden" class="nom-id" value="${id}">
-             </td>
-             <td>
-                <input type="text" class="form-control form-control-sm item-izm"
-                       value="${izm}" readonly>
-             </td>
-             <td>
-                <input type="text" class="form-control form-control-sm item-kolvo" value="0">
-             </td>
-             <td>
-                <input type="text" class="form-control form-control-sm item-price" value="0">
-             </td>
-             <td>
-                <input type="text" class="form-control form-control-sm item-cost-without-vat" value="0" readonly>
-             </td>
-             <td>
-                <input type="text" class="form-control form-control-sm item-vat-rate" value="22">
-             </td>
-             <td>
-                <input type="text" class="form-control form-control-sm item-vat-amount" value="0" readonly>
-             </td>
-             <td>
-                <input type="text" class="form-control form-control-sm item-total-with-vat" value="0" readonly>
-             </td>
-            <td class="text-center">
-                <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✕</button>
-             </td>
-         </tr>
-    `;
-    $('#items-tbody').append(newRow);
-    $('#nomChoiceModal').modal('hide');
-    $(`#row-${rowCounter} .item-kolvo`).focus();
-}
+    if (!name) {
+        alert('Введите наименование товара');
+        $('#newNomName').focus();
+        return;
+    }
+    if (!izmId) {
+        alert('Выберите единицу измерения');
+        return;
+    }
+    if (!categoryId) {
+        alert('Выберите категорию');
+        return;
+    }
 
-function removeRow(btn) {
-    $(btn).closest('tr').remove();
-}
-
-function openPostavModal() {
-    $('#postavChoiceModal').modal('show');
-}
-
-function selectPostav(id, title) {
-    $('#postav_display').val(title);
-    $('#postav_id').val(id);
-    $('#postavChoiceModal').modal('hide');
-}
+    $.ajax({
+        url: '/nom/add-ajax/',
+        method: 'POST',
+        data: {
+            title: name,
+            izm_id: izmId,
+            category_id: categoryId,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function(response) {
+            if (response.status === 'ok') {
+                if (window.selectNom) {
+                    window.selectNom(response.id, response.title, response.izm);
+                }
+                $('#addNomModal').modal('hide');
+                $('#newNomName').val('');
+                $('#newNomIzm').val('');
+                $('#newNomCategory').val('');
+            } else {
+                alert(response.error || 'Ошибка при сохранении');
+            }
+        },
+        error: function(xhr) {
+            alert('Ошибка: ' + xhr.responseText);
+        }
+    });
+});
 </script>
 {% endblock %}
