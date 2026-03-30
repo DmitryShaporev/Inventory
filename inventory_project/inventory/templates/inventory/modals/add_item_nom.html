@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-success" id="addNomModalLabel">Добавление номенклатуры</h5>
+                <h5 class="modal-title " id="addNomModalLabel">Добавление номенклатуры</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -21,12 +21,12 @@
 
                 {% csrf_token %}
 
-                <div class="modal-body">
+                <div class="modal-body bg-warning bg-opacity-25">
                     <div id="nom-error-message" class="alert alert-danger" style="display: none;"></div>
 
                     <!-- Наименование -->
                     <div class="mb-3">
-                        <label for="nomName" class="form-label text-success">Наименование</label>
+                        <label for="nomName" class="form-label ">Наименование</label>
                         <input type="text"
                                class="form-control"
                                name="title"
@@ -38,7 +38,7 @@
 
                     <!-- Единица измерения -->
                     <div class="mb-3">
-                        <label for="izmSelect" class="form-label text-success">Единица измерения</label>
+                        <label for="izmSelect" class="form-label ">Единица измерения</label>
                         <select class="form-select"
                                 name="izm_id"
                                 id="izmSelect"
@@ -52,7 +52,7 @@
 
                     <!-- Категория -->
                     <div class="mb-3">
-                        <label for="categorySelect" class="form-label text-success">Категория</label>
+                        <label for="categorySelect" class="form-label ">Категория</label>
                         <select class="form-select"
                                 name="category_id"
                                 id="categorySelect"
@@ -66,8 +66,8 @@
                 </div>  <!-- Закрытие modal-body -->
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-success">Сохранить</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-warning">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                 </div>
             </form>
         </div>

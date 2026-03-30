@@ -1,6 +1,6 @@
-<table class="table table-bordered table-striped  mb-0">
+<table class="table table-bordered table-striped mb-0">
     <thead class="table-light">
-        <tr>
+         <tr>
             <th class="bg-warning bg-opacity-25">Номер</th>
             <th class="bg-warning bg-opacity-25">Дата</th>
             {% if section == 'incom' %}
@@ -19,22 +19,16 @@
             <th class="text-center bg-warning bg-opacity-25">Объект</th>
             {% endif %}
 
-
             <th class="text-center bg-warning bg-opacity-25">Сумма</th>
             <th style="width: 60px" class="text-center bg-warning bg-opacity-25"></th>
-        </tr>
+         </tr>
     </thead>
     <tbody id="search-results-tbody">
         {% for item in data %}
         <tr id="row-{{ section }}-{{ item.id }}">
-            <td style="cursor: pointer;"
-                hx-get=""
-                hx-target="#obkt-modal-content"
-                data-bs-toggle="modal"
-                data-bs-target="#editObktModal">
+            <td style="cursor: pointer;" onclick="location.href='/docs/incom/edit/{{ item.id }}/'">
                 {{ item.nomer }}
             </td>
-
             <td class="text-center">
                 {{ item.datadoc|date:"d.m.Y" }}
             </td>
@@ -43,7 +37,6 @@
             <td class="text-center">
                 {{ item.postav.title }}
             </td>
-
             {% endif %}
 
             {% if section == 'move' %}
@@ -76,10 +69,7 @@
 
             <td class="text-center">
                 <span style="cursor: pointer; color: #dc3545;"
-                      hx-delete=""
-                      hx-target="#row-{{ section }}-{{ item.id }}"
-                      hx-swap="outerHTML"
-                      hx-confirm="Удалить запись «{{ item.title }}»?">
+                      onclick="openDeleteModal({{ item.id }}, '{{ item.nomer|escapejs }}')">
                     ✕
                 </span>
             </td>
@@ -87,3 +77,107 @@
         {% endfor %}
     </tbody>
 </table>
+
+<!-- Модальное окно для подтверждения удаления -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">⚠️ Подтверждение удаления</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы действительно хотите удалить документ?</p>
+                <p class="fw-bold" id="deleteDocInfo"></p>
+                <p class="text-danger small">⚠️ Это действие нельзя отменить.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast уведомление -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000">
+        <div class="toast-header">
+            <strong class="me-auto" id="toastTitle">Уведомление</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            Сообщение
+        </div>
+    </div>
+</div>
+
+<script>
+let pendingDeleteId = null;
+let pendingDeleteNumber = null;
+
+function openDeleteModal(docId, docNumber) {
+    pendingDeleteId = docId;
+    pendingDeleteNumber = docNumber;
+
+    document.getElementById('deleteDocInfo').textContent = `Документ №${docNumber}`;
+
+    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    modal.show();
+}
+
+// Обработчик кнопки "Удалить" в модалке
+document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    if (pendingDeleteId) {
+        $.ajax({
+            url: `/docs/incom/delete/${pendingDeleteId}/`,
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            success: function(response) {
+                if (response.status === 'ok') {
+                    $(`#row-incom-${pendingDeleteId}`).remove();
+                    showToast('✅ Документ удален', 'success');
+                }
+                bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+                pendingDeleteId = null;
+            },
+            error: function(xhr) {
+                let errorMsg = 'Ошибка при удалении';
+                try {
+                    const data = JSON.parse(xhr.responseText);
+                    errorMsg = data.error || errorMsg;
+                } catch(e) {}
+                showToast(errorMsg, 'error');
+                bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+                pendingDeleteId = null;
+            }
+        });
+    }
+});
+
+function showToast(message, type) {
+    const toastEl = document.getElementById('liveToast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastBody = document.getElementById('toastMessage');
+
+    if (type === 'success') {
+        toastTitle.innerHTML = '✅ Успех';
+        toastTitle.style.color = 'green';
+        toastEl.classList.add('bg-success', 'bg-opacity-10');
+    } else {
+        toastTitle.innerHTML = '❌ Ошибка';
+        toastTitle.style.color = 'red';
+        toastEl.classList.add('bg-danger', 'bg-opacity-10');
+    }
+
+    toastBody.textContent = message;
+
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+
+    // Убираем классы фона после скрытия
+    setTimeout(() => {
+        toastEl.classList.remove('bg-success', 'bg-danger', 'bg-opacity-10');
+    }, 3000);
+}
+</script>

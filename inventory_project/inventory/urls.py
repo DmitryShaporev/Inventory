@@ -29,5 +29,7 @@ urlpatterns = [
     path('postav/add-ajax/', spr_views.add_postav_ajax, name='add_postav_ajax'),
 
     path('docs/incom/save/', doc_views.save_incom_doc, name='save_incom_doc'),
-
+path('docs/incom/update/<int:pk>/', doc_views.update_incom_doc, name='update_incom_doc'),
+path('docs/incom/edit/<int:doc_id>/', doc_views.edit_incom_doc, name='edit_incom_doc'),
+path('docs/incom/delete/<int:doc_id>/', doc_views.delete_incom_doc, name='delete_incom_doc'),
 ]

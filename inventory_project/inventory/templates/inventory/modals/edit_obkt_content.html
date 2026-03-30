@@ -12,13 +12,13 @@
     {% csrf_token %}
     <input type="hidden" name="item_id" value="{{ item.id }}">
 
-    <div class="modal-body">
+    <div class="modal-body bg-warning bg-opacity-25">
         <div id="obkt-edit-error" class="alert alert-danger" style="display: none;"></div>
 
         <div class="mb-3">
             <label for="editObktName" class="form-label">Наименование объекта</label>
             <input type="text"
-                   class="form-control text-primary"
+                   class="form-control "
                    name="title"
                    id="editObktName"
                    value="{{ item.title }}"
@@ -29,7 +29,7 @@
 
         <div class="mb-3">
             <label for="editPodrazSelect" class="form-label">Подразделение</label>
-            <select class="form-select text-primary"
+            <select class="form-select "
                     name="podraz_id"
                     id="editPodrazSelect"
                     required>
@@ -45,8 +45,8 @@
     </div>
 
     <div class="modal-footer">
-        <button type="submit" class="btn btn-outline-success">Обновить</button>
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="submit" class="btn btn-warning">Сохранить</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
     </div>
 </form>
 

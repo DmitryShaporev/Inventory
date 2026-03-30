@@ -1,7 +1,7 @@
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content ">
             <div class="modal-header">
                 <h5 class="modal-title" id="addModalLabel">Добавление записи</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -22,7 +22,7 @@
 
                 {% csrf_token %}
 
-                <div class="modal-body">
+                <div class="modal-body bg-warning bg-opacity-25">
                     <!-- Добавлен контейнер для ошибки -->
                     <div id="error-message" class="alert alert-danger" style="display: none;"></div>
 
@@ -41,8 +41,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-success">Сохранить</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-warning">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                 </div>
             </form>
         </div>

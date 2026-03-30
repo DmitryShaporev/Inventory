@@ -1,18 +1,18 @@
 <table class="table table-bordered table-striped mb-0">
-    <thead class="table-light">
+    <thead class="table-light ">
         <tr>
-            <th>Наименование</th>
+            <th class="bg-warning bg-opacity-25">Наименование</th>
 
             {% if section == 'nom' %}
-            <th class="text-center">Ед.изм.</th>
-            <th class="text-center">Категория</th>
+            <th class="text-center bg-warning bg-opacity-25">Ед.изм.</th>
+            <th class="text-center bg-warning bg-opacity-25">Категория</th>
             {% endif %}
 
             {% if section == 'obkt' %}
-            <th class="text-center">Подразделение</th>
+            <th class="text-center bg-warning bg-opacity-25">Подразделение</th>
             {% endif %}
 
-            <th style="width: 60px" class="text-center"></th>
+            <th style="width: 60px" class="text-center bg-warning bg-opacity-25"></th>
         </tr>
     </thead>
     <tbody id="search-results-tbody">

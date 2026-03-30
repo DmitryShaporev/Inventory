@@ -4,16 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Новый приходный документ закончено!">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/static/css/like_1c.css" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Меняем стили">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/static/jquery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/incom_doc_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/static/jquery.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/static/css/comon_spr.css" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/static/css/comon_spr.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/create_doc_inc.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/create_doc_inc.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/menu.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/nom_choice_modal.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/nom_choice_modal.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/postav_choice_modal.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/postav_choice_modal.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/comon_spr.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/create_doc_inc.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item_nom.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item_nom.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item_obkt.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/add_item_obkt.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_item.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_nom_content.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_nom_content.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_nom_modal.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_nom_modal.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_obkt_content.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/modals/edit_obkt_content.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/doc_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/doc_table.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/spr_table.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,22 +68,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Inventory2026/inventory_project/static&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Inventory2026/inventory_project/inventory/static",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Inventory2026\inventory_project\static" />
       <recent name="C:\Inventory2026\inventory_project\inventory\static" />
+      <recent name="C:\Inventory2026\inventory_project\static" />
       <recent name="C:\Inventory2026\inventory_project\static\htmx" />
       <recent name="C:\Inventory2026\inventory_project\static\bootstrap\js" />
       <recent name="C:\Inventory2026\inventory_project\static\bootstrap\css" />
@@ -297,7 +309,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774598583125</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Меняем стили">
+      <option name="closed" value="true" />
+      <created>1774600951896</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1774600951896</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -332,6 +352,7 @@
     <MESSAGE value="Поиск на Jquery везде" />
     <MESSAGE value="Новый приходный документ" />
     <MESSAGE value="Новый приходный документ закончено!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Новый приходный документ закончено!" />
+    <MESSAGE value="Меняем стили" />
+    <option name="LAST_COMMIT_MESSAGE" value="Меняем стили" />
   </component>
 </project>

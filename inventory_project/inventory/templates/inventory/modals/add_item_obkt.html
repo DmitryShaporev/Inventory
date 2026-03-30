@@ -22,7 +22,7 @@
 
                 {% csrf_token %}
 
-                <div class="modal-body">
+                <div class="modal-body bg-warning bg-opacity-25">
                     <div id="obkt-error-message" class="alert alert-danger" style="display: none;"></div>
 
                     <div class="mb-3">
@@ -51,8 +51,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-success">Сохранить</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-warning">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                 </div>
             </form>
         </div>

@@ -9,18 +9,23 @@
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-3 ">
+            <div class="d-flex justify-content-between align-items-center mb-3">
 
                 <h5 class="mb-0">
-                    Приходный документ № <span id="title-nomer"></span>
-                    от <span id="title-data"></span>
+                    {% if is_edit %}Редактирование{% else %}Приходный{% endif %} документ № <span id="title-nomer">{{ doc.nomer|default:'' }}</span>
+                    от <span id="title-data">{{ doc.datadoc|date:'d.m.Y'|default:'' }}</span>
                 </h5>
 
-<div>
-                    <button class=" btn btn-sm btn-outline-success me-2" id="saveDocBtn">💾 Сохранить</button>
+                <div>
+                    <button class="btn btn-sm btn-outline-success me-2" id="saveDocBtn">💾 Сохранить</button>
                     <a href="{% url 'docs' 'incom' %}" class="btn btn-sm btn-outline-secondary">✖ Отмена</a>
                 </div>
             </div>
+
+            <!-- ID документа для редактирования -->
+            {% if is_edit %}
+                <input type="hidden" id="doc_id" value="{{ doc.id }}">
+            {% endif %}
 
             <div class="card">
                 <div class="card-body bg-warning bg-opacity-25">
@@ -34,17 +39,18 @@
                                    placeholder="Введите номер документа"
                                    autofocus
                                    id="input-nomer"
+                                   value="{{ doc.nomer|default:'' }}"
                                    required>
                         </div>
 
                         <!-- Дата документа -->
                         <div class="col-md-3" style="margin-top:5px;">
-                            <label class="form-label " >Дата</label>
+                            <label class="form-label">Дата</label>
                             <input type="date"
                                    class="form-control"
                                    name="datadoc"
                                    id="input-datadoc"
-                                   value="{{ today|date:'Y-m-d' }}">
+                                   value="{% if doc.datadoc %}{{ doc.datadoc|date:'Y-m-d' }}{% else %}{{ today|date:'Y-m-d' }}{% endif %}">
                         </div>
 
                         <!-- Поставщик (с кнопкой выбора) -->
@@ -55,8 +61,9 @@
                                        class="form-control"
                                        id="postav_display"
                                        readonly
+                                       value="{{ doc.postav.title|default:'' }}"
                                        placeholder="Выберите поставщика">
-                                <input type="hidden" name="postav_id" id="postav_id">
+                                <input type="hidden" name="postav_id" id="postav_id" value="{{ doc.postav.id|default:'' }}">
                                 <button type="button"
                                         class="btn btn-sm btn-warning ms-2"
                                         data-bs-toggle="modal"
@@ -71,18 +78,19 @@
 
             <!-- Здесь будет таблица с товарами -->
             <div class="card" style="margin-top:15px;">
-                <div class="card-body p-0 " >
-                    <div class="table-responsive ">
-                        <div class=" text-end" style="margin-bottom:15px; margin-top:15px;margin-right:15px">
-                    <button class="btn btn-sm btn-warning"
-                            id="addRowBtn"
-                            data-bs-toggle="modal"
-                            data-bs-target="#nomChoiceModal"
-                    >+ Добавить строку</button>
-                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <div class="text-end" style="margin-bottom:15px; margin-top:15px;margin-right:15px">
+                            <button class="btn btn-sm btn-warning"
+                                    id="addRowBtn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#nomChoiceModal">
+                                + Добавить строку
+                            </button>
+                        </div>
                         <table class="table table-bordered mb-0" id="items-table">
                             <thead class="table-light">
-                                <tr>
+                                 <tr>
                                     <th style="width: 30%" class="bg-warning bg-opacity-25">Наименование</th>
                                     <th style="width: 8%" class="bg-warning bg-opacity-25">Ед.изм.</th>
                                     <th style="width: 8%" class="bg-warning bg-opacity-25">Количество</th>
@@ -91,131 +99,158 @@
                                     <th style="width: 10%" class="bg-warning bg-opacity-25">Налоговая ставка</th>
                                     <th style="width: 12%" class="bg-warning bg-opacity-25">Сумма налога</th>
                                     <th style="width: 12%" class="bg-warning bg-opacity-25">Стоимость всего</th>
-
-                                 </tr>
+                                  </tr>
                             </thead>
                             <tbody id="items-tbody">
-                                <!-- Строки будут добавляться сюда -->
-
+                                <!-- Существующие строки (для редактирования) -->
+                               {% if is_edit %}
+    {% for detail in details %}
+    <tr id="row-temp-{{ forloop.counter }}" class="item-row">
+        <td style="width: 30%">
+            <input type="text" class="form-control form-control-sm nom-name"
+                   value="{{ detail.id_nom.title }}" readonly>
+            <input type="hidden" class="nom-id" value="{{ detail.id_nom.id }}">
+          </td>
+        <td style="width: 8%">
+            <input type="text" class="form-control form-control-sm item-izm"
+                   value="{{ detail.id_nom.izm.title }}" readonly>
+          </td>
+        <td style="width: 8%">
+            <input type="text" class="form-control form-control-sm item-kolvo"
+                   value="{{ detail.kolvo|floatformat:2 }}"
+                   onfocus="this.select()" onchange="calculateRow(this.closest('tr'))"
+                   style="text-align: right;">
+          </td>
+        <td style="width: 10%">
+            <input type="text" class="form-control form-control-sm item-price"
+                   value="{{ detail.price|floatformat:2 }}"
+                   onfocus="this.select()" onchange="calculateRow(this.closest('tr'))"
+                   style="text-align: right;">
+          </td>
+        <td style="width: 12%">
+            <input type="text" class="form-control form-control-sm item-cost-without-vat"
+                   value="{{ detail.cost|floatformat:2 }}"
+                   readonly style="text-align: right;">
+          </td>
+        <td style="width: 10%">
+            <input type="text" class="form-control form-control-sm item-vat-rate"
+                   value="{{ detail.vat_rate|floatformat:0|default:'22' }}"
+                   onfocus="this.select()" onchange="calculateRow(this.closest('tr'))"
+                   style="text-align: right;">
+          </td>
+        <td style="width: 12%">
+            <input type="text" class="form-control form-control-sm item-vat-amount"
+                   value="{{ detail.vat_amount|floatformat:2 }}"
+                   readonly style="text-align: right;">
+          </td>
+        <td style="width: 12%">
+            <input type="text" class="form-control form-control-sm item-total-with-vat"
+                   value="{{ detail.total_with_vat|floatformat:2 }}"
+                   readonly style="text-align: right;">
+          </td>
+        <td class="text-center" style="width: 5%">
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✕</button>
+          </td>
+     </tr>
+    {% endfor %}
+{% endif %}
                             </tbody>
                             <tfoot class="table-light" id="items-tfoot">
-        <tr >
-            <td colspan="4" class="text-end">ИТОГО:</td>
-            <td class="text-end" id="total-cost-without-vat">0.00</td>
-            <td></td>
-            <td class="text-end" id="total-vat-amount">0.00</td>
-            <td class="text-end" id="total-total-with-vat">0.00</td>
-        </tr>
-    </tfoot>
-                         </table>
+     <tr>
+        <td colspan="4" class="text-end">ИТОГО:</td>
+        <td class="text-end" id="total-cost-without-vat">0.00</td>
+        <td></td>
+        <td class="text-end" id="total-vat-amount">0.00</td>
+        <td class="text-end" id="total-total-with-vat">0.00</td>
+     </tr>
+</tfoot>
+                        </table>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
-
-
-        </div>
-    </div>
-</div>
-
-<!-- Модальное окно выбора поставщика -->
+<!-- Модальные окна -->
 {% include 'inventory/modals/postav_choice_modal.html' %}
 {% include 'inventory/modals/nom_choice_modal.html' %}
 {% endblock %}
 
 {% block extra_js %}
-<!-- Подключаем jQuery -->
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
 // Проверка загрузки jQuery
 console.log('jQuery загружен:', typeof $);
 
-//Функция для сбора данных для отправки на сервер=======
+// Глобальная переменная для режима редактирования
+let isEditMode = {{ is_edit|yesno:"true,false" }};
+let currentDocId = {% if is_edit %}{{ doc.id }}{% else %}null{% endif %};
+
+// ========== Функция сбора данных ==========
 function collectDocumentData() {
-    // 1. Собираем шапку документа
     const docData = {
-        nomer: $('#input-nomer').val().trim(),          // значение поля "Номер"
-        datadoc: $('#input-datadoc').val(),             // значение поля "Дата"
-        postav_id: $('#postav_id').val()                // ID поставщика из скрытого поля
+        nomer: $('#input-nomer').val().trim(),
+        datadoc: $('#input-datadoc').val(),
+        postav_id: $('#postav_id').val()
     };
 
-    // 2. Собираем строки
     const items = [];
-
-    // Находим все строки таблицы с классом .item-row
     $('.item-row').each(function() {
-        const $row = $(this);  // текущая строка
-
-        // Извлекаем данные из каждого поля
+        const $row = $(this);
         const item = {
-            nom_id: $row.find('.nom-id').val(),              // ID товара
-            kolvo: $row.find('.item-kolvo').val(),           // Количество
-            price: $row.find('.item-price').val(),           // Цена
-            vat_rate: $row.find('.item-vat-rate').val(),      // Ставка НДС
-            cost_without_vat: $row.find('.item-cost-without-vat').val(),    //Сумма без налога
-            vat_amount: $row.find('.item-vat-amount').val(),     // Сумма налога
-            total_with_vat: $row.find('.item-total-with-vat').val() //Сумма налога
-
+            nom_id: $row.find('.nom-id').val(),
+            kolvo: $row.find('.item-kolvo').val(),
+            price: $row.find('.item-price').val(),
+            vat_rate: $row.find('.item-vat-rate').val(),
+            cost_without_vat: $row.find('.item-cost-without-vat').val(),
+            vat_amount: $row.find('.item-vat-amount').val(),
+            total_with_vat: $row.find('.item-total-with-vat').val()
         };
-
         items.push(item);
     });
 
-    // Возвращаем собранные данные
-    return {
-        doc: docData,
-        items: items
-    };
+    return { doc: docData, items: items };
 }
-// ===============================================//
 
-//=============AJAX для сохранения================//
+// ========== Функция сохранения ==========
 function saveDocument() {
-    // 1. Собираем данные
     const data = collectDocumentData();
 
-    // 2. Проверяем, что данные заполнены
     if (!data.doc.nomer) {
         alert('Введите номер документа');
         $('#input-nomer').focus();
         return;
     }
-
     if (!data.doc.postav_id) {
         alert('Выберите поставщика');
         return;
     }
+   // if (data.items.length === 0) {
+      //  alert('Добавьте хотя бы одну строку');
+    //    return;
+   // }
 
-    if (data.items.length === 0) {
-        alert('Добавьте хотя бы одну строку');
-        return;
-    }
+    const url = isEditMode ? `/docs/incom/update/${currentDocId}/` : '/docs/incom/save/';
 
-    // 3. Отправляем на сервер
     $.ajax({
-        url: '/docs/incom/save/',           // куда отправляем
-        method: 'POST',                     // метод POST (создание данных)
-        contentType: 'application/json',    // отправляем JSON
-        data: JSON.stringify(data),         // превращаем объект в строку JSON
-        headers: {
-            'X-CSRFToken': '{{ csrf_token }}'  // защита от подделки запросов
-        },
+        url: url,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
         success: function(response) {
-            // 4. Если всё хорошо — переходим в журнал
             window.location.href = '/menu/docs/incom/';
         },
         error: function(xhr) {
-            // 5. Если ошибка — показываем сообщение
             alert('Ошибка: ' + xhr.responseText);
         }
     });
 }
+
+// ========== Остальные функции (calculateRow, calculateTotal, selectNom, selectPostav и т.д.) ==========
+// ... (весь код из твоего шаблона, который был выше, скопируй сюда)
 
 // ========== Расчет суммы строки ==========
 function calculateRow(row) {
