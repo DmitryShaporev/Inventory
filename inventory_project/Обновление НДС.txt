@@ -1,0 +1,27 @@
+-- Пересчитываем суммы для документов до 2025 года
+UPDATE detail
+SET
+    vat_rate = 0,
+    vat_amount = 0,
+    total_with_vat = cost  -- стоимость с НДС = стоимость без НДС
+WHERE id_doc_id IN (
+    SELECT id
+    FROM doc
+    WHERE datadoc < '2025-01-01'
+);
+
+
+-- Посмотреть, какие документы попадут под обновление
+SELECT
+    d.id,
+    d.nomer,
+    d.datadoc,
+    dt.id,
+    dt.cost,
+    dt.vat_rate,
+    dt.vat_amount,
+    dt.total_with_vat
+FROM detail dt
+JOIN doc d ON dt.id_doc_id = d.id
+WHERE d.datadoc < '2025-01-01'
+ORDER BY d.datadoc DESC;

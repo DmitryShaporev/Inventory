@@ -1,0 +1,192 @@
+<!-- modals/remains_choice_modal.html -->
+<div class="modal fade" id="remainsChoiceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">📦 Выбор товара для перемещения</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body bg-warning bg-opacity-25">
+                <!-- Строка поиска и счетчик -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <input type="text"
+                           class="form-control me-2"
+                           placeholder="🔍 Поиск товара..."
+                           id="remainsSearch"
+                           style="width: 70%;"
+                           onkeyup="filterRemainsTable()">
+                    <span class="badge bg-secondary" id="itemsCount">0 позиций</span>
+                </div>
+
+                <!-- Таблица остатков -->
+                <div id="remainsList" style="max-height: 450px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover mb-0">
+                        <thead class="table-light sticky-top">
+                             <tr>
+                                <th>Наименование</th>
+                                <th style="width: 70px">Ед.изм.</th>
+                                <th style="width: 100px">Цена</th>
+                                <th style="width: 100px">Остаток</th>
+                                <th style="width: 70px"></th>
+                               </tr>
+                        </thead>
+                        <tbody id="remainsTableBody">
+                             <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <div class="spinner-border spinner-border-sm text-secondary me-2"></div>
+                                    Загрузка остатков...
+                                   </td>
+                              </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    console.log('Модалка остатков инициализирована');
+
+    // Функция фильтрации
+    window.filterRemainsTable = function() {
+        const searchText = document.getElementById('remainsSearch').value.toLowerCase();
+        const rows = document.querySelectorAll('#remainsTableBody tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            if (row.cells.length === 1 && row.cells[0].colSpan) return;
+            const text = row.textContent.toLowerCase();
+            const isVisible = text.includes(searchText);
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) visibleCount++;
+        });
+
+        // Обновляем счетчик видимых позиций
+        $('#visibleCount').text(visibleCount);
+    };
+
+    // Функция загрузки остатков
+    function loadRemains() {
+        console.log('Загрузка остатков...');
+
+        $.ajax({
+            url: '/api/remains/',
+            method: 'GET',
+            success: function(response) {
+                console.log('Ответ сервера:', response);
+                if (response.status === 'ok' && response.data && response.data.length > 0) {
+                    renderTable(response.data);
+                    // Обновляем счетчик
+                    $('#itemsCount').text(`${response.data.length} позиций`);
+                } else {
+                    $('#remainsTableBody').html(`
+                        <tr><td colspan="5" class="text-center text-muted py-4">
+                            📭 Нет товаров на складе
+                        </td></tr>
+                    `);
+                    $('#itemsCount').text('0 позиций');
+                }
+            },
+            error: function(xhr) {
+                console.error('Ошибка AJAX:', xhr);
+                $('#remainsTableBody').html(`
+                    <tr><td colspan="5" class="text-center text-danger py-4">
+                        ❌ Ошибка загрузки: ${xhr.status}
+                    </td></tr>
+                `);
+                $('#itemsCount').text('0 позиций');
+            }
+        });
+    }
+
+    function renderTable(remains) {
+        let html = '';
+        for (const item of remains) {
+            const priceFormatted = item.price.toFixed(2).replace('.', ',');
+            html += `
+                <tr style="cursor: pointer;"
+                    onclick="window.selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', ${item.price}, ${item.quantity})">
+                     <td><strong>${escapeHtml(item.title)}</strong></td>
+                    <td class="text-center">${item.izm}</td>
+                    <td class="text-end">${priceFormatted}</td>
+                    <td class="text-end"><span class="fw-bold">${item.quantity}</span> ${item.izm}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary"
+                                onclick="event.stopPropagation(); window.selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', ${item.price}, ${item.quantity})">
+                            ➡️
+                        </button>
+                    </td>
+                 </tr>
+            `;
+        }
+        $('#remainsTableBody').html(html);
+
+        // Добавляем счетчик видимых строк
+        $('body').append('<span id="visibleCount" style="display:none"></span>');
+        filterRemainsTable();
+    }
+
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // Глобальная функция выбора товара
+    window.selectRemainsItem = function(nomId, nomTitle, price, maxQuantity) {
+        console.log('Выбран товар:', nomId, nomTitle, price, maxQuantity);
+        $('#remainsChoiceModal').modal('hide');
+
+        const quantity = prompt(`Введите количество для перемещения (макс. ${maxQuantity}):`, '1');
+
+        if (quantity === null) return;
+
+        const qty = parseFloat(quantity);
+        if (isNaN(qty) || qty <= 0) {
+            alert('Введите корректное количество');
+            return;
+        }
+
+        if (qty > maxQuantity) {
+            alert(`Недостаточно товара! Доступно: ${maxQuantity}`);
+            return;
+        }
+
+        // Вызываем функцию добавления строки из основного шаблона
+        if (window.addMoveRow) {
+            window.addMoveRow(nomId, nomTitle, price, qty);
+        } else {
+            console.error('addMoveRow не найдена');
+            alert('Ошибка: функция добавления строки не найдена');
+        }
+    };
+
+    // Обработчики модалки
+    $('#remainsChoiceModal').on('show.bs.modal', function() {
+        console.log('Модалка открывается');
+        $('#remainsTableBody').html(`
+            <tr><td colspan="5" class="text-center py-4">
+                <div class="spinner-border spinner-border-sm text-secondary me-2"></div>
+                Загрузка остатков...
+            </td></tr>
+        `);
+        $('#remainsSearch').val('');
+        $('#itemsCount').text('Загрузка...');
+        loadRemains();
+    });
+
+    $('#remainsChoiceModal').on('hidden.bs.modal', function() {
+        $('#remainsSearch').val('');
+    });
+});
+</script>

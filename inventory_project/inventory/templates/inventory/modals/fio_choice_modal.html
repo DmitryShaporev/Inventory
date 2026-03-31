@@ -1,0 +1,62 @@
+<!-- modals/fio_choice_modal.html -->
+<div class="modal fade" id="fioChoiceModal" tabindex="-1" aria-labelledby="fioModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fioModalLabel">Выбор подотчетного лица</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body bg-warning bg-opacity-25">
+                <!-- Поиск -->
+                <input type="text"
+                       class="form-control mb-3"
+                       placeholder="🔍 Поиск подотчетного лица..."
+                       id="fioSearch"
+                       onkeyup="filterFio()">
+
+                <!-- Список подотчетных лиц -->
+                <div id="fioList" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-hover table-striped table-bordered">
+                        <tbody>
+                            {% for fio in fio_list %}
+                            <tr style="cursor: pointer;"
+                                onclick="selectFio({{ fio.id }}, '{{ fio.title|escapejs }}')">
+                                <td>{{ fio.title }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="text-center py-3">Нет подотчетных лиц</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterFio() {
+    const searchText = document.getElementById('fioSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#fioList tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchText) ? '' : 'none';
+    });
+}
+
+function selectFio(id, title) {
+    // Вызываем функцию из родительского шаблона
+    if (window.selectFio) {
+        window.selectFio(id, title);
+    }
+    $('#fioChoiceModal').modal('hide');
+}
+</script>

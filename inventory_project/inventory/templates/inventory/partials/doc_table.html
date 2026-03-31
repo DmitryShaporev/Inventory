@@ -26,9 +26,17 @@
     <tbody id="search-results-tbody">
         {% for item in data %}
         <tr id="row-{{ section }}-{{ item.id }}">
+            {% if section == 'incom' %}
             <td style="cursor: pointer;" onclick="location.href='/docs/incom/edit/{{ item.id }}/'">
                 {{ item.nomer }}
             </td>
+            {% endif %}
+            {% if section == 'move' %}
+            <td style="cursor: pointer;" onclick="location.href='/docs/move/edit/{{ item.id }}/'">
+                {{ item.nomer }}
+            </td>
+            {% endif %}
+
             <td class="text-center">
                 {{ item.datadoc|date:"d.m.Y" }}
             </td>
@@ -68,10 +76,20 @@
             </td>
 
             <td class="text-center">
+                {% if section == 'incom' %}
+
                 <span style="cursor: pointer; color: #dc3545;"
-                      onclick="openDeleteModal({{ item.id }}, '{{ item.nomer|escapejs }}')">
-                    ✕
-                </span>
+      onclick="openDeleteModal({{ item.id }}, '{{ item.nomer|escapejs }}', 'incom')">
+    ✕
+</span>
+                {% endif %}
+                {% if section == 'move' %}
+
+                <span style="cursor: pointer; color: #dc3545;"
+      onclick="openDeleteModal({{ item.id }}, '{{ item.nomer|escapejs }}', 'move')">
+    ✕
+</span>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -116,9 +134,10 @@
 let pendingDeleteId = null;
 let pendingDeleteNumber = null;
 
-function openDeleteModal(docId, docNumber) {
+function openDeleteModal(docId, docNumber, docType) {
     pendingDeleteId = docId;
     pendingDeleteNumber = docNumber;
+    pendingDeleteType = docType;  // 'incom' или 'move'
 
     document.getElementById('deleteDocInfo').textContent = `Документ №${docNumber}`;
 
@@ -126,16 +145,24 @@ function openDeleteModal(docId, docNumber) {
     modal.show();
 }
 
+
 // Обработчик кнопки "Удалить" в модалке
 document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
     if (pendingDeleteId) {
+        let url = '';
+        if (pendingDeleteType === 'incom') {
+            url = `/docs/incom/delete/${pendingDeleteId}/`;
+        } else if (pendingDeleteType === 'move') {
+            url = `/docs/move/delete/${pendingDeleteId}/`;
+        }
+
         $.ajax({
-            url: `/docs/incom/delete/${pendingDeleteId}/`,
+            url: url,
             method: 'POST',
             headers: { 'X-CSRFToken': '{{ csrf_token }}' },
             success: function(response) {
                 if (response.status === 'ok') {
-                    $(`#row-incom-${pendingDeleteId}`).remove();
+                    $(`#row-${pendingDeleteType}-${pendingDeleteId}`).remove();
                     showToast('✅ Документ удален', 'success');
                 }
                 bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();

@@ -19,14 +19,20 @@
             <div class="d-flex">
                 <input type="text" style="width: 400px;" class="form-control form-control-sm global-search" placeholder="🔍 Поиск...">
 
-
+{% if section == 'incom' %}
                 <a href="/create_doc_inc" type="button"
                         class="btn btn-warning btn-sm ms-2 px-3"
-                        style="height: 31px;"
-                        >
+                        style="height: 31px;">Создать документ</a>
+                {% elif section == 'move' %}
+                <a href="/create_doc_move" type="button"
+                        class="btn btn-warning btn-sm ms-2 px-3"
+                        style="height: 31px;">Создать документ</a>
+{% endif %}
 
-                    Создать документ
-                </a>
+
+
+
+
             </div>
         </div>
 
@@ -44,6 +50,6 @@
     <div class="col-md-2"></div>
 </div>
 
-<!-- Модальные окна -->
+
 
 {% endblock %}
