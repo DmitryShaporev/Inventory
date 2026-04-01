@@ -17,8 +17,9 @@
                 </h5>
 
                 <div>
-                    <button class="btn btn-sm btn-outline-success me-2" id="saveDocBtn">💾 Сохранить</button>
-                    <a href="{% url 'docs' 'incom' %}" class="btn btn-sm btn-outline-secondary">✖ Отмена</a>
+                    <button class="btn btn-sm btn-info me-2" id="printQrBtn">🏷️ Печать QR</button>
+                    <button class="btn btn-sm btn-success me-2" id="saveDocBtn">💾 Сохранить</button>
+                    <a href="{% url 'docs' 'incom' %}" class="btn btn-sm btn-secondary">✖ Отмена</a>
                 </div>
             </div>
 
@@ -178,7 +179,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 
 <script>
 // Проверка загрузки jQuery
@@ -187,6 +188,67 @@ console.log('jQuery загружен:', typeof $);
 // Глобальная переменная для режима редактирования
 let isEditMode = {{ is_edit|yesno:"true,false" }};
 let currentDocId = {% if is_edit %}{{ doc.id }}{% else %}null{% endif %};
+// ========== ПЕЧАТЬ QR-КОДОВ ==========
+function printQR() {
+    // Собираем данные из строк таблицы
+    const items = [];
+    $('.item-row').each(function() {
+        const $row = $(this);
+        const nomId = $row.find('.nom-id').val();
+        const title = $row.find('.nom-name').val();
+        const izm = $row.find('.item-izm').val();
+
+        // Нормализуем цену: заменяем запятую на точку
+        let price = $row.find('.item-price').val() || '0';
+        price = price.replace(',', '.');  // ← заменяем запятую на точку
+        price = parseFloat(price).toFixed(2);  // ← округляем до 2 знаков
+
+        if (nomId && title && price) {
+            items.push({
+                nom_id: nomId,
+                title: title,
+                izm: izm,
+                price: price
+            });
+        }
+    });
+
+    if (items.length === 0) {
+        alert('Нет товаров для печати QR-кодов');
+        return;
+    }
+
+    const docNomer = $('#title-nomer').text();
+    const docDatadoc = $('#title-data').text();
+
+    // Отправляем на сервер
+    $.ajax({
+        url: '/qr/print-from-doc/',
+        method: 'POST',
+        data: JSON.stringify({
+            items: items,
+            doc_nomer: docNomer,
+            doc_datadoc: docDatadoc
+        }),
+        contentType: 'application/json',
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        success: function(response) {
+            if (response.html) {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(response.html);
+                printWindow.document.close();
+            } else {
+                alert('Ошибка при формировании QR-кодов');
+            }
+        },
+        error: function(xhr) {
+            alert('Ошибка: ' + xhr.responseText);
+        }
+    });
+}
+
+// Обработчик кнопки печати
+$('#printQrBtn').on('click', printQR);
 
 // ========== Функция сбора данных ==========
 function collectDocumentData() {

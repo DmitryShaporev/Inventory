@@ -42,4 +42,5 @@ urlpatterns = [
     # API для остатков
     path('api/remains/', doc_views.api_remains, name='api_remains'),
     path('docs/move/delete/<int:doc_id>/', doc_views.delete_move_doc, name='delete_move_doc'),
+path('qr/print-from-doc/', qr_views.print_qr_from_doc, name='print_qr_from_doc'),
 ]

@@ -1,15 +1,14 @@
-from datetime import datetime, date
-import json
 
+from django.template.loader import render_to_string
+import json
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404
-from ..models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom,Doc,Detail,Manage
+from ..models import Izm,  Fio, Category, Postav, Obct, Nom,Doc,Detail,Manage
 from django.db.models.deletion import ProtectedError
 
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
-from django.db.models import Sum, Q
-from django.db.models.functions import Coalesce
+
 
 
 
@@ -263,7 +262,7 @@ def edit_move_doc(request, doc_id):
 
 
 def save_move_doc(request):
-    """Сохранение нового документа перемещения"""
+    """Сохранение документа перемещения"""
     if request.method != 'POST':
         return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
 
@@ -271,13 +270,12 @@ def save_move_doc(request):
         data = json.loads(request.body)
 
         with transaction.atomic():
-            # Создаем документ перемещения (oper=3)
             doc = Doc.objects.create(
                 nomer=data['doc']['nomer'],
                 datadoc=data['doc']['datadoc'],
                 fio_id=data['doc']['fio_id'],
-                obct_id=data['doc']['obct_to_id'],  # склад-получатель
-                oper=3,  # код перемещения
+                obct_id=data['doc']['obct_to_id'],
+                oper=3,
                 total=0
             )
 
@@ -285,27 +283,33 @@ def save_move_doc(request):
             for item in data['items']:
                 kolvo = parse_decimal(item['kolvo'])
                 price = parse_decimal(item['price'])
-                cost = kolvo * price
+                vat_rate = parse_decimal(item['vat_rate'])  # ← получаем из данных
 
-                # Записываем строку с отрицательным количеством
+                # Используем значения из строки (они уже рассчитаны)
+                cost_without_vat = parse_decimal(item.get('cost_without_vat', kolvo * price))
+                vat_amount = parse_decimal(item.get('vat_amount', cost_without_vat * vat_rate / 100))
+                total_with_vat = parse_decimal(item.get('total_with_vat', cost_without_vat + vat_amount))
+
                 Detail.objects.create(
                     id_doc=doc,
                     id_nom_id=item['nom_id'],
-                    kolvo=-kolvo,
+                    kolvo=-abs(kolvo),
                     price=price,
-                    cost=-cost,
+                    cost=cost_without_vat,
+                    vat_rate=vat_rate,
+                    vat_amount=vat_amount,
+                    total_with_vat=total_with_vat,
                     oper=3
                 )
-                total += cost
+                total += total_with_vat
 
-            doc.total = abs(total)
+            doc.total = total
             doc.save()
 
         return JsonResponse({'status': 'ok'})
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
-
 
 def update_move_doc(request, doc_id):
     """Обновление документа перемещения"""
@@ -416,7 +420,7 @@ def get_obct_list(request):
 #         return JsonResponse({'status': 'error', 'error': str(e)}, status=500)
 
 def api_remains(request):
-    """API для получения остатков товаров (по средней цене)"""
+    """API для получения остатков товаров с группировкой по цене и ставке НДС"""
     from django.db import connection
 
     query = """
@@ -424,6 +428,7 @@ def api_remains(request):
             n.id as nom_id,
             n.title as title,
             i.title as izm,
+            d.vat_rate,
             SUM(d.kolvo) as quantity,
             CASE 
                 WHEN SUM(d.kolvo) != 0 
@@ -434,10 +439,10 @@ def api_remains(request):
         INNER JOIN nom n ON d.id_nom = n.id
         LEFT JOIN izm i ON n.izm_id = i.id
         INNER JOIN doc ON d.id_doc = doc.id
-        WHERE doc.oper IN (1, 2, 4, 3, 5)
-        GROUP BY n.id, n.title, i.title
-        HAVING SUM(d.kolvo) > 0  -- Только положительные остатки
-        ORDER BY n.title
+        WHERE doc.oper IN (1, 2, 4)
+        GROUP BY n.id, d.vat_rate
+        HAVING SUM(d.kolvo) > 0
+        ORDER BY n.title, d.vat_rate
     """
 
     try:
@@ -452,29 +457,19 @@ def api_remains(request):
             quantity = float(data['quantity'])
             avg_price = float(data['avg_price']) if data['avg_price'] else 0
 
-            # Дополнительная проверка на положительность
-            if quantity <= 0:
-                continue
-
             remains.append({
                 'nom_id': data['nom_id'],
                 'title': data['title'] or 'Без названия',
                 'izm': data['izm'] or 'шт',
+                'vat_rate': float(data['vat_rate']),
                 'price': round(avg_price, 2),
                 'quantity': round(quantity, 0)
             })
 
-        print(f"Найдено остатков: {len(remains)}")
-        return JsonResponse({'status': 'ok', 'data': remains, 'total_count': len(remains)})
+        return JsonResponse({'status': 'ok', 'data': remains})
 
     except Exception as e:
-        print(f"Ошибка в api_remains: {e}")
-        import traceback
-        traceback.print_exc()
         return JsonResponse({'status': 'error', 'error': str(e)}, status=500)
-
-
-
 
 @require_POST
 def delete_move_doc(request, doc_id):
@@ -497,3 +492,8 @@ def delete_move_doc(request, doc_id):
         }, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
+
+
+
+
+

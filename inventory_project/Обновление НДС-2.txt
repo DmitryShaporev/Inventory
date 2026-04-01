@@ -1,0 +1,34 @@
+
+-- Обновляем ставку НДС для документов до 2025 года (включительно) на 20%
+UPDATE detail
+SET vat_rate = 20.00
+WHERE id_doc IN (
+    SELECT id
+    FROM doc
+    WHERE datadoc <= '2025-12-31'
+)
+AND vat_rate IS NOT NULL;
+
+-- Обновляем ставку НДС для документов с 2026 года на 22%
+UPDATE detail
+SET vat_rate = 22.00
+WHERE id_doc IN (
+    SELECT id
+    FROM doc
+    WHERE datadoc >= '2026-01-01'
+)
+AND vat_rate IS NOT NULL;
+
+
+
+
+-- Обновляем ВСЕ записи (и до 2025, и после)
+UPDATE detail
+SET
+    total_with_vat = cost,                                    -- переносим сумму с НДС
+    vat_amount = ROUND(cost * vat_rate / 100, 2),             -- считаем НДС
+    cost = ROUND(cost - (cost * vat_rate / 100), 2)           -- сумма без НДС
+WHERE cost IS NOT NULL
+  AND cost != 0
+  AND vat_rate IS NOT NULL
+  AND vat_rate != 0;

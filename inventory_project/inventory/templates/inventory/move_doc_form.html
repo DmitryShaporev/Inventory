@@ -99,76 +99,101 @@
             </div>
 
             <!-- ========== ТАБЛИЧНАЯ ЧАСТЬ ========== -->
-            <div class="card" style="margin-top:15px;">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <!-- Кнопка добавления строки (открывает модалку с остатками) -->
-                        <div class="text-end" style="margin-bottom:15px; margin-top:15px;margin-right:15px">
-                            <button class="btn btn-sm btn-warning"
-                                    id="addMoveRowBtn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#remainsChoiceModal">
-                                + Добавить строку
-                            </button>
-                        </div>
-
-                        <!-- Таблица перемещаемых товаров -->
-                        <table class="table table-bordered mb-0" id="items-table">
-                            <thead class="table-light">
-                                 <tr class="bg-warning bg-opacity-25">
-                                    <th style="width: 40%">Наименование</th>
-                                    <th style="width: 10%">Цена</th>
-                                    <th style="width: 10%">Количество</th>
-                                    <th style="width: 15%">Стоимость</th>
-                                    <th style="width: 5%"></th>
-                                 </tr>
-                            </thead>
-                            <tbody id="move-items-tbody">
-                                <!-- Существующие строки (для редактирования) -->
-                                {% if is_edit and details %}
-
-    {% for detail in details %}
-    <tr id="move-row-{{ forloop.counter }}" class="move-item-row">
-        <td style="width: 40%">
-            <input type="text" class="form-control form-control-sm nom-name"
-                   value="{{ detail.id_nom.title }}" readonly>
-            <input type="hidden" class="nom-id" value="{{ detail.id_nom.id }}">
-        </td>
-        <td style="width: 10%">
-            <input type="text" class="form-control form-control-sm item-price"
-                   value="{{ detail.price|abs_value|floatformat:2 }}" readonly
-                   style="text-align: right;">
-        </td>
-        <td style="width: 10%">
-            <input type="text" class="form-control form-control-sm item-kolvo"
-                   value="{{ detail.kolvo|abs_value|floatformat:3 }}"
-                   onchange="calculateMoveRow(this.closest('tr'))"
-                   style="text-align: right;">
-        </td>
-        <td style="width: 15%">
-            <input type="text" class="form-control form-control-sm item-cost"
-                   value="{{ detail.cost|abs_value|floatformat:2 }}" readonly
-                   style="text-align: right;">
-        </td>
-        <td class="text-center">
-            <button type="button" class="btn btn-sm btn-danger" onclick="removeMoveRow(this)">✕</button>
-        </td>
-    </tr>
-    {% endfor %}
-{% endif %}
-
-                            </tbody>
-                            <tfoot class="table-light">
-                                <tr>
-                                    <td colspan="3" class="text-end"><strong>ИТОГО:</strong></td>
-                                    <td class="text-end"><strong id="move-total">0.00</strong></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
+<div class="card" style="margin-top:15px;">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <!-- Кнопка добавления строки -->
+            <div class="text-end" style="margin-bottom:15px; margin-top:15px;margin-right:15px">
+                <button class="btn btn-sm btn-warning"
+                        id="addMoveRowBtn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#remainsChoiceModal">
+                    + Добавить строку
+                </button>
             </div>
+
+            <!-- Таблица перемещаемых товаров (расширенная) -->
+            <table class="table table-bordered mb-0" id="items-table">
+                <thead class="table-light">
+                     <tr class="bg-warning bg-opacity-25">
+                        <th style="width: 30%">Наименование</th>
+                        <th style="width: 8%">Ед.изм.</th>
+                        <th style="width: 8%">Количество</th>
+                        <th style="width: 10%">Цена</th>
+                        <th style="width: 12%">Стоимость без налога</th>
+                        <th style="width: 10%">Налоговая ставка</th>
+                        <th style="width: 12%">Сумма налога</th>
+                        <th style="width: 12%">Стоимость всего</th>
+                        <th style="width: 5%"></th>
+                      </tr>
+                </thead>
+                <tbody id="move-items-tbody">
+                    <!-- Существующие строки (для редактирования) -->
+                    {% if is_edit and details %}
+                        {% for detail in details %}
+                        <tr id="move-row-{{ forloop.counter }}" class="move-item-row">
+                            <td style="width: 30%">
+                                <input type="text" class="form-control form-control-sm nom-name"
+                                       value="{{ detail.id_nom.title }}" readonly>
+                                <input type="hidden" class="nom-id" value="{{ detail.id_nom.id }}">
+                              </td>
+                            <td style="width: 8%">
+                                <input type="text" class="form-control form-control-sm item-izm"
+                                       value="{{ detail.id_nom.izm.title }}" readonly>
+                              </td>
+                            <td style="width: 8%">
+                                <input type="text" class="form-control form-control-sm item-kolvo"
+                                       value="{{ detail.kolvo|abs_value|floatformat:3 }}"
+                                       onchange="calculateMoveRow(this.closest('tr'))"
+                                       style="text-align: right;">
+                              </td>
+                            <td style="width: 10%">
+                                <input type="text" class="form-control form-control-sm item-price"
+                                       value="{{ detail.price|abs_value|floatformat:2 }}" readonly
+                                       style="text-align: right;">
+                              </td>
+                            <td style="width: 12%">
+                                <input type="text" class="form-control form-control-sm item-cost-without-vat"
+                                       value="{{ detail.cost|abs_value|floatformat:2 }}" readonly
+                                       style="text-align: right;">
+                              </td>
+                            <td style="width: 10%">
+                                <input type="text" class="form-control form-control-sm item-vat-rate"
+                                       value="{{ detail.vat_rate|floatformat:0|default:'22' }}"
+                                       onchange="calculateMoveRow(this.closest('tr'))"
+                                       style="text-align: right;">
+                              </td>
+                            <td style="width: 12%">
+                                <input type="text" class="form-control form-control-sm item-vat-amount"
+                                       value="{{ detail.vat_amount|abs_value|floatformat:2 }}" readonly
+                                       style="text-align: right;">
+                              </td>
+                            <td style="width: 12%">
+                                <input type="text" class="form-control form-control-sm item-total-with-vat"
+                                       value="{{ detail.total_with_vat|abs_value|floatformat:2 }}" readonly
+                                       style="text-align: right;">
+                              </td>
+                            <td class="text-center" style="width: 5%">
+                                <button type="button" class="btn btn-sm btn-danger" onclick="removeMoveRow(this)">✕</button>
+                              </td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+                <tfoot class="table-light">
+                     <tr>
+                        <td colspan="4" class="text-end"><strong>ИТОГО:</strong></td>
+                        <td class="text-end"><strong id="total-cost-without-vat">0.00</strong></td>
+                        <td></td>
+                        <td class="text-end"><strong id="total-vat-amount">0.00</strong></td>
+                        <td class="text-end"><strong id="total-total-with-vat">0.00</strong></td>
+                        <td></td>
+                      </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 </div>
@@ -223,48 +248,55 @@ $(document).ready(function() {
     }
 
     // Функция загрузки остатков
-    function loadRemains() {
-        $('#remainsTableBody').html('<tr><td colspan="5" class="text-center py-3">Загрузка...</td></tr>');
-        $.ajax({
-            url: '/api/remains/',
-            method: 'GET',
-            success: function(response) {
-                if (response.status === 'ok' && response.data && response.data.length > 0) {
-                    let html = '';
-                    for (let item of response.data) {
-                        html += `
-                            <tr style="cursor: pointer;" onclick="selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', ${item.price}, ${item.quantity})">
-                                <td>${item.title}</td>
-                                <td class="text-center">${item.izm}</td>
-                                <td class="text-end">${item.price.toFixed(2).replace('.', ',')}</td>
-                                <td class="text-end">${item.quantity}</td>
-                                <td class="text-center"><button class="btn btn-sm btn-warning" onclick="event.stopPropagation(); selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', ${item.price}, ${item.quantity})">Выбрать</button></td>
-                             </tr>
-                        `;
-                    }
-                    $('#remainsTableBody').html(html);
-                } else {
-                    $('#remainsTableBody').html('<tr><td colspan="5" class="text-center text-muted">Нет товаров на складе</td></tr>');
+function loadRemains() {
+    $('#remainsTableBody').html(`<tr><td colspan="5" class="text-center py-3">Загрузка...</td></tr>`);
+    $.ajax({
+        url: '/api/remains/',
+        method: 'GET',
+        success: function(response) {
+            if (response.status === 'ok' && response.data && response.data.length > 0) {
+                let html = '';
+                for (let item of response.data) {
+                    html += `
+                        <tr style="cursor: pointer;"
+                            onclick="selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.vat_rate}, ${item.quantity})">
+                             <td>${item.title}</td>
+                            <td class="text-center">${item.izm}</td>
+                            <td class="text-end">${item.price.toFixed(2).replace('.', ',')}</td>
+                            <td class="text-end">${item.quantity}</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-warning"
+                                        onclick="event.stopPropagation(); selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.vat_rate}, ${item.quantity})">
+                                    Выбрать
+                                </button>
+                            </td>
+                        </tr>
+                    `;
                 }
-            },
-            error: function() {
-                $('#remainsTableBody').html('<tr><td colspan="5" class="text-center text-danger">Ошибка загрузки</td></tr>');
+                $('#remainsTableBody').html(html);
+            } else {
+                $('#remainsTableBody').html(`<tr><td colspan="5" class="text-center text-muted py-3">Нет товаров на складе</td></tr>`);
             }
-        });
-    }
-
-    // Функция выбора
-    window.selectRemainsItem = function(id, title, price, maxQty) {
-        $('#remainsChoiceModal').modal('hide');
-        const qty = prompt(`Введите количество (макс. ${maxQty}):`, '1');
-        if (qty && !isNaN(qty) && qty > 0 && qty <= maxQty) {
-            if (window.addMoveRow) window.addMoveRow(id, title, price, qty);
-            else alert('Ошибка: функция добавления строки не найдена');
-        } else if (qty > maxQty) {
-            alert(`Максимум: ${maxQty}`);
+        },
+        error: function() {
+            $('#remainsTableBody').html(`<tr><td colspan="5" class="text-center text-danger py-3">Ошибка загрузки</td></tr>`);
         }
-    };
-
+    });
+}
+    // Функция выбора
+window.selectRemainsItem = function(id, title, izm, price, vatRate, maxQty) {
+    $('#remainsChoiceModal').modal('hide');
+    const qty = prompt(`Введите количество для перемещения (макс. ${maxQty}):`, '1');
+    if (qty && !isNaN(qty) && qty > 0 && qty <= maxQty) {
+        if (window.addMoveRow) {
+            window.addMoveRow(id, title, izm, price, vatRate, qty);
+        } else {
+            alert('Ошибка: функция добавления строки не найдена');
+        }
+    } else if (qty > maxQty) {
+        alert(`Максимум: ${maxQty}`);
+    }
+};
     // Открытие модалки
     $('#addMoveRowBtn').on('click', function() {
         loadRemains();
@@ -288,73 +320,113 @@ let isEditMode = {{ is_edit|yesno:"true,false" }};
 let currentDocId = {% if is_edit %}{{ doc.id }}{% else %}null{% endif %};
 let rowCounter = 0;
 
-// ========== РАСЧЕТ СТРОКИ ПЕРЕМЕЩЕНИЯ ==========
-function calculateMoveRow(row) {
-    const $row = $(row);
-
-    // Заменяем запятую на точку
-    let priceStr = $row.find('.item-price').val() || '0';
-    let quantityStr = $row.find('.item-kolvo').val() || '0';
-
-    priceStr = priceStr.replace(',', '.');
-    quantityStr = quantityStr.replace(',', '.');
-
-    const price = parseFloat(priceStr) || 0;
-    const quantity = parseFloat(quantityStr) || 0;
-
-    console.log('price:', price, 'quantity:', quantity);  // должно быть 31.93, а не 31
-
-    const cost = price * quantity;
-    $row.find('.item-cost').val(cost.toFixed(2).replace('.', ','));
-    calculateMoveTotal();
-}
-
-// ========== РАСЧЕТ ОБЩЕЙ СУММЫ ==========
-function calculateMoveTotal() {
-    let total = 0;
-    $('.move-item-row').each(function() {
-        let costStr = $(this).find('.item-cost').val() || '0';
-        costStr = costStr.replace(',', '.');
-        total += parseFloat(costStr) || 0;
-    });
-    $('#move-total').text(total.toFixed(2).replace('.', ','));
-}
 // ========== УДАЛЕНИЕ СТРОКИ ==========
 function removeMoveRow(btn) {
     $(btn).closest('tr').remove();
     calculateMoveTotal();
 }
 
+
+/// ========== РАСЧЕТ СТРОКИ ПЕРЕМЕЩЕНИЯ (с НДС) ==========
+function calculateMoveRow(row) {
+    const $row = $(row);
+
+    function parseLocalNumber(str) {
+        if (!str) return 0;
+        return parseFloat(str.replace(',', '.')) || 0;
+    }
+
+    const kolvo = parseLocalNumber($row.find('.item-kolvo').val());
+    const price = parseLocalNumber($row.find('.item-price').val());
+    const vatRate = parseLocalNumber($row.find('.item-vat-rate').val());
+
+    // Расчеты
+    const costWithoutVat = kolvo * price;
+    const vatAmount = costWithoutVat * vatRate / 100;
+    const totalWithVat = costWithoutVat + vatAmount;
+
+    // Заполняем поля
+    $row.find('.item-cost-without-vat').val(costWithoutVat.toFixed(2).replace('.', ','));
+    $row.find('.item-vat-amount').val(vatAmount.toFixed(2).replace('.', ','));
+    $row.find('.item-total-with-vat').val(totalWithVat.toFixed(2).replace('.', ','));
+
+    calculateMoveTotal();
+}
+
+// ========== РАСЧЕТ ОБЩЕЙ СУММЫ (с НДС) ==========
+function calculateMoveTotal() {
+    let totalCostWithoutVat = 0;
+    let totalVatAmount = 0;
+    let totalTotalWithVat = 0;
+
+    function parseLocalNumber(str) {
+        if (!str) return 0;
+        return parseFloat(str.replace(',', '.')) || 0;
+    }
+
+    $('.move-item-row').each(function() {
+        const $row = $(this);
+        totalCostWithoutVat += parseLocalNumber($row.find('.item-cost-without-vat').val());
+        totalVatAmount += parseLocalNumber($row.find('.item-vat-amount').val());
+        totalTotalWithVat += parseLocalNumber($row.find('.item-total-with-vat').val());
+    });
+
+    // Обновляем итоговые строки
+    $('#total-cost-without-vat').text(totalCostWithoutVat.toFixed(2).replace('.', ','));
+    $('#total-vat-amount').text(totalVatAmount.toFixed(2).replace('.', ','));
+    $('#total-total-with-vat').text(totalTotalWithVat.toFixed(2).replace('.', ','));
+}
+
 // ========== ДОБАВЛЕНИЕ СТРОКИ (вызывается из модалки остатков) ==========
-function addMoveRow(nomId, nomTitle, price, maxQuantity) {
+function addMoveRow(nomId, nomTitle, izm, price, vatRate, maxQuantity) {
     rowCounter++;
     let newRow = `
         <tr id="move-row-${rowCounter}" class="move-item-row">
-            <td>
+            <td style="width: 30%">
                 <input type="text" class="form-control form-control-sm nom-name"
                        value="${nomTitle}" readonly>
                 <input type="hidden" class="nom-id" value="${nomId}">
-             </td>
-            <td>
-                <input type="text" class="form-control form-control-sm item-price"
-                       value="${price}" readonly style="text-align: right;">
-             </td>
-            <td>
+            </td>
+            <td style="width: 8%">
+                <input type="text" class="form-control form-control-sm item-izm"
+                       value="${izm}" readonly>
+            </td>
+            <td style="width: 8%">
                 <input type="text" class="form-control form-control-sm item-kolvo"
                        value="1" onchange="calculateMoveRow(this.closest('tr'))"
                        style="text-align: right;">
-             </td>
-            <td>
-                <input type="text" class="form-control form-control-sm item-cost"
+            </td>
+            <td style="width: 10%">
+                <input type="text" class="form-control form-control-sm item-price"
                        value="${price}" readonly style="text-align: right;">
-             </td>
-            <td class="text-center">
+            </td>
+            <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-cost-without-vat"
+                       value="0" readonly style="text-align: right;">
+            </td>
+            <td style="width: 10%">
+                <input type="text" class="form-control form-control-sm item-vat-rate"
+                       value="${vatRate}" onchange="calculateMoveRow(this.closest('tr'))"
+                       style="text-align: right;">
+            </td>
+            <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-vat-amount"
+                       value="0" readonly style="text-align: right;">
+            </td>
+            <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-total-with-vat"
+                       value="0" readonly style="text-align: right;">
+            </td>
+            <td class="text-center" style="width: 5%">
                 <button type="button" class="btn btn-sm btn-danger" onclick="removeMoveRow(this)">✕</button>
-             </td>
-         </tr>
+            </td>
+        </tr>
     `;
     $('#move-items-tbody').append(newRow);
-    calculateMoveTotal();
+
+    const $newRow = $(`#move-row-${rowCounter}`);
+    calculateMoveRow($newRow);
+    $newRow.find('.item-kolvo').focus();
 }
 
 // ========== ФУНКЦИИ ВЫБОРА ==========
@@ -423,6 +495,7 @@ function selectRemains(nomId, nomTitle, price, maxQuantity) {
 }
 
 // ========== СБОР ДАННЫХ ДЛЯ СОХРАНЕНИЯ ==========
+// ========== СБОР ДАННЫХ ДЛЯ СОХРАНЕНИЯ ==========
 function collectMoveDocumentData() {
     const docData = {
         nomer: $('#input-nomer').val().trim(),
@@ -438,7 +511,10 @@ function collectMoveDocumentData() {
             nom_id: $row.find('.nom-id').val(),
             kolvo: $row.find('.item-kolvo').val(),
             price: $row.find('.item-price').val(),
-            cost: $row.find('.item-cost').val()
+            vat_rate: $row.find('.item-vat-rate').val(),  // ← добавить
+            cost_without_vat: $row.find('.item-cost-without-vat').val(),
+            vat_amount: $row.find('.item-vat-amount').val(),
+            total_with_vat: $row.find('.item-total-with-vat').val()
         });
     });
 
@@ -563,5 +639,17 @@ calculateMoveTotal();
         }
     }
 });
+
+
+    // ========== ДЕЛАЕМ ФУНКЦИИ ГЛОБАЛЬНЫМИ ==========
+window.calculateMoveRow = calculateMoveRow;
+window.addMoveRow = addMoveRow;
+window.selectRemainsItem = selectRemainsItem;
+window.selectFio = selectFio;
+window.selectObct = selectObct;
+window.removeMoveRow = removeMoveRow;
+window.selectRemains = selectRemains;
+window.collectMoveDocumentData = collectMoveDocumentData;
+window.saveMoveDocument = saveMoveDocument;
 </script>
 {% endblock %}
