@@ -4,16 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Документы по перемещению.">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/qr_print.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/Обновление НДС-2.txt" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Исправлен НДС в таблице, поправлены документы, сделаны QR коды в приходных.">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/qr_selector.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/incom_report.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/incom_report_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/incom_doc_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/incom_doc_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/move_doc_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/move_doc_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/qr_print.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/qr_print.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templatetags/abs_filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templatetags/abs_filter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/qr_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/qr_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -321,7 +326,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774944484969</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Исправлен НДС в таблице, поправлены документы, сделаны QR коды в приходных.">
+      <option name="closed" value="true" />
+      <created>1775027259150</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1775027259150</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -359,6 +372,7 @@
     <MESSAGE value="Меняем стили" />
     <MESSAGE value="Закончены входящие документы" />
     <MESSAGE value="Документы по перемещению." />
-    <option name="LAST_COMMIT_MESSAGE" value="Документы по перемещению." />
+    <MESSAGE value="Исправлен НДС в таблице, поправлены документы, сделаны QR коды в приходных." />
+    <option name="LAST_COMMIT_MESSAGE" value="Исправлен НДС в таблице, поправлены документы, сделаны QR коды в приходных." />
   </component>
 </project>

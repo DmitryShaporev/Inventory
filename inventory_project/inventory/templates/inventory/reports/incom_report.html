@@ -1,0 +1,214 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .report-header {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #333;
+    }
+
+    .doc-block {
+        margin-bottom: 30px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        page-break-inside: avoid;
+    }
+
+    .doc-header {
+        background-color: #f8f9fa;
+        padding: 10px 15px;
+        border-bottom: 1px solid #dee2e6;
+        font-weight: bold;
+    }
+
+    .doc-header .row {
+        font-size: 14px;
+    }
+
+    .doc-items {
+        padding: 10px 15px;
+    }
+
+    .items-table {
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+
+    .items-table th {
+        background-color: #e9ecef;
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+    }
+
+    .items-table td {
+        padding: 6px 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    .doc-total {
+        text-align: right;
+        padding: 8px 15px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        font-weight: bold;
+    }
+
+    .report-footer {
+        margin-top: 30px;
+        padding-top: 10px;
+        border-top: 1px solid #dee2e6;
+        text-align: center;
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    @media print {
+        .no-print {
+            display: none;
+        }
+        .doc-block {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        body {
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+    .filter-panel {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    .total-summary {
+        background: #e9ecef;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">📊 Отчет о поступлении ТМЦ</h4>
+    <div class="d-flex align-items-center gap-2 no-print">
+        <label class="form-label mb-0 fw-bold">Акт №</label>
+        <input type="text" class="form-control form-control-sm" id="actNumber"
+               placeholder="_____" style="width: 100px;">
+    </div>
+</div>
+            <!-- Панель фильтров -->
+            <div class="filter-panel no-print bg-warning bg-opacity-25">
+                <div class="row g-3 align-items-end ">
+                    <div class="col-md-2 ">
+                        <label class="form-label">Дата начала</label>
+                        <input type="date" class="form-control" id="dateStart" value="{{ date_start|default:'' }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Дата конца</label>
+                        <input type="date" class="form-control" id="dateEnd" value="{{ date_end|default:'' }}">
+                    </div>
+
+                    <div class="col-md-2">
+
+    <div class="d-flex gap-3">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="dateType" id="dateTypeCreated" value="created" checked>
+            <label class="form-check-label" for="dateTypeCreated">
+                Дата поступления
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="dateType" id="dateTypeDoc" value="doc" >
+            <label class="form-check-label" for="dateTypeDoc">
+                Дата документа
+            </label>
+        </div>
+
+    </div>
+</div>
+                    <div class="col-md-2">
+                        <button class="btn btn-warning w-100" id="btnShow">📋 Сформировать</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-secondary w-100" id="btnPrint">🖨️ Печать</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-secondary w-100" id="btnExcel">📊 Excel</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!-- Результаты отчета -->
+            <div id="reportContent">
+                {% include 'inventory/reports/incom_report_table.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script src="{% static 'jquery.js' %}"></script>
+<script>
+
+$(document).ready(function() {
+    // Кнопка "Сформировать"
+    $('#btnShow').on('click', function() {
+        loadReport();
+    });
+
+    // Кнопка "Печать"
+    $('#btnPrint').on('click', function() {
+        window.print();
+    });
+
+    // Кнопка "Excel"
+    $('#btnExcel').on('click', function() {
+        exportToExcel();
+    });
+
+    function loadReport() {
+        const dateStart = $('#dateStart').val();
+        const dateEnd = $('#dateEnd').val();
+        const dateType = $('input[name="dateType"]:checked').val();
+
+        $.ajax({
+            url: '/reports/incom/',
+            method: 'GET',
+            data: {
+                date_start: dateStart,
+                date_end: dateEnd,
+                date_type: dateType
+            },
+            success: function(response) {
+                $('#reportContent').html(response);
+            },
+            error: function(xhr) {
+                alert('Ошибка загрузки отчета: ' + xhr.responseText);
+            }
+        });
+    }
+
+    function exportToExcel() {
+        const dateStart = $('#dateStart').val();
+        const dateEnd = $('#dateEnd').val();
+        const dateType = $('input[name="dateType"]:checked').val();
+
+        window.location.href = `/reports/incom/excel/?date_start=${dateStart}&date_end=${dateEnd}&date_type=${dateType}`;
+    }
+});
+</script>
+{% endblock %}

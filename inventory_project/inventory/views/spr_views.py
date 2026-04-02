@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
+
+
+
 from django.db.models.deletion import ProtectedError
 from django.http import HttpResponse
-from django.views.decorators.http import require_POST
+
 
 from ..models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom
 
@@ -499,3 +499,21 @@ def add_postav_ajax(request):
             return JsonResponse({'error': str(e)}, status=400)
 
     return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
+
+
+
+
+def get_nom_by_id(request, nom_id):
+    """Получить товар по ID для сканера"""
+    try:
+        nom = Nom.objects.select_related('izm').get(id=nom_id)
+        return JsonResponse({
+            'status': 'ok',
+            'data': {
+                'id': nom.id,
+                'title': nom.title,
+                'izm': nom.izm.title if nom.izm else 'шт'
+            }
+        })
+    except Nom.DoesNotExist:
+        return JsonResponse({'status': 'error', 'error': 'Товар не найден'}, status=404)

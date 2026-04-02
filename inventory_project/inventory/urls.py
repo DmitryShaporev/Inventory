@@ -42,5 +42,18 @@ urlpatterns = [
     # API для остатков
     path('api/remains/', doc_views.api_remains, name='api_remains'),
     path('docs/move/delete/<int:doc_id>/', doc_views.delete_move_doc, name='delete_move_doc'),
-path('qr/print-from-doc/', qr_views.print_qr_from_doc, name='print_qr_from_doc'),
+    path('qr/print-from-doc/', qr_views.print_qr_from_doc, name='print_qr_from_doc'),
+path('qr-selector/', qr_views.qr_selector, name='qr_selector'),
+path('api/qr-items/', qr_views.api_qr_items, name='api_qr_items'),
+path('qr/print-selected/', qr_views.print_selected_qr, name='print_selected_qr'),
+path('api/nom-by-id/<int:nom_id>/', spr_views.get_nom_by_id, name='get_nom_by_id'),
+    # ========== ОТЧЕТЫ ==========
+    # Сначала конкретные отчеты (более специфичные)
+    path('reports/incom/', report_views.incom_report, name='reports_incom'),
+    path('reports/incom/excel/', report_views.incom_report_excel, name='reports_incom_excel'),
+
+    # Потом общее меню отчетов (должно быть последним!)
+    path('reports/<str:section>/', report_views.reports_menu, name='reports'),
 ]
+
+

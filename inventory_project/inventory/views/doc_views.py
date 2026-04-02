@@ -1,4 +1,4 @@
-
+from django.utils import timezone
 from django.template.loader import render_to_string
 import json
 from django.db import transaction
@@ -84,7 +84,8 @@ def save_incom_doc(request):
                 fio=manage.fio,
                 obct=manage.obkt,
                 oper=2,
-                total=0
+                total=0,
+                update_date = timezone.now(),
             )
 
             total = 0
@@ -276,7 +277,8 @@ def save_move_doc(request):
                 fio_id=data['doc']['fio_id'],
                 obct_id=data['doc']['obct_to_id'],
                 oper=3,
-                total=0
+                total=0,
+                update_date=timezone.now(),
             )
 
             total = 0

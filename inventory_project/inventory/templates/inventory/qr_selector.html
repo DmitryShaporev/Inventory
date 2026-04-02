@@ -1,0 +1,368 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .category-filter {
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .category-btn {
+        padding: 5px 12px;
+        border: 1px solid #dee2e6;
+        background: white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .category-btn.active {
+        background: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+    }
+
+    .category-btn:hover {
+        background: #e9ecef;
+    }
+
+    .select-all {
+        margin-left: 10px;
+    }
+
+    .qr-table {
+        margin-top: 20px;
+    }
+
+    .qr-table th {
+        position: sticky;
+        top: 0;
+        background: #f8f9fa;
+    }
+
+    .table-container {
+        max-height: 60vh;
+        overflow-y: auto;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+
+    .search-input {
+        width: 300px;
+        margin-right: 10px;
+    }
+
+    .print-btn {
+        padding: 8px 24px;
+        font-size: 16px;
+    }
+
+    .selected-count {
+        background: #28a745;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>📦 Печать QR-кодов</h4>
+                <button class="btn btn-success print-btn" id="printSelectedBtn">
+                    🖨️ Печать выбранных (0)
+                </button>
+            </div>
+
+            <!-- Фильтры -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">🔍 Поиск</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="searchInput"
+                                   placeholder="Поиск по наименованию..."
+                                   autocomplete="off">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">📁 Категории</label>
+                            <div class="category-filter" id="categoryFilter">
+                                <button class="category-btn active" data-category="all">Все категории</button>
+                                {% for category in categories %}
+                                <button class="category-btn" data-category="{{ category.id }}">{{ category.title }}</button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица товаров -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Товары для печати</span>
+                    <div>
+                        <label class="me-2">
+                            <input type="checkbox" id="selectAllCheckbox"> Выбрать все
+                        </label>
+                        <span class="selected-count" id="selectedCount">0</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="table table-bordered table-hover mb-0" id="itemsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 40px">
+                                    <input type="checkbox" id="headerSelectAll">
+                                </th>
+                                <th>Наименование</th>
+                                <th style="width: 100px">Цена</th>
+                                <th style="width: 80px">Ед.изм.</th>
+                                <th style="width: 120px">Категория</th>
+                             </thead>
+                        <tbody id="itemsTableBody">
+                            <!-- Данные загружаются через AJAX -->
+                             <tr id="loadingRow">
+                                <td colspan="5" class="text-center py-4">
+                                    <div class="spinner-border text-secondary"></div> Загрузка...
+                                 </td>
+                             </tr>
+                        </tbody>
+                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+let allItems = [];      // Все товары
+let filteredItems = []; // Отфильтрованные товары
+let selectedItems = new Set(); // Выбранные товары (храним ID)
+
+// ========== ЗАГРУЗКА ДАННЫХ ==========
+function loadItems() {
+    $.ajax({
+        url: '/api/qr-items/',
+        method: 'GET',
+        success: function(response) {
+            if (response.status === 'ok') {
+                allItems = response.data;
+                filteredItems = [...allItems];
+                renderTable();
+            } else {
+                $('#itemsTableBody').html(`
+                    <tr><td colspan="5" class="text-center text-danger py-4">
+                        Ошибка загрузки данных
+                    </td></tr>
+                `);
+            }
+        },
+        error: function() {
+            $('#itemsTableBody').html(`
+                <tr><td colspan="5" class="text-center text-danger py-4">
+                    Ошибка загрузки данных
+                </td></tr>
+            `);
+        }
+    });
+}
+
+// ========== ОТРИСОВКА ТАБЛИЦЫ ==========
+function renderTable() {
+    if (filteredItems.length === 0) {
+        $('#itemsTableBody').html(`
+            <tr><td colspan="5" class="text-center text-muted py-4">
+                Нет товаров для отображения
+            </td></tr>
+        `);
+        updateSelectedCount();
+        return;
+    }
+
+    let html = '';
+    for (let item of filteredItems) {
+        const isChecked = selectedItems.has(item.id);
+        html += `
+            <tr data-id="${item.id}">
+                <td class="text-center">
+                    <input type="checkbox" class="item-checkbox" data-id="${item.id}" ${isChecked ? 'checked' : ''}>
+                </td>
+                <td>${escapeHtml(item.title)}</td>
+                <td class="text-end">${item.price.toFixed(2).replace('.', ',')} руб.</td>
+                <td class="text-center">${item.izm}</td>
+                <td>${item.category || '—'}</td>
+            </tr>
+        `;
+    }
+    $('#itemsTableBody').html(html);
+
+    // Привязываем обработчики к чекбоксам
+    $('.item-checkbox').on('change', function() {
+        const id = parseInt($(this).data('id'));
+        if ($(this).is(':checked')) {
+            selectedItems.add(id);
+        } else {
+            selectedItems.delete(id);
+        }
+        updateSelectedCount();
+        updateHeaderSelectAll();
+    });
+
+    updateSelectedCount();
+    updateHeaderSelectAll();
+}
+
+// ========== ОБНОВЛЕНИЕ СЧЕТЧИКА ==========
+function updateSelectedCount() {
+    const count = selectedItems.size;
+    $('#selectedCount').text(count);
+    $('#printSelectedBtn').html(`🖨️ Печать выбранных (${count})`);
+}
+
+// ========== ОБНОВЛЕНИЕ ЧЕКБОКСА "ВЫБРАТЬ ВСЕ" ==========
+function updateHeaderSelectAll() {
+    const visibleCount = filteredItems.length;
+    const selectedVisibleCount = filteredItems.filter(item => selectedItems.has(item.id)).length;
+    const $headerCheckbox = $('#headerSelectAll');
+
+    if (visibleCount === 0) {
+        $headerCheckbox.prop('checked', false).prop('indeterminate', false);
+    } else if (selectedVisibleCount === visibleCount) {
+        $headerCheckbox.prop('checked', true).prop('indeterminate', false);
+    } else if (selectedVisibleCount > 0) {
+        $headerCheckbox.prop('checked', false).prop('indeterminate', true);
+    } else {
+        $headerCheckbox.prop('checked', false).prop('indeterminate', false);
+    }
+}
+
+// ========== ВЫБОР ВСЕХ/СНЯТИЕ ==========
+function selectAllVisible(select) {
+    for (let item of filteredItems) {
+        if (select) {
+            selectedItems.add(item.id);
+        } else {
+            selectedItems.delete(item.id);
+        }
+    }
+    renderTable();
+}
+
+// ========== ФИЛЬТРАЦИЯ ==========
+function filterItems() {
+    const searchText = $('#searchInput').val().toLowerCase();
+    const activeCategory = $('.category-btn.active').data('category');
+
+    filteredItems = allItems.filter(item => {
+        // Фильтр по категории
+        if (activeCategory !== 'all' && item.category_id != activeCategory) {
+            return false;
+        }
+        // Фильтр по поиску
+        if (searchText && !item.title.toLowerCase().includes(searchText)) {
+            return false;
+        }
+        return true;
+    });
+
+    renderTable();
+}
+
+// ========== ПЕЧАТЬ ВЫБРАННЫХ QR-КОДОВ ==========
+function printSelected() {
+    if (selectedItems.size === 0) {
+        alert('Выберите хотя бы один товар для печати');
+        return;
+    }
+
+    // Находим выбранные товары
+    const selectedData = allItems.filter(item => selectedItems.has(item.id));
+
+    $.ajax({
+        url: '/qr/print-selected/',
+        method: 'POST',
+        data: JSON.stringify({ items: selectedData }),
+        contentType: 'application/json',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        success: function(response) {
+            if (response.html) {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(response.html);
+                printWindow.document.close();
+            } else {
+                alert('Ошибка при формировании QR-кодов');
+            }
+        },
+        error: function(xhr) {
+            alert('Ошибка: ' + xhr.responseText);
+        }
+    });
+}
+
+// ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// ========== ИНИЦИАЛИЗАЦИЯ ==========
+$(document).ready(function() {
+    // Загрузка данных
+    loadItems();
+
+    // Поиск
+    $('#searchInput').on('keyup', function() {
+        filterItems();
+    });
+
+    // Фильтр по категориям
+    $(document).on('click', '.category-btn', function() {
+        $('.category-btn').removeClass('active');
+        $(this).addClass('active');
+        filterItems();
+    });
+
+    // Чекбокс "Выбрать все" в заголовке
+    $('#headerSelectAll').on('change', function() {
+        const isChecked = $(this).is(':checked');
+        selectAllVisible(isChecked);
+    });
+
+    // Кнопка печати
+    $('#printSelectedBtn').on('click', printSelected);
+});
+</script>
+{% endblock %}

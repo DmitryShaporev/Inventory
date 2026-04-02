@@ -4,6 +4,91 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/comon_spr.css' %}">
+   <style>
+       /* Стили для подсказок */
+.scanner-hint-active {
+    color: #155724;
+    background-color: #d4edda;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.scanner-hint-inactive {
+    color: #721c24;
+    background-color: #f8d7da;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+#scannerHint {
+    margin-top: 5px;
+    display: block;
+}
+
+    /* Стили для поля сканера */
+    .row.g-3 {
+    margin-left: 0;
+    margin-right: 0;
+}
+    #scannerInput {
+        transition: all 0.2s ease;
+        border-width: 2px;
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    /* Обычное состояние (без фокуса) — желтый фон */
+    #scannerInput:not(:focus) {
+        background-color: #fff3cd;
+        border-color: #ffc107;
+    }
+
+    /* Состояние с фокусом — зеленый фон */
+    #scannerInput:focus {
+        background-color: #d4edda;
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+    }
+
+    /* Плейсхолдер в желтом состоянии */
+    #scannerInput:not(:focus)::placeholder {
+        color: #856404;
+        opacity: 1;
+    }
+
+    /* Плейсхолдер в зеленом состоянии */
+    #scannerInput:focus::placeholder {
+        color: #155724;
+        opacity: 1;
+    }
+
+    /* Убираем горизонтальный скролл */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    /* Фиксируем минимальную ширину таблицы */
+    #items-table {
+        min-width: 800px;
+    }
+
+    /* Скрываем ненужную кнопку */
+    #toggleScannerBtn {
+        display: none;
+    }
+
+    /* Выравнивание кнопки */
+    .btn-warning {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -18,8 +103,8 @@
                     от <span id="title-data">{{ doc.datadoc|date:'d.m.Y'|default:'' }}</span>
                 </h5>
                 <div>
-                    <button class="btn btn-sm btn-outline-success me-2" id="saveDocBtn">💾 Сохранить</button>
-                    <a href="{% url 'docs' 'move' %}" class="btn btn-sm btn-outline-secondary">✖ Отмена</a>
+                    <button class="btn btn-sm btn-success me-2" id="saveDocBtn">💾 Сохранить</button>
+                    <a href="{% url 'docs' 'move' %}" class="btn btn-sm btn-secondary">✖ Отмена</a>
                 </div>
             </div>
 
@@ -99,20 +184,38 @@
             </div>
 
             <!-- ========== ТАБЛИЧНАЯ ЧАСТЬ ========== -->
+           <!-- ========== ТАБЛИЧНАЯ ЧАСТЬ ========== -->
 <div class="card" style="margin-top:15px;">
     <div class="card-body p-0">
-        <div class="table-responsive">
-            <!-- Кнопка добавления строки -->
-            <div class="text-end" style="margin-bottom:15px; margin-top:15px;margin-right:15px">
-                <button class="btn btn-sm btn-warning"
-                        id="addMoveRowBtn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#remainsChoiceModal">
-                    + Добавить строку
+        <!-- ========== СТРОКА СКАНИРОВАНИЯ И ДОБАВЛЕНИЯ ========== -->
+        <div class="row" style="padding: 15px 15px 0 15px; margin-bottom: 15px;">
+            <div class="col-md-8">
+                <label class="form-label">📷 Сканер QR-кода</label>
+                <div class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           id="scannerInput"
+                           placeholder="🔍 Ввод со сканера "
+                           autofocus>
+                </div>
+                <small class="text-muted" id="scannerHint">
+                     <span id="hintText">Без фокуса: ручной ввод | С фокусом: сканирование</span>
+                </small>
+            </div>
+            <div class="col-md-4" style="display: flex; align-items: flex-end;">
+                <button class="btn btn-warning w-100" id="addMoveRowBtn" data-bs-toggle="modal" data-bs-target="#remainsChoiceModal" style="height: 44px; margin-bottom: 33px;">
+                    + Добавить строку вручную
                 </button>
             </div>
+        </div>
 
-            <!-- Таблица перемещаемых товаров (расширенная) -->
+        <!-- Таблица с прокруткой -->
+        <div class="table-responsive">
+            <!-- таблица -->
+        </div>
+    </div>
+</div>
+        <div class="table-responsive" style="margin-top: 10px;">
             <table class="table table-bordered mb-0" id="items-table">
                 <thead class="table-light">
                      <tr class="bg-warning bg-opacity-25">
@@ -194,62 +297,216 @@
         </div>
     </div>
 </div>
-        </div>
-    </div>
-</div>
 
 <!-- ========== МОДАЛЬНЫЕ ОКНА ========== -->
-
-<!-- Модалка выбора подотчетного лица -->
 {% include 'inventory/modals/fio_choice_modal.html' %}
-
-<!-- Модалка выбора склада-получателя -->
 {% include 'inventory/modals/obct_choice_modal.html' %}
+
+{% endblock %}
+
+
 
 <!-- Модалка выбора остатков (самая важная) -->
 
 
-{% endblock %}
 
 {% block extra_js %}
 <script>
-// ========== МОДАЛЬНОЕ ОКНО ОСТАТКОВ (встроенное) ==========
-$(document).ready(function() {
-    console.log('DOM готов');
+    // Динамическая подсказка при фокусе
+$('#scannerInput').on('focus', function() {
+    $('#hintText').html('📷 Сканер АКТИВЕН — можно сканировать QR-код')
+        .removeClass('scanner-hint-inactive')
+        .addClass('scanner-hint-active');
+});
 
-    // Создаем модалку динамически
-    if ($('#remainsChoiceModal').length === 0) {
-        $('body').append(`
-            <div class="modal fade" id="remainsChoiceModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Выбор ТМЦ для перемещения</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body bg-warning bg-opacity-25">
-                            <input type="text" class="form-control mb-3" placeholder="🔍 Поиск товара..." id="remainsSearch">
-                            <div id="remainsList" style="max-height: 400px; overflow-y: auto;">
-                                <table class="table table-bordered">
-                                    <thead class="table-light">
-                                        <tr><th>Наименование</th><th>Ед.изм.</th><th>Цена</th><th>Остаток</th><th></th></tr>
-                                    </thead>
-                                    <tbody id="remainsTableBody"><tr><td colspan="5" class="text-center py-3">Загрузка...</td></tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `);
+$('#scannerInput').on('blur', function() {
+    $('#hintText').html('⌨️ Ручной ввод — кликните для сканирования')
+        .removeClass('scanner-hint-active')
+        .addClass('scanner-hint-inactive');
+});
+// ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+let isEditMode = {{ is_edit|yesno:"true,false" }};
+let currentDocId = {% if is_edit %}{{ doc.id }}{% else %}null{% endif %};
+let rowCounter = 0;
+
+// ========== ОБРАБОТКА СКАНЕРА (видимое поле) ==========
+let scanBuffer = '';
+let scanTimer = null;
+
+// Обработка ввода в поле сканера
+$(document).ready(function() {
+    // Фокус на поле сканера при загрузке
+    $('#scannerInput').focus();
+
+    $('#scannerInput').on('keypress', function(e) {
+        const char = e.key;
+
+        if (/^[0-9a-zA-Z|.ю\/\\]$/i.test(char)) {
+            scanBuffer += char;
+
+            clearTimeout(scanTimer);
+            scanTimer = setTimeout(() => {
+                if (scanBuffer.length > 0) {
+                    processScannedCode(scanBuffer);
+                    scanBuffer = '';
+                    $('#scannerInput').val('');
+                }
+            }, 50);
+        }
+
+        if (e.key === 'Enter' && scanBuffer.length > 0) {
+            e.preventDefault();
+            processScannedCode(scanBuffer);
+            scanBuffer = '';
+            $('#scannerInput').val('');
+            clearTimeout(scanTimer);
+        }
+    });
+
+    // Очистка поля
+    $('#clearScannerBtn').on('click', function() {
+        $('#scannerInput').val('').focus();
+        scanBuffer = '';
+        clearTimeout(scanTimer);
+    });
+});
+
+// Обработка сканированного кода
+function processScannedCode(code) {
+    console.log('Сканировано:', code);
+
+    let processedCode = code;
+    processedCode = processedCode.replace(/ю/g, '.');
+    processedCode = processedCode.replace(/Ю/g, '.');
+    processedCode = processedCode.replace(/б/g, ',');
+    processedCode = processedCode.replace(/Б/g, ',');
+
+    let parts = processedCode.split('|');
+    if (parts.length === 1) parts = processedCode.split('/');
+    if (parts.length === 1) parts = processedCode.split('\\');
+    if (parts.length === 1) parts = processedCode.split(';');
+
+    if (parts.length >= 2) {
+        const idDigits = parts[0].replace(/[^0-9]/g, '');
+        const nomId = parseInt(idDigits);
+
+        let priceStr = parts[1];
+        priceStr = priceStr.replace(/[^0-9.,]/g, '');
+        priceStr = priceStr.replace(',', '.');
+        const price = parseFloat(priceStr);
+
+        if (!isNaN(nomId) && !isNaN(price) && price > 0) {
+            findAndAddScannedItem(nomId, price);
+            return;
+        }
     }
 
-    // Функция загрузки остатков
+    const possibleId = processedCode.replace(/[^0-9]/g, '');
+    if (possibleId) {
+        const nomId = parseInt(possibleId);
+        if (!isNaN(nomId)) {
+            const price = prompt('Введите цену для перемещения:', '0');
+            if (price !== null && price !== '') {
+                const priceNum = parseFloat(price.replace(',', '.'));
+                if (!isNaN(priceNum) && priceNum > 0) {
+                    findAndAddScannedItem(nomId, priceNum);
+                }
+            }
+        }
+    } else {
+        alert('Не удалось распознать штрих-код: ' + code);
+    }
+
+    $('#scannerInput').val('').focus();
+}
+
+function findAndAddScannedItem(nomId, price) {
+    console.log('Поиск товара ID:', nomId, 'цена:', price);
+
+    let existingRow = null;
+    $('.move-item-row').each(function() {
+        const $row = $(this);
+        const existingNomId = parseInt($row.find('.nom-id').val());
+        const existingPrice = parseFloat($row.find('.item-price').val().replace(',', '.'));
+        if (existingNomId === nomId && Math.abs(existingPrice - price) < 0.01) {
+            existingRow = $row;
+            return false;
+        }
+    });
+
+    if (existingRow) {
+        const kolvoInput = existingRow.find('.item-kolvo');
+        let currentKolvo = parseFloat(kolvoInput.val().replace(',', '.')) || 0;
+        currentKolvo += 1;
+        kolvoInput.val(currentKolvo.toFixed(3).replace('.', ','));
+        kolvoInput.trigger('change');
+        existingRow.css('background-color', '#d4edda');
+        setTimeout(() => existingRow.css('background-color', ''), 300);
+        console.log('Увеличено количество до:', currentKolvo);
+    } else {
+        $.ajax({
+            url: `/api/nom-by-id/${nomId}/`,
+            method: 'GET',
+            success: function(response) {
+                if (response.status === 'ok' && response.data) {
+                    addScannedMoveRow(response.data.id, response.data.title, response.data.izm, price, 22, 1);
+                } else {
+                    alert(`Товар с ID ${nomId} не найден`);
+                }
+            },
+            error: function() {
+                alert(`Товар с ID ${nomId} не найден`);
+            }
+        });
+    }
+}
+
+function addScannedMoveRow(nomId, nomTitle, izm, price, vatRate, quantity) {
+    rowCounter++;
+    let newRow = `
+        <tr id="move-row-${rowCounter}" class="move-item-row">
+            <td style="width: 30%">
+                <input type="text" class="form-control form-control-sm nom-name" value="${nomTitle}" readonly>
+                <input type="hidden" class="nom-id" value="${nomId}">
+            <\/td>
+            <td style="width: 8%">
+                <input type="text" class="form-control form-control-sm item-izm" value="${izm}" readonly>
+            <\/td>
+            <td style="width: 8%">
+                <input type="text" class="form-control form-control-sm item-kolvo" value="${quantity}" onchange="calculateMoveRow(this.closest('tr'))" style="text-align: right;">
+            <\/td>
+            <td style="width: 10%">
+                <input type="text" class="form-control form-control-sm item-price" value="${price.toFixed(2).replace('.', ',')}" readonly style="text-align: right;">
+            <\/td>
+            <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-cost-without-vat" value="0" readonly style="text-align: right;">
+            <\/td>
+            <td style="width: 10%">
+                <input type="text" class="form-control form-control-sm item-vat-rate" value="${vatRate}" onchange="calculateMoveRow(this.closest('tr'))" style="text-align: right;">
+            <\/td>
+            <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-vat-amount" value="0" readonly style="text-align: right;">
+            <\/td>
+            <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-total-with-vat" value="0" readonly style="text-align: right;">
+            <\/td>
+            <td class="text-center" style="width: 5%">
+                <button type="button" class="btn btn-sm btn-danger" onclick="removeMoveRow(this)">✕</button>
+            <\/td>
+        <\/tr>
+    `;
+    $('#move-items-tbody').append(newRow);
+    const $newRow = $(`#move-row-${rowCounter}`);
+    calculateMoveRow($newRow);
+    $newRow.find('.item-kolvo').focus();
+    $newRow.css('background-color', '#fff9c4');
+    setTimeout(() => $newRow.css('background-color', ''), 500);
+     $('#scannerInput').focus();
+}
+
+// ========== МОДАЛЬНОЕ ОКНО ОСТАТКОВ ==========
 function loadRemains() {
-    $('#remainsTableBody').html(`<tr><td colspan="5" class="text-center py-3">Загрузка...</td></tr>`);
+    $('#remainsTableBody').html(`<td colspan="5" class="text-center py-3">Загрузка...<\/td><\/tr>`);
     $.ajax({
         url: '/api/remains/',
         method: 'GET',
@@ -258,32 +515,26 @@ function loadRemains() {
                 let html = '';
                 for (let item of response.data) {
                     html += `
-                        <tr style="cursor: pointer;"
-                            onclick="selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.vat_rate}, ${item.quantity})">
-                             <td>${item.title}</td>
-                            <td class="text-center">${item.izm}</td>
-                            <td class="text-end">${item.price.toFixed(2).replace('.', ',')}</td>
-                            <td class="text-end">${item.quantity}</td>
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-warning"
-                                        onclick="event.stopPropagation(); selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.vat_rate}, ${item.quantity})">
-                                    Выбрать
-                                </button>
-                            </td>
-                        </tr>
+                        <tr style="cursor: pointer;" onclick="selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.vat_rate}, ${item.quantity})">
+                            <td>${item.title}<\/td>
+                            <td class="text-center">${item.izm}<\/td>
+                            <td class="text-end">${item.price.toFixed(2).replace('.', ',')}<\/td>
+                            <td class="text-end">${item.quantity}<\/td>
+                            <td class="text-center"><button class="btn btn-sm btn-warning" onclick="event.stopPropagation(); selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.vat_rate}, ${item.quantity})">Выбрать<\/button><\/td>
+                        <\/tr>
                     `;
                 }
                 $('#remainsTableBody').html(html);
             } else {
-                $('#remainsTableBody').html(`<tr><td colspan="5" class="text-center text-muted py-3">Нет товаров на складе</td></tr>`);
+                $('#remainsTableBody').html(`<td colspan="5" class="text-center text-muted py-3">Нет товаров на складе<\/td><\/tr>`);
             }
         },
         error: function() {
-            $('#remainsTableBody').html(`<tr><td colspan="5" class="text-center text-danger py-3">Ошибка загрузки</td></tr>`);
+            $('#remainsTableBody').html(`<td colspan="5" class="text-center text-danger py-3">Ошибка загрузки<\/td><\/tr>`);
         }
     });
 }
-    // Функция выбора
+
 window.selectRemainsItem = function(id, title, izm, price, vatRate, maxQty) {
     $('#remainsChoiceModal').modal('hide');
     const qty = prompt(`Введите количество для перемещения (макс. ${maxQty}):`, '1');
@@ -297,139 +548,69 @@ window.selectRemainsItem = function(id, title, izm, price, vatRate, maxQty) {
         alert(`Максимум: ${maxQty}`);
     }
 };
-    // Открытие модалки
-    $('#addMoveRowBtn').on('click', function() {
-        loadRemains();
-        $('#remainsChoiceModal').modal('show');
-    });
 
-    // Поиск
-    $(document).on('keyup', '#remainsSearch', function() {
-        const search = $(this).val().toLowerCase();
-        $('#remainsTableBody tr').each(function() {
-            const text = $(this).text().toLowerCase();
-            $(this).toggle(text.includes(search));
-        });
-    });
-});
-</script>
-
-<script>
-// ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
-let isEditMode = {{ is_edit|yesno:"true,false" }};
-let currentDocId = {% if is_edit %}{{ doc.id }}{% else %}null{% endif %};
-let rowCounter = 0;
-
-// ========== УДАЛЕНИЕ СТРОКИ ==========
+// ========== ОСНОВНЫЕ ФУНКЦИИ ДОКУМЕНТА ==========
 function removeMoveRow(btn) {
     $(btn).closest('tr').remove();
     calculateMoveTotal();
 }
 
-
-/// ========== РАСЧЕТ СТРОКИ ПЕРЕМЕЩЕНИЯ (с НДС) ==========
 function calculateMoveRow(row) {
     const $row = $(row);
-
     function parseLocalNumber(str) {
         if (!str) return 0;
         return parseFloat(str.replace(',', '.')) || 0;
     }
-
     const kolvo = parseLocalNumber($row.find('.item-kolvo').val());
     const price = parseLocalNumber($row.find('.item-price').val());
     const vatRate = parseLocalNumber($row.find('.item-vat-rate').val());
-
-    // Расчеты
     const costWithoutVat = kolvo * price;
     const vatAmount = costWithoutVat * vatRate / 100;
     const totalWithVat = costWithoutVat + vatAmount;
-
-    // Заполняем поля
     $row.find('.item-cost-without-vat').val(costWithoutVat.toFixed(2).replace('.', ','));
     $row.find('.item-vat-amount').val(vatAmount.toFixed(2).replace('.', ','));
     $row.find('.item-total-with-vat').val(totalWithVat.toFixed(2).replace('.', ','));
-
     calculateMoveTotal();
 }
 
-// ========== РАСЧЕТ ОБЩЕЙ СУММЫ (с НДС) ==========
 function calculateMoveTotal() {
-    let totalCostWithoutVat = 0;
-    let totalVatAmount = 0;
-    let totalTotalWithVat = 0;
-
+    let totalCostWithoutVat = 0, totalVatAmount = 0, totalTotalWithVat = 0;
     function parseLocalNumber(str) {
         if (!str) return 0;
         return parseFloat(str.replace(',', '.')) || 0;
     }
-
     $('.move-item-row').each(function() {
         const $row = $(this);
         totalCostWithoutVat += parseLocalNumber($row.find('.item-cost-without-vat').val());
         totalVatAmount += parseLocalNumber($row.find('.item-vat-amount').val());
         totalTotalWithVat += parseLocalNumber($row.find('.item-total-with-vat').val());
     });
-
-    // Обновляем итоговые строки
     $('#total-cost-without-vat').text(totalCostWithoutVat.toFixed(2).replace('.', ','));
     $('#total-vat-amount').text(totalVatAmount.toFixed(2).replace('.', ','));
     $('#total-total-with-vat').text(totalTotalWithVat.toFixed(2).replace('.', ','));
 }
 
-// ========== ДОБАВЛЕНИЕ СТРОКИ (вызывается из модалки остатков) ==========
 function addMoveRow(nomId, nomTitle, izm, price, vatRate, maxQuantity) {
     rowCounter++;
     let newRow = `
         <tr id="move-row-${rowCounter}" class="move-item-row">
-            <td style="width: 30%">
-                <input type="text" class="form-control form-control-sm nom-name"
-                       value="${nomTitle}" readonly>
-                <input type="hidden" class="nom-id" value="${nomId}">
-            </td>
-            <td style="width: 8%">
-                <input type="text" class="form-control form-control-sm item-izm"
-                       value="${izm}" readonly>
-            </td>
-            <td style="width: 8%">
-                <input type="text" class="form-control form-control-sm item-kolvo"
-                       value="1" onchange="calculateMoveRow(this.closest('tr'))"
-                       style="text-align: right;">
-            </td>
-            <td style="width: 10%">
-                <input type="text" class="form-control form-control-sm item-price"
-                       value="${price}" readonly style="text-align: right;">
-            </td>
-            <td style="width: 12%">
-                <input type="text" class="form-control form-control-sm item-cost-without-vat"
-                       value="0" readonly style="text-align: right;">
-            </td>
-            <td style="width: 10%">
-                <input type="text" class="form-control form-control-sm item-vat-rate"
-                       value="${vatRate}" onchange="calculateMoveRow(this.closest('tr'))"
-                       style="text-align: right;">
-            </td>
-            <td style="width: 12%">
-                <input type="text" class="form-control form-control-sm item-vat-amount"
-                       value="0" readonly style="text-align: right;">
-            </td>
-            <td style="width: 12%">
-                <input type="text" class="form-control form-control-sm item-total-with-vat"
-                       value="0" readonly style="text-align: right;">
-            </td>
-            <td class="text-center" style="width: 5%">
-                <button type="button" class="btn btn-sm btn-danger" onclick="removeMoveRow(this)">✕</button>
-            </td>
-        </tr>
+            <td style="width: 30%"><input type="text" class="form-control form-control-sm nom-name" value="${nomTitle}" readonly><input type="hidden" class="nom-id" value="${nomId}"><\/td>
+            <td style="width: 8%"><input type="text" class="form-control form-control-sm item-izm" value="${izm}" readonly><\/td>
+            <td style="width: 8%"><input type="text" class="form-control form-control-sm item-kolvo" value="1" onchange="calculateMoveRow(this.closest('tr'))" style="text-align: right;"><\/td>
+            <td style="width: 10%"><input type="text" class="form-control form-control-sm item-price" value="${price}" readonly style="text-align: right;"><\/td>
+            <td style="width: 12%"><input type="text" class="form-control form-control-sm item-cost-without-vat" value="0" readonly style="text-align: right;"><\/td>
+            <td style="width: 10%"><input type="text" class="form-control form-control-sm item-vat-rate" value="${vatRate}" onchange="calculateMoveRow(this.closest('tr'))" style="text-align: right;"><\/td>
+            <td style="width: 12%"><input type="text" class="form-control form-control-sm item-vat-amount" value="0" readonly style="text-align: right;"><\/td>
+            <td style="width: 12%"><input type="text" class="form-control form-control-sm item-total-with-vat" value="0" readonly style="text-align: right;"><\/td>
+            <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeMoveRow(this)">✕<\/button><\/td>
+        <\/tr>
     `;
     $('#move-items-tbody').append(newRow);
-
     const $newRow = $(`#move-row-${rowCounter}`);
     calculateMoveRow($newRow);
     $newRow.find('.item-kolvo').focus();
 }
 
-// ========== ФУНКЦИИ ВЫБОРА ==========
 function selectFio(id, title) {
     $('#fio_display').val(title);
     $('#fio_id').val(id);
@@ -442,60 +623,6 @@ function selectObct(id, title) {
     $('#obctChoiceModal').modal('hide');
 }
 
-// ========== ВЫБОР ТОВАРА ИЗ ОСТАТКОВ ==========
-function selectRemains(nomId, nomTitle, price, maxQuantity) {
-    // Закрываем модалку остатков
-    $('#remainsChoiceModal').modal('hide');
-
-    // Запрашиваем количество
-    const quantity = prompt(`Введите количество для перемещения (макс. ${maxQuantity}):`, '1');
-
-    if (quantity === null) return; // Отмена
-
-    const qty = parseFloat(quantity);
-    if (isNaN(qty) || qty <= 0) {
-        alert('Введите корректное количество');
-        return;
-    }
-
-    if (qty > maxQuantity) {
-        alert(`Недостаточно товара на складе! Доступно: ${maxQuantity}`);
-        return;
-    }
-
-    // Добавляем строку
-    rowCounter++;
-    let newRow = `
-        <tr id="move-row-${rowCounter}" class="move-item-row">
-            <td>
-                <input type="text" class="form-control form-control-sm nom-name"
-                       value="${nomTitle}" readonly>
-                <input type="hidden" class="nom-id" value="${nomId}">
-             </td>
-            <td>
-                <input type="text" class="form-control form-control-sm item-price"
-                       value="${price}" readonly style="text-align: right;">
-             </td>
-            <td>
-                <input type="text" class="form-control form-control-sm item-kolvo"
-                       value="${qty}" onchange="calculateMoveRow(this.closest('tr'))"
-                       style="text-align: right;">
-             </td>
-            <td>
-                <input type="text" class="form-control form-control-sm item-cost"
-                       value="${(price * qty).toFixed(2)}" readonly style="text-align: right;">
-             </td>
-            <td class="text-center">
-                <button type="button" class="btn btn-sm btn-danger" onclick="removeMoveRow(this)">✕</button>
-             </td>
-         </tr>
-    `;
-    $('#move-items-tbody').append(newRow);
-    calculateMoveTotal();
-}
-
-// ========== СБОР ДАННЫХ ДЛЯ СОХРАНЕНИЯ ==========
-// ========== СБОР ДАННЫХ ДЛЯ СОХРАНЕНИЯ ==========
 function collectMoveDocumentData() {
     const docData = {
         nomer: $('#input-nomer').val().trim(),
@@ -503,7 +630,6 @@ function collectMoveDocumentData() {
         fio_id: $('#fio_id').val(),
         obct_to_id: $('#obct_to_id').val()
     };
-
     const items = [];
     $('.move-item-row').each(function() {
         const $row = $(this);
@@ -511,144 +637,109 @@ function collectMoveDocumentData() {
             nom_id: $row.find('.nom-id').val(),
             kolvo: $row.find('.item-kolvo').val(),
             price: $row.find('.item-price').val(),
-            vat_rate: $row.find('.item-vat-rate').val(),  // ← добавить
+            vat_rate: $row.find('.item-vat-rate').val(),
             cost_without_vat: $row.find('.item-cost-without-vat').val(),
             vat_amount: $row.find('.item-vat-amount').val(),
             total_with_vat: $row.find('.item-total-with-vat').val()
         });
     });
-
     return { doc: docData, items: items };
 }
 
-// ========== СОХРАНЕНИЕ ДОКУМЕНТА ==========
 function saveMoveDocument() {
     const data = collectMoveDocumentData();
-
-    if (!data.doc.nomer) {
-        alert('Введите номер документа');
-        $('#input-nomer').focus();
-        return;
-    }
-    if (!data.doc.fio_id) {
-        alert('Выберите подотчетное лицо');
-        return;
-    }
-    if (!data.doc.obct_to_id) {
-        alert('Выберите объект');
-        return;
-    }
-
-
+    if (!data.doc.nomer) { alert('Введите номер документа'); $('#input-nomer').focus(); return; }
+    if (!data.doc.fio_id) { alert('Выберите подотчетное лицо'); return; }
+    if (!data.doc.obct_to_id) { alert('Выберите объект'); return; }
     const url = isEditMode ? `/docs/move/update/${currentDocId}/` : '/docs/move/save/';
-
     $.ajax({
         url: url,
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(data),
         headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-        success: function(response) {
-            window.location.href = '/menu/docs/move/';
-        },
-        error: function(xhr) {
-            alert('Ошибка: ' + xhr.responseText);
-        }
+        success: function() { window.location.href = '/menu/docs/move/'; },
+        error: function(xhr) { alert('Ошибка: ' + xhr.responseText); }
     });
 }
 
-// ========== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ==========
+// ========== ИНИЦИАЛИЗАЦИЯ ==========
 $(document).ready(function() {
     console.log('DOM готов, jQuery работает!');
 
-    // ========== ПРЕОБРАЗУЕМ ОТРИЦАТЕЛЬНЫЕ ЗНАЧЕНИЯ ==========
-    $('.move-item-row').each(function() {
-        const $row = $(this);
-
-        // Количество
-        let kolvo = $row.find('.item-kolvo').val();
-        if (kolvo && parseFloat(kolvo) < 0) {
-            $row.find('.item-kolvo').val(Math.abs(parseFloat(kolvo)).toFixed(3));
-        }
-
-        // Цена
-        let price = $row.find('.item-price').val();
-        if (price && parseFloat(price) < 0) {
-            $row.find('.item-price').val(Math.abs(parseFloat(price)).toFixed(2));
-        }
-
-        // Стоимость
-        let cost = $row.find('.item-cost').val();
-        if (cost && parseFloat(cost) < 0) {
-            $row.find('.item-cost').val(Math.abs(parseFloat(cost)).toFixed(2));
-        }
-
-        console.log('kolvo before:', $row.find('.item-kolvo').val());
-console.log('price before:', $row.find('.item-price').val());
-console.log('cost before:', $row.find('.item-cost').val());
-    });
-
-
-    // Устанавливаем rowCounter на основе существующих строк
-    if ($('.move-item-row').length > 0) {
-        rowCounter = $('.move-item-row').length;
+    // Создаем модалку остатков
+    if ($('#remainsChoiceModal').length === 0) {
+        $('body').append(`
+            <div class="modal fade" id="remainsChoiceModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header"><h5 class="modal-title">Выбор ТМЦ для перемещения</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button><\/div>
+                        <div class="modal-body bg-warning bg-opacity-25">
+                            <input type="text" class="form-control mb-3" placeholder="🔍 Поиск товара..." id="remainsSearch">
+                            <div id="remainsList" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table table-bordered">
+                                    <thead class="table-light"> <th>Наименование</th><th>Ед.изм.</th><th>Цена</th><th>Остаток</th><th></th><\/tr><\/thead>
+                                    <tbody id="remainsTableBody"><td colspan="5" class="text-center py-3">Загрузка...<\/td><\/tr><\/tbody>
+                                <\/table>
+                            <\/div>
+                        <\/div>
+                        <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button><\/div>
+                    <\/div>
+                <\/div>
+            <\/div>
+        `);
     }
 
-calculateMoveTotal();
     // Обработчики
+    $('#addMoveRowBtn').on('click', function() { loadRemains(); $('#remainsChoiceModal').modal('show'); });
     $('#saveDocBtn').on('click', saveMoveDocument);
-    $('#addMoveRowBtn').on('click', function() {
-        $('#remainsChoiceModal').modal('show');
+
+    $(document).on('keyup', '#remainsSearch', function() {
+        const search = $(this).val().toLowerCase();
+        $('#remainsTableBody tr').each(function() { $(this).toggle($(this).text().toLowerCase().includes(search)); });
     });
 
     // Навигация по Enter
-    $('#input-nomer').on('keypress', function(e) {
-        if (e.which === 13) {
-            e.preventDefault();
-            $('#input-datadoc').focus();
-        }
-    });
-
-    $('#input-datadoc').on('keypress', function(e) {
-        if (e.which === 13) {
-            e.preventDefault();
-            $('#fio_display').closest('.d-flex').find('button').focus();
-        }
-    });
+    $('#input-nomer').on('keypress', function(e) { if (e.which === 13) { e.preventDefault(); $('#input-datadoc').focus(); } });
+    $('#input-datadoc').on('keypress', function(e) { if (e.which === 13) { e.preventDefault(); $('#fio_display').closest('.d-flex').find('button').focus(); } });
 
     // Обновление заголовка
-    $('#input-nomer').on('change input', function() {
-        $('#title-nomer').text($(this).val());
-    });
-
+    $('#input-nomer').on('change input', function() { $('#title-nomer').text($(this).val()); });
     $('#input-datadoc').on('change', function() {
         let dateValue = $(this).val();
         if (dateValue) {
             let parts = dateValue.split('-');
-            if (parts.length === 3) {
-                $('#title-data').text(parts[2] + '.' + parts[1] + '.' + parts[0]);
-            }
+            if (parts.length === 3) $('#title-data').text(parts[2] + '.' + parts[1] + '.' + parts[0]);
         }
     });
-
     let initialDate = $('#input-datadoc').val();
     if (initialDate) {
         let parts = initialDate.split('-');
-        if (parts.length === 3) {
-            $('#title-data').text(parts[2] + '.' + parts[1] + '.' + parts[0]);
-        }
+        if (parts.length === 3) $('#title-data').text(parts[2] + '.' + parts[1] + '.' + parts[0]);
     }
+
+    // Преобразование отрицательных значений
+    $('.move-item-row').each(function() {
+        const $row = $(this);
+        let kolvo = $row.find('.item-kolvo').val();
+        if (kolvo && parseFloat(kolvo) < 0) $row.find('.item-kolvo').val(Math.abs(parseFloat(kolvo)).toFixed(3));
+        let price = $row.find('.item-price').val();
+        if (price && parseFloat(price) < 0) $row.find('.item-price').val(Math.abs(parseFloat(price)).toFixed(2));
+        let cost = $row.find('.item-cost').val();
+        if (cost && parseFloat(cost) < 0) $row.find('.item-cost').val(Math.abs(parseFloat(cost)).toFixed(2));
+    });
+
+    if ($('.move-item-row').length > 0) rowCounter = $('.move-item-row').length;
+    calculateMoveTotal();
 });
 
-
-    // ========== ДЕЛАЕМ ФУНКЦИИ ГЛОБАЛЬНЫМИ ==========
+// Глобальные функции
 window.calculateMoveRow = calculateMoveRow;
 window.addMoveRow = addMoveRow;
 window.selectRemainsItem = selectRemainsItem;
 window.selectFio = selectFio;
 window.selectObct = selectObct;
 window.removeMoveRow = removeMoveRow;
-window.selectRemains = selectRemains;
 window.collectMoveDocumentData = collectMoveDocumentData;
 window.saveMoveDocument = saveMoveDocument;
 </script>
