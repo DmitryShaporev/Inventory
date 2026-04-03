@@ -514,13 +514,14 @@ function loadRemains() {
             if (response.status === 'ok' && response.data && response.data.length > 0) {
                 let html = '';
                 for (let item of response.data) {
+                    const priceFormatted = item.price.toFixed(2).replace('.', ',');
                     html += `
-                        <tr style="cursor: pointer;" onclick="selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.vat_rate}, ${item.quantity})">
+                        <tr style="cursor: pointer;" onclick="selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.quantity})">
                             <td>${item.title}<\/td>
                             <td class="text-center">${item.izm}<\/td>
-                            <td class="text-end">${item.price.toFixed(2).replace('.', ',')}<\/td>
+                            <td class="text-end">${priceFormatted}<\/td>
                             <td class="text-end">${item.quantity}<\/td>
-                            <td class="text-center"><button class="btn btn-sm btn-warning" onclick="event.stopPropagation(); selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.vat_rate}, ${item.quantity})">Выбрать<\/button><\/td>
+                            <td class="text-center"><button class="btn btn-sm btn-warning" onclick="event.stopPropagation(); selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.quantity})">Выбрать<\/button><\/td>
                         <\/tr>
                     `;
                 }
@@ -534,7 +535,6 @@ function loadRemains() {
         }
     });
 }
-
 window.selectRemainsItem = function(id, title, izm, price, vatRate, maxQty) {
     $('#remainsChoiceModal').modal('hide');
     const qty = prompt(`Введите количество для перемещения (макс. ${maxQty}):`, '1');
@@ -590,25 +590,47 @@ function calculateMoveTotal() {
     $('#total-total-with-vat').text(totalTotalWithVat.toFixed(2).replace('.', ','));
 }
 
-function addMoveRow(nomId, nomTitle, izm, price, vatRate, maxQuantity) {
+function addMoveRow(nomId, nomTitle, izm, price, vatRate, quantity) {
     rowCounter++;
     let newRow = `
         <tr id="move-row-${rowCounter}" class="move-item-row">
-            <td style="width: 30%"><input type="text" class="form-control form-control-sm nom-name" value="${nomTitle}" readonly><input type="hidden" class="nom-id" value="${nomId}"><\/td>
-            <td style="width: 8%"><input type="text" class="form-control form-control-sm item-izm" value="${izm}" readonly><\/td>
-            <td style="width: 8%"><input type="text" class="form-control form-control-sm item-kolvo" value="1" onchange="calculateMoveRow(this.closest('tr'))" style="text-align: right;"><\/td>
-            <td style="width: 10%"><input type="text" class="form-control form-control-sm item-price" value="${price}" readonly style="text-align: right;"><\/td>
-            <td style="width: 12%"><input type="text" class="form-control form-control-sm item-cost-without-vat" value="0" readonly style="text-align: right;"><\/td>
-            <td style="width: 10%"><input type="text" class="form-control form-control-sm item-vat-rate" value="${vatRate}" onchange="calculateMoveRow(this.closest('tr'))" style="text-align: right;"><\/td>
-            <td style="width: 12%"><input type="text" class="form-control form-control-sm item-vat-amount" value="0" readonly style="text-align: right;"><\/td>
-            <td style="width: 12%"><input type="text" class="form-control form-control-sm item-total-with-vat" value="0" readonly style="text-align: right;"><\/td>
-            <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeMoveRow(this)">✕<\/button><\/td>
+            <td style="width: 30%">
+                <input type="text" class="form-control form-control-sm nom-name" value="${nomTitle}" readonly>
+                <input type="hidden" class="nom-id" value="${nomId}">
+            <\/td>
+            <td style="width: 8%">
+                <input type="text" class="form-control form-control-sm item-izm" value="${izm}" readonly>
+            <\/td>
+            <td style="width: 8%">
+                <input type="text" class="form-control form-control-sm item-kolvo" value="${quantity}" onchange="calculateMoveRow(this.closest('tr'))" style="text-align: right;">
+            <\/td>
+            <td style="width: 10%">
+                <input type="text" class="form-control form-control-sm item-price" value="${price}" readonly style="text-align: right;">
+            <\/td>
+            <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-cost-without-vat" value="0" readonly style="text-align: right;">
+            <\/td>
+            <td style="width: 10%">
+                <input type="text" class="form-control form-control-sm item-vat-rate" value="${vatRate}" onchange="calculateMoveRow(this.closest('tr'))" style="text-align: right;">
+            <\/td>
+            <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-vat-amount" value="0" readonly style="text-align: right;">
+            <\/td>
+            <td style="width: 12%">
+                <input type="text" class="form-control form-control-sm item-total-with-vat" value="0" readonly style="text-align: right;">
+            <\/td>
+            <td class="text-center" style="width: 5%">
+                <button type="button" class="btn btn-sm btn-danger" onclick="removeMoveRow(this)">✕</button>
+            <\/td>
         <\/tr>
     `;
     $('#move-items-tbody').append(newRow);
     const $newRow = $(`#move-row-${rowCounter}`);
     calculateMoveRow($newRow);
     $newRow.find('.item-kolvo').focus();
+    $newRow.css('background-color', '#fff9c4');
+    setTimeout(() => $newRow.css('background-color', ''), 500);
+    $('#scannerInput').focus();
 }
 
 function selectFio(id, title) {

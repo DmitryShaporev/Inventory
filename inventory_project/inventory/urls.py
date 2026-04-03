@@ -51,9 +51,19 @@ path('api/nom-by-id/<int:nom_id>/', spr_views.get_nom_by_id, name='get_nom_by_id
     # Сначала конкретные отчеты (более специфичные)
     path('reports/incom/', report_views.incom_report, name='reports_incom'),
     path('reports/incom/excel/', report_views.incom_report_excel, name='reports_incom_excel'),
+    path('reports/move/', report_views.move_report, name='reports_move'),
+    path('reports/move/excel/', report_views.move_report_excel, name='reports_move_excel'),
+    path('reports/remain/', report_views.remain_report, name='reports_remain'),
+    path('reports/remain/excel/', report_views.remain_report_excel, name='reports_remain_excel'),
+# Карточка товара
+    path('reports/nom-card/<int:nom_id>/', report_views.nom_card, name='nom_card'),
 
     # Потом общее меню отчетов (должно быть последним!)
     path('reports/<str:section>/', report_views.reports_menu, name='reports'),
+
+
+
+
 ]
 
 

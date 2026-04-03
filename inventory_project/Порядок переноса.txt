@@ -19,3 +19,27 @@ DATABASES = {
 1233ю45__487__2
 
 
+Или вручную через проводник:
+
+Зайди в inventory_project/inventory/migrations/
+
+Удали все файлы, кроме __init__.py
+
+Удали папку __pycache__ (если есть)
+
+🔧 Шаг 3: Создай новые миграции
+bash
+python manage.py makemigrations
+python manage.py migrate
+👤 Шаг 4: Создай суперпользователя
+bash
+python manage.py createsuperuser
+📦 Шаг 5: Перенеси данные из старой базы
+Теперь запусти свой скрипт для переноса данных:
+
+bash
+python manage.py migrate_old
+✅ Шаг 6: Проверь результат
+bash
+python manage.py runserver
+Открой админку и проверь, что данные перенеслись.

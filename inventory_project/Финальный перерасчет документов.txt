@@ -1,0 +1,167 @@
+-- =====================================================
+-- ПЕРЕСЧЕТ ДАННЫХ В ТАБЛИЦЕ detail
+-- Исходные данные: price и cost — с НДС
+-- Цель: привести к новой модели (price и cost — без НДС)
+-- =====================================================
+
+-- Шаг 1: Посмотрим, что у нас есть (для проверки)
+SELECT
+    id,
+    id_nom,
+    kolvo,
+    price as old_price_with_vat,
+    cost as old_cost_with_vat,
+    vat_rate,
+    vat_amount as old_vat_amount,
+    total_with_vat as old_total_with_vat
+FROM detail
+WHERE vat_rate IS NOT NULL AND vat_rate != 0
+LIMIT 10;
+
+-- Шаг 2: Пересчитываем для записей с НДС (vat_rate > 0)
+-- Формулы:
+--   total_with_vat = old_cost_with_vat (сохраняем старую стоимость с НДС)
+--   cost = total_with_vat / (1 + vat_rate/100)  (стоимость без НДС)
+--   vat_amount = total_with_vat - cost
+--   price = cost / kolvo (новая цена без НДС)
+UPDATE detail
+SET
+    total_with_vat = cost,
+    cost = ROUND(cost / (1 + vat_rate/100), 2),
+    vat_amount = ROUND(cost - (cost / (1 + vat_rate/100)), 2),
+    price = ROUND((cost / (1 + vat_rate/100)) / kolvo, 2)
+WHERE vat_rate IS NOT NULL
+  AND vat_rate != 0
+  AND kolvo != 0;
+
+-- Шаг 3: Для записей без НДС (vat_rate = 0)
+UPDATE detail
+SET
+    total_with_vat = cost,
+    vat_amount = 0,
+    price = ROUND(cost / kolvo, 2)
+WHERE (vat_rate IS NULL OR vat_rate = 0)
+  AND kolvo != 0;
+
+-- Шаг 4: Проверяем результат
+SELECT
+    id,
+    kolvo,
+    price as new_price_without_vat,
+    cost as new_cost_without_vat,
+    vat_rate,
+    vat_amount as new_vat_amount,
+    total_with_vat as new_total_with_vat,
+    ROUND(cost * (1 + vat_rate/100), 2) as check_total_with_vat,
+    ROUND(cost / kolvo, 2) as check_price
+FROM detail
+WHERE vat_rate IS NOT NULL AND vat_rate != 0
+LIMIT 10;
+
+-- Шаг 5: Проверка — должны совпадать total_with_vat и check_total_with_vat
+SELECT
+    COUNT(*) as total_count,
+    SUM(CASE WHEN ROUND(cost * (1 + vat_rate/100), 2) = total_with_vat THEN 1 ELSE 0 END) as correct_count,
+    SUM(CASE WHEN ROUND(cost * (1 + vat_rate/100), 2) != total_with_vat THEN 1 ELSE 0 END) as error_count
+FROM detail
+WHERE vat_rate IS NOT NULL AND vat_rate != 0;
+
+Вот тут продолжение - теперь вычисляем НДС и сумму с НДС
+-- =====================================================
+-- ДОРАСЧЕТ НЕДОСТАЮЩИХ ПОЛЕЙ В detail
+-- Уже есть: price (без НДС), cost (без НДС), vat_rate
+-- Нужно: vat_amount, total_with_vat
+-- =====================================================
+
+-- Шаг 1: Посмотрим, что нужно обновить
+SELECT
+    id,
+    cost,
+    vat_rate,
+    vat_amount as old_vat_amount,
+    total_with_vat as old_total_with_vat,
+    ROUND(cost * vat_rate / 100, 2) as new_vat_amount,
+    ROUND(cost + (cost * vat_rate / 100), 2) as new_total_with_vat
+FROM detail
+WHERE vat_rate IS NOT NULL
+  AND vat_rate != 0
+  AND (vat_amount IS NULL OR vat_amount = 0 OR total_with_vat IS NULL OR total_with_vat = 0)
+LIMIT 10;
+
+-- Шаг 2: Обновляем vat_amount и total_with_vat для записей с НДС
+UPDATE detail
+SET
+    vat_amount = ROUND(cost * vat_rate / 100, 2),
+    total_with_vat = ROUND(cost + (cost * vat_rate / 100), 2)
+WHERE vat_rate IS NOT NULL
+  AND vat_rate != 0;
+
+-- Шаг 3: Для записей без НДС
+UPDATE detail
+SET
+    vat_amount = 0,
+    total_with_vat = cost
+WHERE vat_rate IS NULL OR vat_rate = 0;
+
+-- Шаг 4: Проверяем результат
+SELECT
+    id,
+    cost,
+    vat_rate,
+    vat_amount as new_vat_amount,
+    total_with_vat as new_total_with_vat,
+    ROUND(cost + vat_amount, 2) as check_total
+FROM detail
+WHERE vat_rate IS NOT NULL AND vat_rate != 0
+LIMIT 10;
+
+-- Шаг 5: Проверка — все строки должны совпадать
+SELECT
+    COUNT(*) as total_count,
+    SUM(CASE WHEN ROUND(cost + vat_amount, 2) = total_with_vat THEN 1 ELSE 0 END) as correct_count,
+    SUM(CASE WHEN ROUND(cost + vat_amount, 2) != total_with_vat THEN 1 ELSE 0 END) as error_count
+FROM detail
+WHERE vat_rate IS NOT NULL AND vat_rate != 0;
+
+
+-- Пересчитать цену без НДС из total_with_vat и kolvo
+UPDATE detail
+SET price = ROUND(total_with_vat / kolvo, 2)
+WHERE kolvo != 0;
+
+А вот тут итоги в документах
+-- =====================================================
+-- ОБНОВЛЕНИЕ ИТОГОВ В ТАБЛИЦЕ doc
+-- =====================================================
+
+-- Обновляем итоги документов
+UPDATE doc
+SET total = COALESCE((
+    SELECT SUM(total_with_vat)
+    FROM detail
+    WHERE id_doc = doc.id
+), 0);
+
+-- Для документов без строк
+UPDATE doc
+SET total = 0
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM detail
+    WHERE id_doc = doc.id
+);
+
+-- Проверка
+SELECT
+    d.id,
+    d.nomer,
+    d.total as doc_total,
+    COALESCE(SUM(dt.total_with_vat), 0) as sum_from_details,
+    CASE
+        WHEN COALESCE(SUM(dt.total_with_vat), 0) = d.total THEN 'OK'
+        ELSE 'ERROR'
+    END as status
+FROM doc d
+LEFT JOIN detail dt ON d.id = dt.id_doc
+GROUP BY d.id, d.nomer, d.total
+LIMIT 20;

@@ -1,0 +1,70 @@
+{% load abs_filter %}
+
+<div class="total-summary">
+    <div class="row">
+        <div class="col-md-6">
+            <span>📅 Отчет на дату: <strong>{% now "d.m.Y" %}</strong></span>
+        </div>
+        <div class="col-md-6 text-end">
+            <span>📄 Всего позиций: <strong>{{ remains|length }}</strong></span>
+            <span class="ms-3">💰 Общая стоимость: <strong>{{ total_sum|floatformat:2 }}</strong> руб.</span>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="remain-table">
+        <thead>
+            <tr>
+                <th style="width: 50px">№</th>
+                <th>Наименование</th>
+                <th style="width: 80px">Ед.изм.</th>
+                <th style="width: 120px">Цена (ср.)</th>
+                <th style="width: 100px">Количество</th>
+                <th style="width: 80px">Карточка</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in remains %}
+            <tr {% if item.quantity == 0 %}class="zero-quantity"{% endif %}>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td>{{ item.title }}</td>
+                <td class="text-center">{{ item.izm }}</td>
+                <td class="text-end">{{ item.price|floatformat:2 }}</td>
+                <td class="text-end">
+                    {% if item.quantity == 0 %}
+                        <strong class="text-danger">{{ item.quantity|floatformat:0 }}</strong>
+                    {% else %}
+                        <strong>{{ item.quantity|floatformat:0 }}</strong>
+                    {% endif %}
+                    {{ item.izm }}
+                </td>
+                <td class="text-center">
+                    <td class="text-center">
+    <a href="{% url 'nom_card' item.nom_id %}" class="card-link" title="Карточка товара">
+        📄
+    </a>
+</td>
+                </td>
+             </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                    ...
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-end"><strong>ИТОГО:</strong></td>
+                <td class="text-end"><strong>{{ total_quantity|floatformat:0 }}</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="report-footer mt-3 text-center text-muted">
+    Отчет сформирован: {% now "d.m.Y H:i:s" %}
+</div>

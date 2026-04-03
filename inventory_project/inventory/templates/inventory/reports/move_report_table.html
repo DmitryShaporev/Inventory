@@ -1,0 +1,91 @@
+{% load abs_filter %}
+
+{% if docs %}
+<div class="total-summary">
+    <div class="row">
+        <div class="col-md-6">
+            <span>📅 Период: {{ date_start }} - {{ date_end }}</span>
+            {% if date_type == 'doc' %}
+                <span class="badge bg-secondary ms-2">по дате документа</span>
+            {% else %}
+                <span class="badge bg-secondary ms-2">по дате поступления</span>
+            {% endif %}
+        </div>
+        <div class="col-md-6 text-end">
+            <span>📄 Количество документов: <strong>{{ docs|length }}</strong></span>
+            <span class="ms-3">💰 Общая сумма: <strong>{{ grand_total|abs_value|floatformat:2 }}</strong> руб.</span>
+        </div>
+    </div>
+</div>
+
+{% for doc in docs %}
+<div class="doc-block">
+    <div class="doc-header bg-warning bg-opacity-25">
+        <div class="row">
+            <div class="col-md-12">
+                <span style="font-size:14px;">
+                    📄 Документ № <strong>{{ doc.nomer }}</strong>
+                    от 📅 {{ doc.datadoc|date:"d.m.Y" }}
+                    | 🏢 Подразделение: {{ doc.podraz|default:"—" }}
+                    | 🏭 Объект: {{ doc.obct|default:"—" }}
+                    | 👤 Подотчет: {{ doc.fio|default:"—" }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="doc-items">
+        <table class="items-table" >
+            <thead>
+                <tr>
+                    <th style="width: 40px">№</th>
+                    <th>Наименование</th>
+                    <th style="width: 80px">Ед.изм.</th>
+                    <th style="width: 100px">Кол-во</th>
+                    <th style="width: 100px">Цена</th>
+                    <th style="width: 120px">Стоимость без НДС</th>
+                    <th style="width: 80px">НДС %</th>
+                    <th style="width: 100px">Сумма НДС</th>
+                    <th style="width: 120px">Стоимость с НДС</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in doc.details %}
+                <tr>
+                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td>{{ detail.id_nom.title|default:"—" }}</td>
+                    <td class="text-center">{{ detail.id_nom.izm.title|default:"—" }}</td>
+                    <td class="text-end">{{ detail.kolvo|abs_value|floatformat:2 }}</td>
+                    <td class="text-end">{{ detail.price|abs_value|floatformat:2 }}</td>
+                    <td class="text-end">{{ detail.cost|abs_value|floatformat:2 }}</td>
+                    <td class="text-center">{{ detail.vat_rate|floatformat:0 }}%</td>
+                    <td class="text-end">{{ detail.vat_amount|abs_value|floatformat:2 }}</td>
+                    <td class="text-end"><strong>{{ detail.total_with_vat|abs_value|floatformat:2 }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5" class="text-end"><strong>ИТОГО по документу:</strong></td>
+                    <td class="text-end"><strong>{{ doc.total_without_vat|abs_value|floatformat:2 }}</strong></td>
+                    <td class="text-center">—</td>
+                    <td class="text-end"><strong>{{ doc.total_vat|abs_value|floatformat:2 }}</strong></td>
+                    <td class="text-end"><strong>{{ doc.total|abs_value|floatformat:2 }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="doc-total">
+        Итого по документу: <strong>{{ doc.total|abs_value|floatformat:2 }}</strong> руб.
+    </div>
+</div>
+{% endfor %}
+
+<div class="report-footer">
+    Отчет сформирован: {% now "d.m.Y H:i:s" %}
+</div>
+{% else %}
+<div class="alert alert-secondary text-center">
+    ⚠️ Нет документов за указанный период
+</div>
+{% endif %}

@@ -1,0 +1,220 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .remain-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .remain-table th {
+        background-color: #f8f9fa;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        position: sticky;
+        top: 0;
+    }
+
+    .remain-table td {
+        padding: 8px 10px;
+        border: 1px solid #dee2e6;
+    }
+
+    .remain-table tbody tr:hover {
+        background-color: #f0f7ff;
+    }
+
+    /* Подсветка нулевых остатков */
+    .zero-quantity {
+        background-color: #fff3cd !important;
+    }
+
+    .zero-quantity td {
+        background-color: #fff3cd !important;
+    }
+
+    .card-link {
+        cursor: pointer;
+        font-size: 18px;
+        text-decoration: none;
+    }
+
+    .card-link:hover {
+        opacity: 0.7;
+    }
+
+    .filter-panel {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    /* Стили для поиска */
+    .search-input {
+        max-width: 300px;
+    }
+
+    .search-highlight {
+        background-color: #ffeb3b;
+        font-weight: bold;
+    }
+
+    @media print {
+        .no-print {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">📊 Отчет об остатках ТМЦ</h4>
+            </div>
+
+            <!-- Панель фильтров -->
+            <div class="filter-panel no-print bg-warning bg-opacity-25">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Показывать</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="showZero" id="showAll" value="all" checked>
+                                <label class="form-check-label" for="showAll">
+                                    Все позиции
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="showZero" id="hideZero" value="positive">
+                                <label class="form-check-label" for="hideZero">
+                                    Только с остатком > 0
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">🔍 Поиск</label>
+                        <input type="text" class="form-control" id="searchInput"
+                               placeholder="Поиск по наименованию...">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-warning w-100" id="btnRefresh">📈 Сформировать</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-secondary w-100" id="btnPrint">🖨️ Печать</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-secondary w-100" id="btnExcel">📊 Excel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Результаты отчета -->
+            <div id="reportContent">
+                {% include 'inventory/reports/remain_report_table.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'jquery.js' %}"></script>
+<script>
+$(document).ready(function() {
+    // Функция загрузки отчета
+    function loadReport() {
+        const showZero = $('input[name="showZero"]:checked').val();
+
+        $.ajax({
+            url: '/reports/remain/',
+            method: 'GET',
+            data: {
+                show_zero: showZero
+            },
+            success: function(response) {
+                $('#reportContent').html(response);
+                // После загрузки привязываем поиск
+                initSearch();
+            },
+            error: function(xhr) {
+                alert('Ошибка загрузки отчета: ' + xhr.responseText);
+            }
+        });
+    }
+
+    // Функция поиска (локальная фильтрация)
+    function initSearch() {
+        const searchInput = $('#searchInput');
+        const rows = $('.remain-table tbody tr');
+
+        searchInput.off('keyup').on('keyup', function() {
+            const searchText = $(this).val().toLowerCase().trim();
+
+            rows.each(function() {
+                const $row = $(this);
+                const titleCell = $row.find('td:nth-child(2)');
+                const title = titleCell.text().toLowerCase();
+
+                if (searchText === '' || title.includes(searchText)) {
+                    $row.show();
+                    // Подсветка найденного текста
+                    if (searchText !== '') {
+                        highlightText(titleCell, searchText);
+                    } else {
+                        removeHighlight(titleCell);
+                    }
+                } else {
+                    $row.hide();
+                }
+            });
+        });
+    }
+
+    // Подсветка текста
+    function highlightText($element, searchText) {
+        const originalText = $element.text();
+        const regex = new RegExp(`(${searchText})`, 'gi');
+        const highlightedText = originalText.replace(regex, '<span class="search-highlight">$1</span>');
+        if ($element.html() !== highlightedText) {
+            $element.html(highlightedText);
+        }
+    }
+
+    function removeHighlight($element) {
+        const text = $element.text();
+        $element.html(text);
+    }
+
+    // Обработчики
+    $('#btnRefresh').on('click', function() {
+        loadReport();
+    });
+
+    $('#btnPrint').on('click', function() {
+        window.print();
+    });
+
+    $('#btnExcel').on('click', function() {
+        exportToExcel();
+    });
+
+    // При изменении радиокнопки
+    $('input[name="showZero"]').on('change', function() {
+        loadReport();
+    });
+
+    function exportToExcel() {
+        const showZero = $('input[name="showZero"]:checked').val();
+        window.location.href = `/reports/remain/excel/?show_zero=${showZero}`;
+    }
+
+    // Инициализация поиска при загрузке
+    initSearch();
+});
+</script>
+{% endblock %}

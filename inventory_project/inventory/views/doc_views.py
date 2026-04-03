@@ -422,29 +422,24 @@ def get_obct_list(request):
 #         return JsonResponse({'status': 'error', 'error': str(e)}, status=500)
 
 def api_remains(request):
-    """API для получения остатков товаров с группировкой по цене и ставке НДС"""
+    """API для получения остатков товаров (как в отчете по остаткам)"""
     from django.db import connection
 
     query = """
         SELECT 
             n.id as nom_id,
             n.title as title,
-            i.title as izm,
-            d.vat_rate,
-            SUM(d.kolvo) as quantity,
-            CASE 
-                WHEN SUM(d.kolvo) != 0 
-                THEN SUM(d.kolvo * d.price) / SUM(d.kolvo)
-                ELSE 0
-            END as avg_price
+            COALESCE(i.title, 'шт') as izm,
+            d.price,
+            SUM(d.kolvo) as quantity
         FROM detail d
         INNER JOIN nom n ON d.id_nom = n.id
         LEFT JOIN izm i ON n.izm_id = i.id
         INNER JOIN doc ON d.id_doc = doc.id
-        WHERE doc.oper IN (1, 2, 4)
-        GROUP BY n.id, d.vat_rate
-        HAVING SUM(d.kolvo) > 0
-        ORDER BY n.title, d.vat_rate
+        WHERE doc.oper IN (1, 2, 4, 3, 5)
+        GROUP BY n.id, n.title, i.title, d.price
+        HAVING SUM(d.kolvo) != 0
+        ORDER BY n.title, d.price
     """
 
     try:
@@ -453,25 +448,52 @@ def api_remains(request):
             columns = [col[0] for col in cursor.description]
             rows = cursor.fetchall()
 
-        remains = []
+        # Временный словарь для объединения одинаковых товаров с одинаковой ценой
+        temp_dict = {}
+
         for row in rows:
             data = dict(zip(columns, row))
             quantity = float(data['quantity'])
-            avg_price = float(data['avg_price']) if data['avg_price'] else 0
 
-            remains.append({
-                'nom_id': data['nom_id'],
-                'title': data['title'] or 'Без названия',
-                'izm': data['izm'] or 'шт',
-                'vat_rate': float(data['vat_rate']),
-                'price': round(avg_price, 2),
-                'quantity': round(quantity, 0)
-            })
+            key = f"{data['nom_id']}_{data['price']}"
+
+            if key in temp_dict:
+                temp_dict[key]['quantity'] += quantity
+            else:
+                temp_dict[key] = {
+                    'nom_id': data['nom_id'],
+                    'title': data['title'] or 'Без названия',
+                    'izm': data['izm'] or 'шт',
+                    'price': float(data['price']),
+                    'quantity': quantity
+                }
+
+        remains = []
+        for key, item in temp_dict.items():
+            quantity = round(item['quantity'], 0)
+
+            # Показываем только положительные остатки
+            if quantity > 0:
+                remains.append({
+                    'nom_id': item['nom_id'],
+                    'title': item['title'],
+                    'izm': item['izm'],
+                    'price': item['price'],
+                    'quantity': quantity
+                })
+
+        # Сортируем по наименованию
+        remains.sort(key=lambda x: x['title'])
 
         return JsonResponse({'status': 'ok', 'data': remains})
 
     except Exception as e:
+        print(f"Ошибка в api_remains: {e}")
+        import traceback
+        traceback.print_exc()
         return JsonResponse({'status': 'error', 'error': str(e)}, status=500)
+
+
 
 @require_POST
 def delete_move_doc(request, doc_id):

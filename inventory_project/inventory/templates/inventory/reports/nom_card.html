@@ -1,0 +1,223 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+{% load abs_filter %}
+
+{% block extra_css %}
+<style>
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .info-row {
+        margin-bottom: 15px;
+        padding: 15px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+    }
+
+    .movement-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 13px;
+    }
+
+    .movement-table th {
+        background-color: #e9ecef;
+        padding: 10px 8px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        position: sticky;
+        top: 0;
+    }
+
+    .movement-table td {
+        padding: 8px;
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+
+    .income-row {
+        background-color: #d4edda;
+    }
+
+    .outcome-row {
+        background-color: #f8d7da;
+    }
+
+    .total-row {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+
+    .text-income {
+        color: #155724;
+        font-weight: bold;
+    }
+
+    .text-outcome {
+        color: #721c24;
+        font-weight: bold;
+    }
+
+    .balance-cell {
+        font-weight: bold;
+        background-color: #fff3cd;
+    }
+
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .card-header {
+            background-color: white !important;
+            border-bottom: 1px solid #000 !important;
+        }
+        .movement-table th {
+            background-color: #f0f0f0 !important;
+        }
+        .income-row, .outcome-row {
+            background-color: transparent !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12">
+            <!-- Шапка с кнопками -->
+            <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+                <button onclick="window.history.back()" class="btn btn-outline-secondary">
+                    ← Назад к остаткам
+                </button>
+                <button onclick="window.print()" class="btn btn-primary">
+                    🖨️ Печать
+                </button>
+            </div>
+
+            <!-- Карточка товара -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">📦 Карточка товара</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row info-row">
+                        <div class="col-md-5">
+                            <strong>Наименование:</strong> {{ nom.title }}
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Ед.изм.:</strong> {{ nom.izm.title|default:"—" }}
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Категория:</strong> {{ nom.category.title|default:"—" }}
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Текущий остаток:</strong>
+                            <span class="fw-bold {% if current_balance < 0 %}text-danger{% elif current_balance > 0 %}text-success{% endif %}">
+                                {{ current_balance|abs_value|floatformat:2 }} {{ nom.izm.title|default:"шт" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <strong>💰 Общая стоимость (без НДС):</strong> {{ total_sum_without_vat|floatformat:2 }} руб.
+                            <span class="ms-3">🧾 НДС: {{ total_vat|floatformat:2 }} руб.</span>
+                            <span class="ms-3">💵 Стоимость с НДС: {{ total_sum|floatformat:2 }} руб.</span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="movement-table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px">Дата</th>
+                                    <th style="width: 80px">Номер</th>
+                                    <th>От кого получено / кому отпущено</th>
+                                    <th style="width: 70px">Приход</th>
+                                    <th style="width: 70px">Расход</th>
+                                    <th style="width: 70px">Остаток</th>
+                                    <th style="width: 70px">Цена</th>
+                                    <th style="width: 90px">Стоимость<br>без НДС</th>
+                                    <th style="width: 70px">НДС %</th>
+                                    <th style="width: 90px">Сумма<br>НДС</th>
+                                    <th style="width: 100px">Стоимость<br>с НДС</th>
+                                 </thead>
+                            <tbody>
+                                {% for move in movements %}
+                                <tr class="{% if move.kolvo > 0 %}income-row{% elif move.kolvo < 0 %}outcome-row{% endif %}">
+                                    <td class="text-center">{{ move.datadoc|date:"d.m.Y" }}</td>
+                                    <td>
+                                        <a href="
+                                            {% if move.oper == 2 %}/docs/incom/edit/{{ move.doc_id }}/{% endif %}
+                                            {% if move.oper == 3 %}/docs/move/edit/{{ move.doc_id }}/{% endif %}
+                                            {% if move.oper == 4 %}/docs/return/edit/{{ move.doc_id }}/{% endif %}
+                                            {% if move.oper == 5 %}/docs/writeoff/edit/{{ move.doc_id }}/{% endif %}
+                                        " class="text-decoration-none">
+                                            {{ move.nomer }}
+                                        </a>
+                                     </td>
+                                    <td>
+                                        {% if move.kolvo > 0 %}
+                                            {{ move.from_party|default:"—" }}
+                                        {% else %}
+                                            {{ move.to_party|default:"—" }}
+                                        {% endif %}
+                                     </td>
+                                    <td class="text-end">
+                                        {% if move.kolvo > 0 %}
+                                            <strong class="text-income">{{ move.kolvo|abs_value|floatformat:2 }}</strong>
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                     </td>
+                                    <td class="text-end">
+                                        {% if move.kolvo < 0 %}
+                                            <strong class="text-outcome">{{ move.kolvo|abs_value|floatformat:2 }}</strong>
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                     </td>
+                                    <td class="text-end balance-cell">{{ move.balance_after|abs_value|floatformat:2 }}</td>
+                                    <td class="text-end">{{ move.price|floatformat:2 }}</td>
+                                    <td class="text-end">{{ move.cost|floatformat:2 }}</td>
+                                    <td class="text-center">{{ move.vat_rate|floatformat:0 }}%</td>
+                                    <td class="text-end">{{ move.vat_amount|floatformat:2 }}</td>
+                                    <td class="text-end"><strong>{{ move.total_with_vat|floatformat:2 }}</strong></td>
+                                 </tr>
+                                {% empty %}
+                                 <tr>
+                                    <td colspan="11" class="text-center text-muted py-4">
+                                        📭 Нет движений по этому товару
+                                     </td>
+                                 </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="total-row">
+                                 <tr>
+                                    <td colspan="3" class="text-end"><strong>ИТОГО:</strong></td>
+                                    <td class="text-end"><strong class="text-income">{{ total_income|abs_value|floatformat:2 }}</strong></td>
+                                    <td class="text-end"><strong class="text-outcome">{{ total_outcome|abs_value|floatformat:2 }}</strong></td>
+                                    <td class="text-end"><strong>{{ current_balance|abs_value|floatformat:2 }}</strong></td>
+                                    <td class="text-end">—</td>
+                                    <td class="text-end"><strong>{{ total_sum_without_vat|floatformat:2 }}</strong></td>
+                                    <td class="text-end">—</td>
+                                    <td class="text-end"><strong>{{ total_vat|floatformat:2 }}</strong></td>
+                                    <td class="text-end"><strong>{{ total_sum|floatformat:2 }}</strong></td>
+                                 <\/tr>
+                            </tfoot>
+                         <\/table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
