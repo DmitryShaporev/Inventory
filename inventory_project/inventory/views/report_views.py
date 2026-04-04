@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.db.models import Sum
-from ..models import Doc, Detail, Nom
+from ..models import Doc, Detail, Nom, Postav
 import openpyxl
 from openpyxl.styles import Font, Alignment, Border, Side
 from io import BytesIO
@@ -197,7 +197,7 @@ def reports_menu(request, section):
         'incom': 'Поступление ТМЦ',
         'move': 'Перемещение ТМЦ',
         'remain': 'Наличие ТМЦ',
-        'postav':'По поставщикам',
+        'suppliers':'По поставщикам',
         'obct': 'По объектам',
         'podraz':'По подразделениям',
         'fio': 'По подотчетным лицам',
@@ -680,3 +680,256 @@ def nom_card(request, nom_id):
         'total_sum': total_sum,
     }
     return render(request, 'inventory/reports/nom_card.html', context)
+
+
+def suppliers_report(request):
+    """Отчет по поставщикам"""
+    date_start = request.GET.get('date_start')
+    date_end = request.GET.get('date_end')
+    date_type = request.GET.get('date_type', 'created')
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render_suppliers_report_table(request, date_start, date_end, date_type)
+
+    return render(request, 'inventory/reports/supplier_report.html', {
+        'date_start': date_start,
+        'date_end': date_end,
+        'date_type': date_type,
+    })
+
+
+def render_suppliers_report_table(request, date_start, date_end, date_type='created'):
+    """Рендеринг таблицы отчета по поставщикам"""
+    from datetime import datetime, timedelta
+
+    # Базовый запрос
+    docs = Doc.objects.filter(oper=2).select_related('postav')
+
+    # Фильтрация по дате
+    if date_start:
+        if date_type == 'doc':
+            docs = docs.filter(datadoc__gte=date_start)
+        else:
+            start_datetime = datetime.strptime(date_start, '%Y-%m-%d')
+            docs = docs.filter(update_date__gte=start_datetime)
+
+    if date_end:
+        if date_type == 'doc':
+            docs = docs.filter(datadoc__lte=date_end)
+        else:
+            end_datetime = datetime.strptime(date_end, '%Y-%m-%d') + timedelta(days=1)
+            docs = docs.filter(update_date__lt=end_datetime)
+
+    # Группировка по поставщикам
+    suppliers_dict = {}
+    for doc in docs:
+        if not doc.postav:
+            continue
+        postav_id = doc.postav.id
+        if postav_id not in suppliers_dict:
+            suppliers_dict[postav_id] = {
+                'id': postav_id,
+                'title': doc.postav.title,
+                'doc_count': 0,
+                'total': 0
+            }
+        suppliers_dict[postav_id]['doc_count'] += 1
+        suppliers_dict[postav_id]['total'] += doc.total or 0
+
+    suppliers = list(suppliers_dict.values())
+    suppliers.sort(key=lambda x: x['title'])
+    grand_total = sum(s['total'] for s in suppliers)
+
+    # Форматирование дат
+    date_start_display = ''
+    date_end_display = ''
+    if date_start:
+        try:
+            date_start_display = datetime.strptime(date_start, '%Y-%m-%d').strftime('%d.%m.%Y')
+        except:
+            date_start_display = date_start
+    if date_end:
+        try:
+            date_end_display = datetime.strptime(date_end, '%Y-%m-%d').strftime('%d.%m.%Y')
+        except:
+            date_end_display = date_end
+
+    html = render_to_string('inventory/reports/supplier_report_table.html', {
+        'suppliers': suppliers,
+        'date_start': date_start_display,
+        'date_end': date_end_display,
+        'date_type': date_type,
+        'grand_total': grand_total,
+    })
+    return HttpResponse(html)
+
+
+def supplier_details(request, supplier_id):
+    """Детализация по поставщику"""
+    from datetime import datetime, timedelta
+
+    date_start = request.GET.get('date_start')
+    date_end = request.GET.get('date_end')
+    date_type = request.GET.get('date_type', 'created')
+
+    supplier = get_object_or_404(Postav, id=supplier_id)
+
+    docs = Doc.objects.filter(oper=2, postav_id=supplier_id)
+
+    # Фильтрация по дате (с правильным форматом)
+    if date_start:
+        try:
+            # Парсим дату в формате DD.MM.YYYY
+            start_date_obj = datetime.strptime(date_start, '%d.%m.%Y').date()
+        except:
+            start_date_obj = None
+
+        if date_type == 'doc' and start_date_obj:
+            docs = docs.filter(datadoc__gte=start_date_obj)
+        elif start_date_obj:
+            docs = docs.filter(update_date__gte=start_date_obj)
+
+    if date_end:
+        try:
+            end_date_obj = datetime.strptime(date_end, '%d.%m.%Y').date()
+        except:
+            end_date_obj = None
+
+        if date_type == 'doc' and end_date_obj:
+            docs = docs.filter(datadoc__lte=end_date_obj)
+        elif end_date_obj:
+            end_datetime = datetime.combine(end_date_obj, datetime.max.time())
+            docs = docs.filter(update_date__lte=end_datetime)
+
+    docs = docs.order_by('-datadoc')
+
+    # Собираем документы с деталями
+    docs_with_details = []
+    grand_total = 0
+
+    for doc in docs:
+        details = list(doc.details.all())
+        total_without_vat = sum(d.cost for d in details)
+        total_vat = sum(d.vat_amount for d in details)
+        total = sum(d.total_with_vat for d in details)
+
+        docs_with_details.append({
+            'id': doc.id,
+            'nomer': doc.nomer,
+            'datadoc': doc.datadoc,
+            'details': details,
+            'total': total,
+            'total_without_vat': total_without_vat,
+            'total_vat': total_vat,
+        })
+        grand_total += total
+
+    # Форматирование дат для отображения (они уже в правильном формате)
+    context = {
+        'supplier': supplier,
+        'docs': docs_with_details,
+        'date_start': date_start,
+        'date_end': date_end,
+        'grand_total': grand_total,
+    }
+    return render(request, 'inventory/reports/supplier_details.html', context)
+
+
+def suppliers_report_excel(request):
+    """Экспорт отчета по поставщикам в Excel"""
+    from datetime import datetime
+    import openpyxl
+    from openpyxl.styles import Font, Alignment
+    from io import BytesIO
+
+    date_start = request.GET.get('date_start')
+    date_end = request.GET.get('date_end')
+    date_type = request.GET.get('date_type', 'created')
+
+    # Базовый запрос
+    docs = Doc.objects.filter(oper=2).select_related('postav')
+
+    # Фильтрация по дате
+    if date_start:
+        try:
+            start_date_obj = datetime.strptime(date_start, '%Y-%m-%d').date()
+        except:
+            start_date_obj = None
+
+        if date_type == 'doc' and start_date_obj:
+            docs = docs.filter(datadoc__gte=start_date_obj)
+        elif start_date_obj:
+            docs = docs.filter(update_date__gte=start_date_obj)
+
+    if date_end:
+        try:
+            end_date_obj = datetime.strptime(date_end, '%Y-%m-%d').date()
+        except:
+            end_date_obj = None
+
+        if date_type == 'doc' and end_date_obj:
+            docs = docs.filter(datadoc__lte=end_date_obj)
+        elif end_date_obj:
+            end_datetime = datetime.combine(end_date_obj, datetime.max.time())
+            docs = docs.filter(update_date__lte=end_datetime)
+
+    # Группировка по поставщикам
+    suppliers_dict = {}
+    for doc in docs:
+        if not doc.postav:
+            continue
+        postav_id = doc.postav.id
+        if postav_id not in suppliers_dict:
+            suppliers_dict[postav_id] = {
+                'title': doc.postav.title,
+                'doc_count': 0,
+                'total': 0
+            }
+        suppliers_dict[postav_id]['doc_count'] += 1
+        suppliers_dict[postav_id]['total'] += doc.total or 0
+
+    suppliers = list(suppliers_dict.values())
+    suppliers.sort(key=lambda x: x['title'])
+    grand_total = sum(s['total'] for s in suppliers)
+
+    # Создаем Excel файл
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Отчет по поставщикам"
+
+    # Заголовки
+    headers = ['№ п/п', 'Поставщик', 'Количество документов', 'Общая сумма, руб.']
+    for col, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col, value=header)
+        cell.font = Font(bold=True)
+        cell.alignment = Alignment(horizontal='center')
+
+    # Заполняем данные
+    row_num = 2
+    for i, supplier in enumerate(suppliers, 1):
+        ws.cell(row=row_num, column=1, value=i)
+        ws.cell(row=row_num, column=2, value=supplier['title'])
+        ws.cell(row=row_num, column=3, value=supplier['doc_count'])
+        ws.cell(row=row_num, column=4, value=supplier['total'])
+        row_num += 1
+
+    # Итоговая строка
+    ws.cell(row=row_num, column=3, value='ИТОГО:')
+    ws.cell(row=row_num, column=4, value=grand_total)
+    ws.cell(row=row_num, column=3).font = Font(bold=True)
+    ws.cell(row=row_num, column=4).font = Font(bold=True)
+
+    # Настраиваем ширину колонок
+    ws.column_dimensions['A'].width = 10
+    ws.column_dimensions['B'].width = 40
+    ws.column_dimensions['C'].width = 20
+    ws.column_dimensions['D'].width = 20
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    response = HttpResponse(output.getvalue(),
+                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename=supplier_report_{datetime.now().strftime("%Y%m%d")}.xlsx'
+    return response

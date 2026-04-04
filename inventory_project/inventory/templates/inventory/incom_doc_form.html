@@ -18,7 +18,14 @@
 
                 <div>
                     <button class="btn btn-sm btn-info me-2" id="printQrBtn">🏷️ Печать QR</button>
-                    <button class="btn btn-sm btn-success me-2" id="saveDocBtn">💾 Сохранить</button>
+                    <button class="btn btn-sm btn-success me-2" id="saveDocBtn"
+        {% if not is_editable %}disabled{% endif %}>
+    💾 Сохранить
+</button>
+
+{% if not is_editable %}
+    <small class="text-danger ms-2">⚠️ Документ закрыт для редактирования</small>
+{% endif %}
                     <a href="{% url 'docs' 'incom' %}" class="btn btn-sm btn-secondary">✖ Отмена</a>
                 </div>
             </div>

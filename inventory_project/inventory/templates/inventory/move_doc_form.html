@@ -103,9 +103,15 @@
                     от <span id="title-data">{{ doc.datadoc|date:'d.m.Y'|default:'' }}</span>
                 </h5>
                 <div>
-                    <button class="btn btn-sm btn-success me-2" id="saveDocBtn">💾 Сохранить</button>
-                    <a href="{% url 'docs' 'move' %}" class="btn btn-sm btn-secondary">✖ Отмена</a>
-                </div>
+    <button class="btn btn-sm btn-success me-2" id="saveDocBtn"
+            {% if not is_editable %}disabled{% endif %}> 💾 Сохранить</button>
+
+
+    {% if not is_editable %}
+        <small class="text-primary ms-2">⚠️ Документ закрыт для редактирования</small>
+    {% endif %}
+    <a href="{% url 'docs' 'move' %}" class="btn btn-sm btn-secondary">✖ Отмена</a>
+</div>
             </div>
 
             <!-- ID документа для редактирования (скрытое поле) -->
@@ -183,7 +189,7 @@
                 </div>
             </div>
 
-            <!-- ========== ТАБЛИЧНАЯ ЧАСТЬ ========== -->
+
            <!-- ========== ТАБЛИЧНАЯ ЧАСТЬ ========== -->
 <div class="card" style="margin-top:15px;">
     <div class="card-body p-0">
@@ -535,12 +541,12 @@ function loadRemains() {
         }
     });
 }
-window.selectRemainsItem = function(id, title, izm, price, vatRate, maxQty) {
+window.selectRemainsItem = function(id, title, izm, price, maxQty) {
     $('#remainsChoiceModal').modal('hide');
     const qty = prompt(`Введите количество для перемещения (макс. ${maxQty}):`, '1');
     if (qty && !isNaN(qty) && qty > 0 && qty <= maxQty) {
         if (window.addMoveRow) {
-            window.addMoveRow(id, title, izm, price, vatRate, qty);
+            window.addMoveRow(id, title, izm, price, 22, qty);
         } else {
             alert('Ошибка: функция добавления строки не найдена');
         }

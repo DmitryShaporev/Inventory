@@ -1,0 +1,65 @@
+{% load abs_filter %}
+
+{% if suppliers %}
+<div class="total-summary">
+    <div class="row">
+        <div class="col-md-6">
+            <span>📅 Период: {{ date_start }} - {{ date_end }}</span>
+            {% if date_type == 'doc' %}
+                <span class="badge bg-secondary ms-2">по дате документа</span>
+            {% else %}
+                <span class="badge bg-secondary ms-2">по дате поступления</span>
+            {% endif %}
+        </div>
+        <div class="col-md-6 text-end">
+            <span>📄 Всего поставщиков: <strong>{{ suppliers|length }}</strong></span>
+            <span class="ms-3">💰 Общая сумма: <strong>{{ grand_total|floatformat:2 }}</strong> руб.</span>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="supplier-table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Поставщик</th>
+                <th style="width: 250px">Количество документов</th>
+                <th>Общая сумма</th>
+                <th style="width: 250px"> 🔎 Просмотр документов</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in suppliers %}
+            <tr>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td><strong>{{ supplier.title }}</strong></td>
+                <td class="text-center">{{ supplier.doc_count }}</td>
+                <td class="text-end">{{ supplier.total|floatformat:2 }} руб.</td>
+                <td class="text-center">
+                    <a href="{% url 'supplier_details' supplier.id %}?date_start={{ date_start }}&date_end={{ date_end }}&date_type={{ date_type }}"
+                       class="doc-link" title="Документы поставщика">
+                        📄
+                    </a>
+                 </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot class="total-row">
+            <tr>
+                <td colspan="3" class="text-end"><strong>ИТОГО:</strong></td>
+                <td class="text-end"><strong>{{ grand_total|floatformat:2 }}</strong> руб.</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="report-footer mt-3 text-center text-muted">
+    Отчет сформирован: {% now "d.m.Y H:i:s" %}
+</div>
+{% else %}
+<div class="alert alert-secondary text-center">
+    ⚠️ Нет документов за указанный период
+</div>
+{% endif %}

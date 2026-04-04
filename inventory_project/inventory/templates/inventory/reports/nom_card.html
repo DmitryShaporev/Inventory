@@ -97,7 +97,7 @@
                 <button onclick="window.history.back()" class="btn btn-outline-secondary">
                     ← Назад к остаткам
                 </button>
-                <button onclick="window.print()" class="btn btn-primary">
+                <button onclick="window.print()" class="btn btn-secondary">
                     🖨️ Печать
                 </button>
             </div>
@@ -156,8 +156,8 @@
                                     <td class="text-center">{{ move.datadoc|date:"d.m.Y" }}</td>
                                     <td>
                                         <a href="
-                                            {% if move.oper == 2 %}/docs/incom/edit/{{ move.doc_id }}/{% endif %}
-                                            {% if move.oper == 3 %}/docs/move/edit/{{ move.doc_id }}/{% endif %}
+                                            {% if move.oper == 2 %}{% url 'view_incom_doc' move.doc_id %}{% endif %}
+                                            {% if move.oper == 3 %}{% url 'view_move_doc' move.doc_id %}{% endif %}
                                             {% if move.oper == 4 %}/docs/return/edit/{{ move.doc_id }}/{% endif %}
                                             {% if move.oper == 5 %}/docs/writeoff/edit/{{ move.doc_id }}/{% endif %}
                                         " class="text-decoration-none">
@@ -211,9 +211,9 @@
                                     <td class="text-end">—</td>
                                     <td class="text-end"><strong>{{ total_vat|floatformat:2 }}</strong></td>
                                     <td class="text-end"><strong>{{ total_sum|floatformat:2 }}</strong></td>
-                                 <\/tr>
+                                 </tr>
                             </tfoot>
-                         <\/table>
+                         </table>
                     </div>
                 </div>
             </div>

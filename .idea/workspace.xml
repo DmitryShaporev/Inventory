@@ -5,21 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Отчеты. Отчет по входящим документам">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/move_report.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/move_report_table.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/nom_card.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report_table.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/Финальный перерасчет документов.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/management/commands/migrate_nds.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/incom_doc_view.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/move_doc_view.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/supplier_details.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/supplier_report.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/supplier_report_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/incom_doc_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/incom_doc_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/move_doc_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/move_doc_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/doc_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/partials/doc_table.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/nom_card.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/nom_card.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/Порядок переноса.txt" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/Порядок переноса.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,12 +48,12 @@
     &quot;assignee&quot;: &quot;DmitryShaporev&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/DmitryShaporev/Inventory.git&quot;,
-    &quot;accountId&quot;: &quot;d2c757c1-9b46-45dc-a905-4d97274ecd67&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/DmitryShaporev/Inventory.git",
+    "accountId": "99ff5f59-0b44-4475-b8cd-265ab3cf3444"
   }
-}</component>
+}]]></component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -90,7 +93,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-53e2683a6804-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26094.141" />
+        <option value="bundled-python-sdk-495700d161d3-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.22562.220" />
       </set>
     </attachedChunks>
   </component>

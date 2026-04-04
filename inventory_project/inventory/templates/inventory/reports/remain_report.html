@@ -67,6 +67,46 @@
             display: none;
         }
     }
+
+
+/* Стили для индикатора загрузки */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 9999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .loading-spinner {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .loading-spinner .spinner-border {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 10px;
+    }
+
+    .progress {
+        height: 8px;
+        margin-top: 10px;
+        width: 200px;
+    }
+
+    .loading-text {
+        margin-top: 10px;
+        color: #666;
+    }
 </style>
 {% endblock %}
 
@@ -74,8 +114,22 @@
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-12">
+            <!-- Индикатор загрузки (поверх всего) -->
+            <div id="loadingOverlay" class="loading-overlay">
+                <div class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                    <div class="progress">
+                        <div id="loadingProgress" class="progress-bar progress-bar-striped progress-bar-animated"
+                             style="width: 0%"></div>
+                    </div>
+                    <div id="loadingText" class="loading-text">Загрузка данных...</div>
+                </div>
+            </div>
+
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0">📊 Отчет об остатках ТМЦ</h4>
+                <h4 class="mb-0">📊 Отчет о наличии/движении ТМЦ</h4>
             </div>
 
             <!-- Панель фильтров -->
@@ -86,15 +140,11 @@
                         <div class="d-flex gap-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="showZero" id="showAll" value="all" checked>
-                                <label class="form-check-label" for="showAll">
-                                    Все позиции
-                                </label>
+                                <label class="form-check-label" for="showAll">Все позиции</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="showZero" id="hideZero" value="positive">
-                                <label class="form-check-label" for="hideZero">
-                                    Только с остатком > 0
-                                </label>
+                                <label class="form-check-label" for="hideZero">Только с остатком > 0</label>
                             </div>
                         </div>
                     </div>
@@ -104,7 +154,7 @@
                                placeholder="Поиск по наименованию...">
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-warning w-100" id="btnRefresh">📈 Сформировать</button>
+                        <button class="btn btn-warning w-100" id="btnRefresh">📈 Сформировать отчет</button>
                     </div>
                     <div class="col-md-2">
                         <button class="btn btn-secondary w-100" id="btnPrint">🖨️ Печать</button>
@@ -126,8 +176,42 @@
 <script src="{% static 'jquery.js' %}"></script>
 <script>
 $(document).ready(function() {
+    let loadingStartTime = 0;
+
+    // Показать индикатор загрузки
+    function showLoading() {
+        loadingStartTime = Date.now();
+        $('#loadingOverlay').fadeIn(200);
+        $('#loadingProgress').css('width', '0%');
+        $('#loadingText').text('Загрузка данных...');
+
+        // Анимация прогресса (имитация)
+        let progress = 0;
+        const interval = setInterval(function() {
+            progress += 10;
+            if (progress <= 90) {
+                $('#loadingProgress').css('width', progress + '%');
+            }
+        }, 200);
+        window.progressInterval = interval;
+    }
+
+    // Скрыть индикатор загрузки
+    function hideLoading() {
+        if (window.progressInterval) {
+            clearInterval(window.progressInterval);
+        }
+        $('#loadingProgress').css('width', '100%');
+        $('#loadingText').text('Готово!');
+        setTimeout(function() {
+            $('#loadingOverlay').fadeOut(200);
+        }, 300);
+    }
+
     // Функция загрузки отчета
     function loadReport() {
+        showLoading();
+
         const showZero = $('input[name="showZero"]:checked').val();
 
         $.ajax({
@@ -138,16 +222,17 @@ $(document).ready(function() {
             },
             success: function(response) {
                 $('#reportContent').html(response);
-                // После загрузки привязываем поиск
+                hideLoading();
                 initSearch();
             },
             error: function(xhr) {
+                hideLoading();
                 alert('Ошибка загрузки отчета: ' + xhr.responseText);
             }
         });
     }
 
-    // Функция поиска (локальная фильтрация)
+    // Функция поиска
     function initSearch() {
         const searchInput = $('#searchInput');
         const rows = $('.remain-table tbody tr');
@@ -162,7 +247,6 @@ $(document).ready(function() {
 
                 if (searchText === '' || title.includes(searchText)) {
                     $row.show();
-                    // Подсветка найденного текста
                     if (searchText !== '') {
                         highlightText(titleCell, searchText);
                     } else {
@@ -175,7 +259,6 @@ $(document).ready(function() {
         });
     }
 
-    // Подсветка текста
     function highlightText($element, searchText) {
         const originalText = $element.text();
         const regex = new RegExp(`(${searchText})`, 'gi');
@@ -203,7 +286,6 @@ $(document).ready(function() {
         exportToExcel();
     });
 
-    // При изменении радиокнопки
     $('input[name="showZero"]').on('change', function() {
         loadReport();
     });

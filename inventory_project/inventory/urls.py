@@ -58,6 +58,14 @@ path('api/nom-by-id/<int:nom_id>/', spr_views.get_nom_by_id, name='get_nom_by_id
 # Карточка товара
     path('reports/nom-card/<int:nom_id>/', report_views.nom_card, name='nom_card'),
 
+    path('docs/incom/view/<int:doc_id>/', doc_views.view_incom_doc, name='view_incom_doc'),
+    path('docs/move/view/<int:doc_id>/', doc_views.view_move_doc, name='view_move_doc'),
+
+# Отчет по поставщикам
+    path('reports/suppliers/', report_views.suppliers_report, name='reports_suppliers'),
+    path('reports/suppliers/<int:supplier_id>/', report_views.supplier_details, name='supplier_details'),
+    path('reports/suppliers/excel/', report_views.suppliers_report_excel, name='reports_suppliers_excel'),
+
     # Потом общее меню отчетов (должно быть последним!)
     path('reports/<str:section>/', report_views.reports_menu, name='reports'),
 

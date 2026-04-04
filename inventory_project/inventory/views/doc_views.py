@@ -9,7 +9,8 @@ from django.db.models.deletion import ProtectedError
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 
-
+from django.conf import settings
+from datetime import date, timedelta
 
 
 
@@ -60,6 +61,7 @@ def create_doc_inc(request):
         'izm_list': Izm.objects.all().order_by('title'),
         'category_list': Category.objects.all().order_by('title'),
         'is_edit': False,  # ← флаг для нового документа
+        'is_editable': True,
     }
     return render(request, 'inventory/incom_doc_form.html', context)
 
@@ -140,6 +142,7 @@ def edit_incom_doc(request, doc_id):
         'izm_list': Izm.objects.all().order_by('title'),
         'category_list': Category.objects.all().order_by('title'),
         'is_edit': True,  # флаг для шаблона, что это редактирование
+        'is_editable': is_doc_editable(doc),
     }
     return render(request, 'inventory/incom_doc_form.html', context)
 
@@ -239,6 +242,7 @@ def create_move_doc(request):
         'fio_list': Fio.objects.all().order_by('title'),
         'obct_list': Obct.objects.all().order_by('title'),
         'is_edit': False,
+        'is_editable': True,
     }
     return render(request, 'inventory/move_doc_form.html', context)
 
@@ -258,6 +262,7 @@ def edit_move_doc(request, doc_id):
         'fio_list': Fio.objects.all().order_by('title'),
         'obct_list': Obct.objects.all().order_by('title'),
         'is_edit': True,
+        'is_editable': is_doc_editable(doc),
     }
     return render(request, 'inventory/move_doc_form.html', context)
 
@@ -518,6 +523,61 @@ def delete_move_doc(request, doc_id):
         return JsonResponse({'error': str(e)}, status=400)
 
 
+def is_doc_editable(doc):
+    """Проверка, можно ли редактировать документ (по количеству дней)"""
+
+    # Если документа нет или нет даты — разрешаем (новый документ)
+    if not doc or not doc.datadoc:
+        return True
+
+    edit_days = getattr(settings, 'DOCS_EDIT_DAYS', None)
+
+    if edit_days is None:
+        return True  # Если не задано — можно редактировать
+
+    try:
+        edit_days = int(edit_days)
+        cutoff_date = date.today() - timedelta(days=edit_days)
+        return doc.datadoc >= cutoff_date
+    except:
+        return True
 
 
+def view_incom_doc(request, doc_id):
+    """Просмотр приходного документа (только чтение)"""
+    from datetime import date
 
+    doc = get_object_or_404(Doc, id=doc_id, oper=2)
+    details = Detail.objects.filter(id_doc=doc).select_related('id_nom', 'id_nom__izm')
+
+    # Расчет итогов по документу
+    total_without_vat = sum(d.cost for d in details)
+    total_vat = sum(d.vat_amount for d in details)
+
+    context = {
+        'doc': doc,
+        'details': details,
+        'total_without_vat': total_without_vat,
+        'total_vat': total_vat,
+    }
+    return render(request, 'inventory/reports/incom_doc_view.html', context)
+
+
+def view_move_doc(request, doc_id):
+    """Просмотр документа перемещения (только чтение)"""
+    from datetime import date
+
+    doc = get_object_or_404(Doc, id=doc_id, oper=3)
+    details = Detail.objects.filter(id_doc=doc).select_related('id_nom', 'id_nom__izm')
+
+    # Расчет итогов по документу
+    total_without_vat = sum(abs(d.cost) for d in details)
+    total_vat = sum(abs(d.vat_amount) for d in details)
+
+    context = {
+        'doc': doc,
+        'details': details,
+        'total_without_vat': total_without_vat,
+        'total_vat': total_vat,
+    }
+    return render(request, 'inventory/reports/move_doc_view.html', context)
