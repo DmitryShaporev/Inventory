@@ -1,0 +1,176 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .filter-panel {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    .object-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .object-table th {
+        background-color: #e9ecef;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+    }
+
+    .object-table td {
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+
+    .object-table tr:hover {
+        background-color: #f0f7ff;
+    }
+
+    .total-summary {
+        background: #e9ecef;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+
+    .detail-link {
+        cursor: pointer;
+        font-size: 18px;
+        text-decoration: none;
+    }
+
+    .detail-link:hover {
+        opacity: 0.7;
+    }
+
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">📊 Отчет по объектам (перемещение ТМЦ)</h4>
+            </div>
+
+            <!-- Панель фильтров -->
+            <div class="filter-panel no-print bg-warning bg-opacity-25">
+                <div class="d-flex align-items-end gap-3 flex-wrap">
+                    <div>
+                        <label class="form-label">Дата начала</label>
+                        <input type="date" class="form-control" id="dateStart" value="{{ date_start|default:'' }}" style="width: 150px;">
+                    </div>
+                    <div>
+                        <label class="form-label">Дата конца</label>
+                        <input type="date" class="form-control" id="dateEnd" value="{{ date_end|default:'' }}" style="width: 150px;">
+                    </div>
+                    <div>
+                        <label class="form-label " style="margin-bottom:20px;">Тип даты</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="dateType" id="dateTypeCreated" value="created" checked>
+                                <label class="form-check-label" for="dateTypeCreated">По дате поступления</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="dateType" id="dateTypeDoc" value="doc">
+                                <label class="form-check-label" for="dateTypeDoc">По дате документа</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <label class="form-label">🔍 Поиск объекта</label>
+                        <input type="text" class="form-control" id="objectSearch" placeholder="Объект..." style="width: 400px;">
+                    </div>
+                    <div class="ms-auto">
+                        <button class="btn btn-warning" id="btnShow">📋 Сформировать</button>
+                        <button class="btn btn-secondary ms-1" id="btnExcel">📊 Excel</button>
+                        <button class="btn btn-secondary ms-1" id="btnPrint">🖨️ Печать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Результаты отчета -->
+            <div id="reportContent">
+                {% include 'inventory/reports/object_report_table.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'jquery.js' %}"></script>
+<script src="{% static 'jquery.js' %}"></script>
+<script>
+$(document).ready(function() {
+    $('#btnShow').on('click', function() { loadReport(); });
+    $('#btnPrint').on('click', function() { window.print(); });
+    $('#btnExcel').on('click', function() { exportToExcel(); });
+
+    // Поиск объектов
+    $(document).on('keyup', '#objectSearch', function() {
+        const searchText = $(this).val().toLowerCase().trim();
+        const rows = $('.object-table tbody tr');
+
+        if (searchText === '') {
+            rows.show();
+        } else {
+            rows.each(function() {
+                const $row = $(this);
+                // Ищем по названию объекта (2-я колонка) и подразделению (3-я колонка)
+                const title = $row.find('td:nth-child(2)').text().toLowerCase();
+                const podraz = $row.find('td:nth-child(3)').text().toLowerCase();
+
+                if (title.includes(searchText) || podraz.includes(searchText)) {
+                    $row.show();
+                } else {
+                    $row.hide();
+                }
+            });
+        }
+    });
+
+    function loadReport() {
+        const dateStart = $('#dateStart').val();
+        const dateEnd = $('#dateEnd').val();
+        const dateType = $('input[name="dateType"]:checked').val();
+
+        $.ajax({
+            url: '/reports/objects/',
+            method: 'GET',
+            data: {
+                date_start: dateStart,
+                date_end: dateEnd,
+                date_type: dateType
+            },
+            success: function(response) {
+                $('#reportContent').html(response);
+                $('#objectSearch').val('');
+            },
+            error: function(xhr) {
+                alert('Ошибка загрузки отчета: ' + xhr.responseText);
+            }
+        });
+    }
+
+    function exportToExcel() {
+        const dateStart = $('#dateStart').val();
+        const dateEnd = $('#dateEnd').val();
+        const dateType = $('input[name="dateType"]:checked').val();
+
+        window.location.href = `/reports/objects/excel/?date_start=${dateStart}&date_end=${dateEnd}&date_type=${dateType}`;
+    }
+});
+</script>
+{% endblock %}

@@ -66,6 +66,37 @@ path('api/nom-by-id/<int:nom_id>/', spr_views.get_nom_by_id, name='get_nom_by_id
     path('reports/suppliers/<int:supplier_id>/', report_views.supplier_details, name='supplier_details'),
     path('reports/suppliers/excel/', report_views.suppliers_report_excel, name='reports_suppliers_excel'),
 
+
+# Отчет по объектам
+path('reports/objects/', report_views.objects_report, name='reports_objects'),
+path('reports/objects/excel/', report_views.objects_report_excel, name='reports_objects_excel'),
+path('reports/objects/<int:object_id>/', report_views.object_details, name='object_details'),
+path('reports/objects/<int:object_id>/excel/', report_views.object_details_excel, name='object_details_excel'),
+
+# Отчет по подразделениям
+path('reports/departments/', report_views.departments_report, name='reports_departments'),
+path('reports/departments/excel/', report_views.departments_report_excel, name='reports_departments_excel'),
+path('reports/departments/<int:department_id>/', report_views.department_details, name='department_details'),
+path('reports/departments/<int:department_id>/excel/', report_views.department_details_excel, name='department_details_excel'),
+
+
+# Отчет по подотчетным лицам
+path('reports/fio/', report_views.fio_report, name='reports_fio'),
+path('reports/fio/excel/', report_views.fio_report_excel, name='reports_fio_excel'),
+path('reports/fio/<int:fio_id>/', report_views.fio_details, name='fio_details'),
+path('reports/fio/<int:fio_id>/excel/', report_views.fio_details_excel, name='fio_details_excel'),
+
+# Отчет по категориям
+path('reports/categories/', report_views.categories_report, name='reports_categories'),
+path('reports/categories/excel/', report_views.categories_report_excel, name='reports_categories_excel'),
+path('reports/categories/income/<int:category_id>/', report_views.category_income_details, name='category_income_details'),
+path('reports/categories/income/<int:category_id>/excel/', report_views.category_income_details_excel, name='category_income_details_excel'),
+path('reports/categories/outcome/<int:category_id>/', report_views.category_outcome_details, name='category_outcome_details'),
+path('reports/categories/outcome/<int:category_id>/excel/', report_views.category_outcome_details_excel, name='category_outcome_details_excel'),
+
+path('reports/top10/', report_views.top10_report, name='reports_top10'),
+path('reports/top10/data/', report_views.top10_report_data, name='reports_top10_data'),
+
     # Потом общее меню отчетов (должно быть последним!)
     path('reports/<str:section>/', report_views.reports_menu, name='reports'),
 

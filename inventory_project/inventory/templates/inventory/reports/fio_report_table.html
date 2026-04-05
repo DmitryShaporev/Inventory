@@ -1,0 +1,69 @@
+{% load abs_filter %}
+
+{% if fios %}
+<div class="total-summary">
+    <div class="row">
+        <div class="col-md-6">
+            <span>📅 Период: {{ date_start }} - {{ date_end }}</span>
+            {% if date_type == 'doc' %}
+                <span class="badge bg-secondary ms-2">по дате документа</span>
+            {% else %}
+                <span class="badge bg-secondary ms-2">по дате поступления</span>
+            {% endif %}
+        </div>
+        <div class="col-md-6 text-end">
+            <span>📄 Всего подотчетных лиц: <strong>{{ fios|length }}</strong></span>
+            <span class="ms-3">💰 Общая сумма: <strong>{{ grand_total|floatformat:2 }}</strong> руб.</span>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="fio-table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Подотчетное лицо</th>
+                <th>Стоимость без НДС</th>
+                <th>Сумма НДС</th>
+                <th>Стоимость с НДС</th>
+                <th style="width: 60px">Детали</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fio in fios %}
+            <tr>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td><strong>{{ fio.title }}</strong></td>
+                <td class="text-end">{{ fio.total_without_vat|floatformat:2 }}</td>
+                <td class="text-end">{{ fio.total_vat|floatformat:2 }}</td>
+                <td class="text-end"><strong>{{ fio.total|floatformat:2 }}</strong></td>
+                <td class="text-center">
+                    <a href="{% url 'fio_details' fio.id %}?date_start={{ date_start }}&date_end={{ date_end }}&date_type={{ date_type }}"
+                       class="detail-link" title="Детализация по подотчетному лицу">
+                        📋
+                    </a>
+                 </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" class="text-end"><strong>ИТОГО:</strong></td>
+                <td class="text-end"><strong>{{ grand_total_without_vat|floatformat:2 }}</strong></td>
+                <td class="text-end"><strong>{{ grand_total_vat|floatformat:2 }}</strong></td>
+                <td class="text-end"><strong>{{ grand_total|floatformat:2 }}</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="report-footer mt-3 text-center text-muted">
+    Отчет сформирован: {% now "d.m.Y H:i:s" %}
+</div>
+{% else %}
+<div class="alert alert-secondary text-center">
+    ⚠️ Нет перемещений за указанный период
+</div>
+{% endif %}

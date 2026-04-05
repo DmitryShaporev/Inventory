@@ -1,0 +1,71 @@
+{% load abs_filter %}
+
+{% if objects %}
+<div class="total-summary">
+    <div class="row">
+        <div class="col-md-6">
+            <span>📅 Период: {{ date_start }} - {{ date_end }}</span>
+            {% if date_type == 'doc' %}
+                <span class="badge bg-secondary ms-2">по дате документа</span>
+            {% else %}
+                <span class="badge bg-secondary ms-2">по дате поступления</span>
+            {% endif %}
+        </div>
+        <div class="col-md-6 text-end">
+            <span>📄 Всего объектов: <strong>{{ objects|length }}</strong></span>
+            <span class="ms-3">💰 Общая сумма: <strong>{{ grand_total|floatformat:2 }}</strong> руб.</span>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="object-table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Объект</th>
+                <th>Подразделение</th>
+                <th>Стоимость без НДС</th>
+                <th>Сумма НДС</th>
+                <th>Стоимость с НДС</th>
+                <th style="width: 60px">Детализация</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in objects %}
+            <tr>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td><strong>{{ obj.title }}</strong></td>
+                <td>{{ obj.podraz|default:"—" }}</td>
+                <td class="text-end">{{ obj.total_without_vat|floatformat:2 }}</td>
+                <td class="text-end">{{ obj.total_vat|floatformat:2 }}</td>
+                <td class="text-end"><strong>{{ obj.total|floatformat:2 }}</strong></td>
+                <td class="text-center">
+                    <a href="{% url 'object_details' obj.id %}?date_start={{ date_start }}&date_end={{ date_end }}&date_type={{ date_type }}"
+                       class="detail-link" title="Детализация по объекту">
+                        📋
+                    </a>
+                 </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end"><strong>ИТОГО:</strong></td>
+                <td class="text-end"><strong>{{ grand_total_without_vat|floatformat:2 }}</strong></td>
+                <td class="text-end"><strong>{{ grand_total_vat|floatformat:2 }}</strong></td>
+                <td class="text-end"><strong>{{ grand_total|floatformat:2 }}</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="report-footer mt-3 text-center text-muted">
+    Отчет сформирован: {% now "d.m.Y H:i:s" %}
+</div>
+{% else %}
+<div class="alert alert-secondary text-center">
+    ⚠️ Нет перемещений за указанный период
+</div>
+{% endif %}

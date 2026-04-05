@@ -1,0 +1,73 @@
+{% load abs_filter %}
+
+{% if categories %}
+<div class="total-summary">
+    <div class="row">
+        <div class="col-md-4">
+            <span>📅 Период: {{ date_start }} - {{ date_end }}</span>
+            {% if date_type == 'doc' %}
+                <span class="badge bg-secondary ms-2">по дате документа</span>
+            {% else %}
+                <span class="badge bg-secondary ms-2">по дате поступления</span>
+            {% endif %}
+        </div>
+        <div class="col-md-8 text-end">
+            <span>📄 Всего категорий: <strong>{{ categories|length }}</strong></span>
+            <span class="ms-3">💰 Нач.остатки: <strong>{{ grand_total_initial|floatformat:2 }}</strong> руб.</span>
+            <span class="ms-3">📥 Получено: <strong>{{ grand_total_income|floatformat:2 }}</strong> руб.</span>
+            <span class="ms-3">📤 Выдано: <strong>{{ grand_total_outcome|floatformat:2 }}</strong> руб.</span>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="category-table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Категория</th>
+                <th>Нач.остатки</th>
+                <th>Получено</th>
+                <th>Выдано</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cat in categories %}
+            <tr>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td><strong>{{ cat.title }}</strong></td>
+                <td class="text-end">{{ cat.total_initial|floatformat:2 }} руб.</td>
+                <td class="text-end">
+                    <a href="{% url 'category_income_details' cat.id %}?date_start={{ date_start }}&date_end={{ date_end }}&date_type={{ date_type }}"
+                       class="detail-link income-link" title="Детализация полученного">
+                        {{ cat.total_income|floatformat:2 }} руб.
+                    </a>
+                 </td>
+                <td class="text-end">
+                    <a href="{% url 'category_outcome_details' cat.id %}?date_start={{ date_start }}&date_end={{ date_end }}&date_type={{ date_type }}"
+                       class="detail-link outcome-link" title="Детализация выданного">
+                        {{ cat.total_outcome|floatformat:2 }} руб.
+                    </a>
+                 </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" class="text-end"><strong>ИТОГО:</strong></td>
+                <td class="text-end"><strong>{{ grand_total_initial|floatformat:2 }}</strong></td>
+                <td class="text-end"><strong>{{ grand_total_income|floatformat:2 }}</strong></td>
+                <td class="text-end"><strong>{{ grand_total_outcome|floatformat:2 }}</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="report-footer mt-3 text-center text-muted">
+    Отчет сформирован: {% now "d.m.Y H:i:s" %}
+</div>
+{% else %}
+<div class="alert alert-secondary text-center">
+    ⚠️ Нет данных за указанный период
+</div>
+{% endif %}

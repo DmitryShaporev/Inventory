@@ -1,0 +1,394 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .top-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .top-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem 1.25rem;
+        border-radius: 12px 12px 0 0;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .card-header-custom i {
+        margin-right: 8px;
+    }
+
+    .top-table {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .top-table tbody tr {
+        transition: background 0.2s;
+    }
+
+    .top-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .top-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+
+    .top-table th {
+        padding: 0.75rem 1rem;
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .rank-badge {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        background: #e9ecef;
+        border-radius: 50%;
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .rank-1 {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #856404;
+    }
+
+    .rank-2 {
+        background: linear-gradient(135deg, #c0c0c0, #e0e0e0);
+        color: #495057;
+    }
+
+    .rank-3 {
+        background: linear-gradient(135deg, #cd7f32, #daa06d);
+        color: white;
+    }
+
+    .value-badge {
+        background: #e7f3ff;
+        color: #0066cc;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .filter-panel {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .grid-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .card-body-scroll {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 0;
+    }
+
+    .btn-primary-custom {
+
+        border: none;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+    }
+
+    .info-badge {
+        background: #e7f3ff;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12">
+            <!-- Заголовок -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">
+                    <i class="fas fa-trophy"></i> 🏆 ТОП-10 отчет
+                </h4>
+            </div>
+
+            <!-- Панель фильтров -->
+            <div class="filter-panel">
+                <form method="get" id="topForm" class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">📅 Дата начала</label>
+                        <input type="date" class="form-control" name="from_date" id="from_date" value="{{ from_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">📅 Дата конца</label>
+                        <input type="date" class="form-control" name="to_date" id="to_date" value="{{ to_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">⏱️ Тип даты</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="date_field" id="date_datadoc" value="datadoc" {% if date_field == 'datadoc' %}checked{% endif %}>
+                                <label class="form-check-label" for="date_datadoc">Дата документа</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="date_field" id="date_update" value="update_date" {% if date_field == 'update_date' %}checked{% endif %}>
+                                <label class="form-check-label" for="date_update">Дата изменения</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn ">
+                            <i class="fas fa-chart-line"></i> 📊 Сформировать отчет
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Результаты -->
+            {% if from_date and to_date %}
+                <div class="grid-container">
+
+                    <!-- Карточка 1: ТОП-10 Наименований по количеству -->
+                    <div class="top-card">
+                        <div class="card-header-custom">
+                            <i class="fas fa-box"></i> 📦 ТОП-10 Наименований
+                            <small class="float-end">по количеству</small>
+                        </div>
+                        <div class="card-body-scroll">
+                            {% if top_nomenclatures %}
+                                <table class="top-table">
+                                    <thead>
+                                        <tr><th>#</th><th>Наименование</th><th class="text-end">Кол-во</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in top_nomenclatures %}
+                                        <tr>
+                                            <td style="width: 60px;">
+                                                <span class="rank-badge {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">
+                                                    {{ forloop.counter }}
+                                                </span>
+                                            </td>
+                                            <td><strong>{{ item.id_nom__title|default:"Без имени"|truncatechars:40 }}</strong></td>
+                                            <td class="text-end"><span class="value-badge">{{ item.total_quantity|floatformat:2 }}</span></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="empty-state"><i class="fas fa-chart-simple"></i><p>Нет данных за период</p></div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Карточка 2: ТОП-10 Поставщиков по сумме -->
+                    <div class="top-card">
+                        <div class="card-header-custom">
+                            <i class="fas fa-truck"></i> 🚚 ТОП-10 Поставщиков
+                            <small class="float-end">по сумме поставок</small>
+                        </div>
+                        <div class="card-body-scroll">
+                            {% if top_suppliers %}
+                                <table class="top-table">
+                                    <thead><tr><th>#</th><th>Поставщик</th><th class="text-end">Сумма</th></tr></thead>
+                                    <tbody>
+                                        {% for item in top_suppliers %}
+                                        <tr>
+                                            <td style="width: 60px;"><span class="rank-badge {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">{{ forloop.counter }}</span></td>
+                                            <td><strong>{{ item.id_doc__postav__title|default:"Без поставщика"|truncatechars:35 }}</strong></td>
+                                            <td class="text-end"><span class="value-badge">{{ item.total_sum|floatformat:2 }} ₽</span></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="empty-state"><i class="fas fa-chart-simple"></i><p>Нет данных за период</p></div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Карточка 3: ТОП-10 Объектов по сумме -->
+                    <div class="top-card">
+                        <div class="card-header-custom">
+                            <i class="fas fa-building"></i> 🏢 ТОП-10 Объектов
+                            <small class="float-end">по сумме выдачи</small>
+                        </div>
+                        <div class="card-body-scroll">
+                            {% if top_objects %}
+                                <table class="top-table">
+                                    <thead><tr><th>#</th><th>Объект</th><th class="text-end">Сумма</th></tr></thead>
+                                    <tbody>
+                                        {% for item in top_objects %}
+                                        <tr>
+                                            <td style="width: 60px;"><span class="rank-badge {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">{{ forloop.counter }}</span></td>
+                                            <td><strong>{{ item.id_doc__obct__title|default:"Без объекта"|truncatechars:35 }}</strong></td>
+                                            <td class="text-end"><span class="value-badge">{{ item.total_sum|floatformat:2 }} ₽</span></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="empty-state"><i class="fas fa-chart-simple"></i><p>Нет данных за период</p></div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Карточка 4: ТОП-10 Подразделений -->
+                    <div class="top-card">
+                        <div class="card-header-custom">
+                            <i class="fas fa-users"></i> 🏛️ ТОП-10 Подразделений
+                            <small class="float-end">по сумме</small>
+                        </div>
+                        <div class="card-body-scroll">
+                            {% if top_departments %}
+                                <table class="top-table">
+                                    <thead><tr><th>#</th><th>Подразделение</th><th class="text-end">Сумма</th></tr></thead>
+                                    <tbody>
+                                        {% for item in top_departments %}
+                                        <tr>
+                                            <td style="width: 60px;"><span class="rank-badge {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">{{ forloop.counter }}</span></td>
+                                            <td><strong>{{ item.id_doc__obct__idpodraz__title|default:"Без подразделения"|truncatechars:35 }}</strong></td>
+                                            <td class="text-end"><span class="value-badge">{{ item.total_sum|floatformat:2 }} ₽</span></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="empty-state"><i class="fas fa-chart-simple"></i><p>Нет данных за период</p></div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Карточка 5: ТОП-10 Подотчетных лиц -->
+                    <div class="top-card">
+                        <div class="card-header-custom">
+                            <i class="fas fa-user-check"></i> 👤 ТОП-10 Подотчетных лиц
+                            <small class="float-end">по сумме</small>
+                        </div>
+                        <div class="card-body-scroll">
+                            {% if top_fio %}
+                                <table class="top-table">
+                                    <thead><tr><th>#</th><th>Подотчетное лицо</th><th class="text-end">Сумма</th></tr></thead>
+                                    <tbody>
+                                        {% for item in top_fio %}
+                                        <tr>
+                                            <td style="width: 60px;"><span class="rank-badge {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">{{ forloop.counter }}</span></td>
+                                            <td><strong>{{ item.id_doc__fio__title|default:"Без лица"|truncatechars:35 }}</strong></td>
+                                            <td class="text-end"><span class="value-badge">{{ item.total_sum|floatformat:2 }} ₽</span></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="empty-state"><i class="fas fa-chart-simple"></i><p>Нет данных за период</p></div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Карточка 6: ТОП-10 Дорогих наименований -->
+                    <div class="top-card">
+                        <div class="card-header-custom">
+                            <i class="fas fa-gem"></i> 💎 ТОП-10 Дорогих позиций
+                            <small class="float-end">макс. цена за ед.</small>
+                        </div>
+                        <div class="card-body-scroll">
+                            {% if top_expensive %}
+                                <table class="top-table">
+                                    <thead><tr><th>#</th><th>Наименование</th><th class="text-end">Цена</th></tr></thead>
+                                    <tbody>
+                                        {% for item in top_expensive %}
+                                        <tr>
+                                            <td style="width: 60px;"><span class="rank-badge {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">{{ forloop.counter }}</span></td>
+                                            <td><strong>{{ item.id_nom__title|default:"Без имени"|truncatechars:35 }}</strong><br><small class="text-muted">{{ item.id_nom__izm__title|default:"" }}</small></td>
+                                            <td class="text-end"><span class="value-badge">{{ item.max_price|floatformat:2 }} ₽</span></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="empty-state"><i class="fas fa-chart-simple"></i><p>Нет данных за период</p></div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Информационная панель -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="info-badge text-center">
+                            <i class="fas fa-info-circle"></i>
+                            Отчет сформирован за период: <strong>{{ from_date }}</strong> — <strong>{{ to_date }}</strong>
+                            (тип даты: {% if date_field == 'datadoc' %}дата документа{% else %}дата изменения{% endif %})
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-calendar-alt"></i> Выберите период и нажмите «Сформировать отчет»
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script>
+// Сохраняем выбор радиокнопок при отправке формы
+document.getElementById('topForm').addEventListener('submit', function(e) {
+    // форма сама отправится GET-запросом, всё ок
+});
+</script>
+{% endblock %}

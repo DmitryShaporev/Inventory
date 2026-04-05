@@ -1,0 +1,147 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+{% load abs_filter %}
+
+{% block extra_css %}
+<style>
+    .detail-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .detail-table th {
+        background-color: #e9ecef;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        position: sticky;
+        top: 0;
+    }
+
+    .detail-table td {
+        padding: 8px;
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+
+    .detail-table tr:hover {
+        background-color: #f0f7ff;
+    }
+
+    .total-summary {
+        background: #e9ecef;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+
+    .doc-link {
+        cursor: pointer;
+        font-size: 16px;
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+                <button onclick="window.history.back()" class="btn btn-outline-secondary">
+                    ← Назад к отчету
+                </button>
+                <div>
+                    <button class="btn btn-secondary me-1" id="btnExcel">📊 Excel</button>
+                    <button class="btn btn-secondary" id="btnPrint">🖨️ Печать</button>
+                </div>
+            </div>
+
+            <div class="total-summary bg-warning bg-opacity-25">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Категория:</strong> <span class="text-danger"> {{ category.title }} </span>
+                        <span class="ms-3 text-danger"><strong>Тип:</strong> ВЫДАНО</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Период:</strong> {{ date_start }} - {{ date_end }}
+                    </div>
+                    <div class="col-md-3 text-end">
+                        <strong>Общая сумма:</strong> {{ grand_total|floatformat:2 }} руб.
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Наименование</th>
+                            <th>Ед.изм.</th>
+                            <th>Количество</th>
+                            <th>Цена</th>
+                            <th>Стоимость без НДС</th>
+                            <th>НДС %</th>
+                            <th>Сумма НДС</th>
+                            <th>Стоимость с НДС</th>
+                            <th style="width: 80px">Документ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td class="text-center">{{ forloop.counter }}</td>
+                            <td><strong>{{ item.title }}</strong><\/td>
+                            <td class="text-center">{{ item.izm }}<\/td>
+                            <td class="text-end">{{ item.quantity|floatformat:2 }}</td>
+                            <td class="text-end">{{ item.price|floatformat:2 }}</td>
+                            <td class="text-end">{{ item.total_without_vat|floatformat:2 }}</td>
+                            <td class="text-center">{{ item.vat_rate|floatformat:0 }}%</td>
+                            <td class="text-end">{{ item.total_vat|floatformat:2 }}</td>
+                            <td class="text-end"><strong>{{ item.total|floatformat:2 }}</strong></td>
+                            <td class="text-center">
+                                <a href="{% url 'view_move_doc' item.doc_id %}" class="doc-link" title="Перейти к документу">
+                                    📄
+                                </a>
+                             </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="text-end"><strong>ИТОГО:</strong></td>
+                            <td class="text-end"><strong>{{ grand_total_without_vat|floatformat:2 }}</strong></td>
+                            <td class="text-center">—</td>
+                            <td class="text-end"><strong>{{ grand_total_vat|floatformat:2 }}</strong></td>
+                            <td class="text-end"><strong>{{ grand_total|floatformat:2 }}</strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'jquery.js' %}"></script>
+<script>
+$(document).ready(function() {
+    $('#btnPrint').on('click', function() { window.print(); });
+    $('#btnExcel').on('click', function() { exportToExcel(); });
+
+    function exportToExcel() {
+        const urlParams = new URLSearchParams(window.location.search);
+        window.location.href = `/reports/categories/outcome/${window.location.pathname.split('/')[4]}/excel/?${urlParams.toString()}`;
+    }
+});
+</script>
+{% endblock %}
