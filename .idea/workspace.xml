@@ -5,25 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Отчеты продолжение. Утилита для исправления НДС">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/category_income_details.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/category_outcome_details.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/category_report.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/category_report_table.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/department_details.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/department_report.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/department_report_table.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/fio_details.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/fio_report.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/fio_report_table.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/object_details.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/object_report.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/object_report_table.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/top_10_report.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/top_5_content.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/top_10_report.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/registration/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory_project/middleware.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventory_project/start_server.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/base_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/base_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/qr_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/qr_views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,8 +27,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -49,12 +43,12 @@
     &quot;assignee&quot;: &quot;DmitryShaporev&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/DmitryShaporev/Inventory.git&quot;,
-    &quot;accountId&quot;: &quot;99ff5f59-0b44-4475-b8cd-265ab3cf3444&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/DmitryShaporev/Inventory.git",
+    "accountId": "d2c757c1-9b46-45dc-a905-4d97274ecd67"
   }
-}</component>
+}]]></component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -66,18 +60,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Inventory2026/inventory_project/inventory/templates/inventory/reports",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Inventory2026/inventory_project/inventory/templates/inventory/reports&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Inventory2026\inventory_project\inventory\templates\inventory\reports" />
@@ -87,6 +81,7 @@
       <recent name="C:\Inventory2026\inventory_project\static\bootstrap\js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Inventory2026\inventory_project\inventory\templates" />
       <recent name="C:\Inventory2026\inventory_project" />
       <recent name="C:\Inventory2026" />
     </key>
@@ -94,7 +89,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-495700d161d3-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.22562.220" />
+        <option value="bundled-python-sdk-53e2683a6804-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26094.141" />
       </set>
     </attachedChunks>
   </component>

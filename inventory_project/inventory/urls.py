@@ -1,5 +1,5 @@
 from django.urls import path
-
+from django.contrib.auth import views as auth_views
 from .views import base_views, spr_views, doc_views, report_views, qr_views
 
 urlpatterns = [
@@ -101,7 +101,8 @@ path('reports/top10/data/', report_views.top10_report_data, name='reports_top10_
     path('reports/<str:section>/', report_views.reports_menu, name='reports'),
 
 
-
+path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
 ]
 

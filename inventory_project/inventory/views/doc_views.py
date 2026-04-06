@@ -12,7 +12,10 @@ from django.http import JsonResponse
 from django.conf import settings
 from datetime import date, timedelta
 
-
+def my_view(request):
+    if request.user.username != 'operator':
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden("Доступ только для операторов")
 
 def parse_decimal(value):
     """Преобразует строку с запятой в число с плавающей точкой"""

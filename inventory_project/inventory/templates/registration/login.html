@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход в систему</title>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h4>Вход в складскую систему АО ЕнСПК</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label>Логин</label>
+                                <input type="text" name="username" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Пароль</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+                            {% if form.errors %}
+                                <div class="alert alert-danger">Неверный логин или пароль</div>
+                            {% endif %}
+                            <button type="submit" class="btn btn-dark w-100">Войти</button>
+                        </form>
+                        <hr>
+                        <div class="text-muted small text-center">
+                            👤 Операторы: operator <br>
+                            📊 Бухгалтерия: buh
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 DOCS_EDIT_DAYS = 30
-
+LOGIN_URL = '/login/'  # Куда перенаправлять неавторизованных
+LOGIN_REDIRECT_URL = '/'
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -51,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+'inventory_project.middleware.LoginRequiredMiddleware',
+
 ]
 
 ROOT_URLCONF = 'inventory_project.urls'
@@ -58,7 +61,7 @@ ROOT_URLCONF = 'inventory_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

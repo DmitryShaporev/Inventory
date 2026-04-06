@@ -6,6 +6,11 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 
+def my_view(request):
+    if request.user.username != 'operator':
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden("Доступ только для операторов")
+
 
 def qr_simple(request):
     """Простая страница для теста QR-кода"""

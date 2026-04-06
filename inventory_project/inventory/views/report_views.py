@@ -15,7 +15,10 @@ import openpyxl
 from openpyxl.styles import Font, Alignment, Border, Side
 from io import BytesIO
 from datetime import datetime, timedelta
-
+def reports_view(request):
+    if not request.user.is_authenticated:
+        from django.shortcuts import redirect
+        return redirect('login')
 
 def incom_report(request):
     """Отчет о поступлении ТМЦ"""
@@ -202,7 +205,7 @@ def reports_menu(request, section):
         'departments':'По подразделениям',
         'fio': 'По подотчетным лицам',
         'categories':'По категориям',
-        'top10': 'ТОП-10'
+        'top10': 'ТОП-5'
 
 
     }

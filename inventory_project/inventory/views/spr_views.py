@@ -10,6 +10,12 @@ from django.http import HttpResponse
 from ..models import Izm, Podraz, Fio, Category, Postav, Spis, Obct, Nom
 
 # Create your views here.
+def my_view(request):
+    if request.user.username != 'operator':
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden("Доступ только для операторов")
+
+
 def spr(request, section):
     tables = {
         'izm': [Izm, 'Единицы измерения'],
