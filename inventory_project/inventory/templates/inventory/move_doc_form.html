@@ -132,7 +132,7 @@
                                    placeholder="Введите номер документа"
                                    autofocus
                                    id="input-nomer"
-                                   value="{{ doc.nomer|default:'' }}"
+                                   value="{% if is_edit %}{{ doc.nomer|default:'' }}{% else %}{{ next_number }}{% endif %}"
                                    required>
                         </div>
 

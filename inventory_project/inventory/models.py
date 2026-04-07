@@ -260,3 +260,5 @@ class Manage(models.Model):
         verbose_name = 'Управление складом'
         verbose_name_plural = 'Управление складом'
 
+class Akt(models.Model):
+    nomer=models.IntegerField('Номер документа',blank=True,null=True)

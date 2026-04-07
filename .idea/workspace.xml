@@ -4,19 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Отчеты продолжение. Утилита для исправления НДС">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/registration/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory_project/middleware.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventory_project/start_server.bat" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Простая авторизация и батник для автозагрузки. Проект в основном готов!">
+      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/base_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/base_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/move_doc_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/move_doc_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/top_10_report.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/top_10_report.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/qr_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/qr_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/spr_views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,12 +39,12 @@
     &quot;assignee&quot;: &quot;DmitryShaporev&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/DmitryShaporev/Inventory.git",
-    "accountId": "d2c757c1-9b46-45dc-a905-4d97274ecd67"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/DmitryShaporev/Inventory.git&quot;,
+    &quot;accountId&quot;: &quot;d2c757c1-9b46-45dc-a905-4d97274ecd67&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -350,8 +346,19 @@
       <option name="project" value="LOCAL" />
       <updated>1775299601862</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Простая авторизация и батник для автозагрузки. Проект в основном готов!">
+      <option name="closed" value="true" />
+      <created>1775447165201</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1775447165201</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.bat" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -365,7 +372,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Перенос базы из Фласка" />
     <MESSAGE value="Предварительная настройка админки" />
     <MESSAGE value="Окончательные миграции.Скрипт для переноса дат в нормальное поле Date" />
     <MESSAGE value="Первые шаблоны" />
@@ -390,6 +396,7 @@
     <MESSAGE value="Исправлен НДС в таблице, поправлены документы, сделаны QR коды в приходных." />
     <MESSAGE value="Отчеты. Отчет по входящим документам" />
     <MESSAGE value="Отчеты продолжение. Утилита для исправления НДС" />
-    <option name="LAST_COMMIT_MESSAGE" value="Отчеты продолжение. Утилита для исправления НДС" />
+    <MESSAGE value="Простая авторизация и батник для автозагрузки. Проект в основном готов!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Простая авторизация и батник для автозагрузки. Проект в основном готов!" />
   </component>
 </project>

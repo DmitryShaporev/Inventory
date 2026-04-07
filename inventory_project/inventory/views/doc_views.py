@@ -1,4 +1,5 @@
 from django.utils import timezone
+from ..utils import get_next_move_doc_number, update_move_doc_number
 from django.template.loader import render_to_string
 import json
 from django.db import transaction
@@ -239,13 +240,14 @@ def create_move_doc(request):
     """Создание нового документа перемещения"""
     from datetime import date
     from ..models import Fio, Obct
-
+    next_number = get_next_move_doc_number()
     context = {
         'today': date.today(),
         'fio_list': Fio.objects.all().order_by('title'),
         'obct_list': Obct.objects.all().order_by('title'),
         'is_edit': False,
         'is_editable': True,
+        'next_number': next_number,
     }
     return render(request, 'inventory/move_doc_form.html', context)
 
@@ -279,6 +281,7 @@ def save_move_doc(request):
         data = json.loads(request.body)
 
         with transaction.atomic():
+            doc_number = int(data['doc']['nomer'])
             doc = Doc.objects.create(
                 nomer=data['doc']['nomer'],
                 datadoc=data['doc']['datadoc'],
@@ -315,6 +318,7 @@ def save_move_doc(request):
 
             doc.total = total
             doc.save()
+            update_move_doc_number(doc_number)
 
         return JsonResponse({'status': 'ok'})
 
