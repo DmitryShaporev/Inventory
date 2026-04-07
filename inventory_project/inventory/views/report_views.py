@@ -199,7 +199,7 @@ def reports_menu(request, section):
     reports = {
         'incom': 'Поступление ТМЦ',
         'move': 'Перемещение ТМЦ',
-        'remain': 'Наличие ТМЦ',
+        'remain': 'Наличие/Движение ТМЦ',
         'suppliers':'По поставщикам',
         'objects': 'По объектам',
         'departments':'По подразделениям',

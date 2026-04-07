@@ -4,16 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Простая авторизация и батник для автозагрузки. Проект в основном готов!">
-      <change afterPath="$PROJECT_DIR$/inventory_project/inventory/utils.py" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Автоматическая подстановка номера в документ перемешения">
+      <change afterPath="$PROJECT_DIR$/inventory_project/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/move_doc_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/move_doc_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/top_10_report.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/top_10_report.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/doc_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory_project/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/registration/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/registration/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -354,7 +351,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775447165201</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Автоматическая подстановка номера в документ перемешения">
+      <option name="closed" value="true" />
+      <created>1775533357232</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1775533357232</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -372,7 +377,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Предварительная настройка админки" />
     <MESSAGE value="Окончательные миграции.Скрипт для переноса дат в нормальное поле Date" />
     <MESSAGE value="Первые шаблоны" />
     <MESSAGE value="Основные шаблоны меню" />
@@ -397,6 +401,7 @@
     <MESSAGE value="Отчеты. Отчет по входящим документам" />
     <MESSAGE value="Отчеты продолжение. Утилита для исправления НДС" />
     <MESSAGE value="Простая авторизация и батник для автозагрузки. Проект в основном готов!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Простая авторизация и батник для автозагрузки. Проект в основном готов!" />
+    <MESSAGE value="Автоматическая подстановка номера в документ перемешения" />
+    <option name="LAST_COMMIT_MESSAGE" value="Автоматическая подстановка номера в документ перемешения" />
   </component>
 </project>
