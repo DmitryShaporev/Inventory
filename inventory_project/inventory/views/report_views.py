@@ -401,20 +401,23 @@ def render_remain_report_table(request, show_zero='all'):
     """Рендеринг таблицы отчета об остатках (группировка по товару+цена с объединением)"""
     from django.db import connection
 
-    # Убираем HAVING — получаем ВСЕ товары, включая нулевые остатки
+    # Добавляем category_id и category_title
     query = """
         SELECT 
             n.id as nom_id,
             n.title as title,
             COALESCE(i.title, 'шт') as izm,
             d.price,
-            SUM(d.kolvo) as quantity
+            SUM(d.kolvo) as quantity,
+            n.category_id,
+            c.title as category_title
         FROM detail d
         INNER JOIN nom n ON d.id_nom = n.id
         LEFT JOIN izm i ON n.izm_id = i.id
+        LEFT JOIN category c ON n.category_id = c.id
         INNER JOIN doc ON d.id_doc = doc.id
         WHERE doc.oper IN (1, 2, 4, 3, 5)
-        GROUP BY n.id, n.title, i.title, d.price
+        GROUP BY n.id, n.title, i.title, d.price, n.category_id, c.title
         ORDER BY n.title, d.price
     """
 
@@ -424,30 +427,26 @@ def render_remain_report_table(request, show_zero='all'):
             columns = [col[0] for col in cursor.description]
             rows = cursor.fetchall()
 
-        # Временный словарь для объединения одинаковых товаров с одинаковой ценой
         temp_dict = {}
 
         for row in rows:
             data = dict(zip(columns, row))
             quantity = float(data['quantity'])
 
-            # Ключ: товар + цена
             key = f"{data['nom_id']}_{data['price']}"
 
             if key in temp_dict:
-                # Если уже есть — суммируем количество
                 temp_dict[key]['quantity'] += quantity
             else:
-                # Если нет — добавляем новую запись
                 temp_dict[key] = {
                     'nom_id': data['nom_id'],
                     'title': data['title'] or 'Без названия',
                     'izm': data['izm'] or 'шт',
                     'price': float(data['price']),
-                    'quantity': quantity
+                    'quantity': quantity,
+                    'category_title': data['category_title'] or 'Без категории',  # ← добавили
                 }
 
-        # Формируем итоговый список с фильтрацией
         remains = []
         total_quantity = 0
         total_sum = 0
@@ -455,7 +454,6 @@ def render_remain_report_table(request, show_zero='all'):
         for key, item in temp_dict.items():
             quantity = round(item['quantity'], 0)
 
-            # Фильтрация по show_zero (уже на уровне Python)
             if show_zero == 'positive' and quantity <= 0:
                 continue
 
@@ -464,12 +462,12 @@ def render_remain_report_table(request, show_zero='all'):
                 'title': item['title'],
                 'izm': item['izm'],
                 'price': item['price'],
-                'quantity': quantity
+                'quantity': quantity,
+                'category_title': item['category_title'],  # ← добавили
             })
             total_quantity += quantity if quantity > 0 else 0
             total_sum += quantity * item['price'] if quantity > 0 else 0
 
-        # Сортируем по наименованию, затем по цене
         remains.sort(key=lambda x: (x['title'], x['price']))
 
         html = render_to_string('inventory/reports/remain_report_table.html', {
@@ -484,7 +482,6 @@ def render_remain_report_table(request, show_zero='all'):
         import traceback
         traceback.print_exc()
         return HttpResponse('<div class="alert alert-danger">Ошибка формирования отчета</div>')
-
 def remain_report_excel(request):
     """Экспорт отчета об остатках в Excel"""
     from django.db import connection

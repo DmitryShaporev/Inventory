@@ -18,6 +18,7 @@
             <tr>
                 <th style="width: 50px">№</th>
                 <th>Наименование</th>
+                <th style="width: 150px">Категория</th>
                 <th style="width: 80px">Ед.изм.</th>
                 <th style="width: 120px">Цена (ср.)</th>
                 <th style="width: 100px">Количество</th>
@@ -29,6 +30,7 @@
             <tr {% if item.quantity == 0 %}class="zero-quantity"{% endif %}>
                 <td class="text-center">{{ forloop.counter }}</td>
                 <td>{{ item.title }}</td>
+                <td>{{ item.category_title }}</td>
                 <td class="text-center">{{ item.izm }}</td>
                 <td class="text-end">{{ item.price|floatformat:2 }}</td>
                 <td class="text-end">
@@ -39,25 +41,23 @@
                     {% endif %}
                     {{ item.izm }}
                 </td>
-
-                    <td class="text-center">
-    <a href="{% url 'nom_card' item.nom_id %}" class="card-link" title="Карточка товара">
-        📄
-    </a>
-</td>
-
+                <td class="text-center">
+                    <a href="{% url 'nom_card' item.nom_id %}" class="card-link" title="Карточка товара">
+                        📄
+                    </a>
+                </td>
              </tr>
             {% empty %}
             <tr>
-                <td colspan="6" class="text-center text-muted py-4">
-                    ...
+                <td colspan="7" class="text-center text-muted py-4">
+                    Нет данных
                 </td>
             </tr>
             {% endfor %}
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="4" class="text-end"><strong>ИТОГО:</strong></td>
+                <td colspan="5" class="text-end"><strong>ИТОГО:</strong></td>
                 <td class="text-end"><strong>{{ total_quantity|floatformat:0 }}</strong></td>
                 <td></td>
             </tr>

@@ -232,33 +232,73 @@ $(document).ready(function() {
         });
     }
 
-    // Функция поиска
-    function initSearch() {
-        const searchInput = $('#searchInput');
-        const rows = $('.remain-table tbody tr');
+    // Функция поиска (по наименованию и категории) с пересчётом итогов
+function initSearch() {
+    const searchInput = $('#searchInput');
+    const rows = $('.remain-table tbody tr');
 
-        searchInput.off('keyup').on('keyup', function() {
-            const searchText = $(this).val().toLowerCase().trim();
+    function updateTotals() {
+        let totalQuantity = 0;
+        let totalSum = 0;
 
-            rows.each(function() {
-                const $row = $(this);
-                const titleCell = $row.find('td:nth-child(2)');
-                const title = titleCell.text().toLowerCase();
+        rows.each(function() {
+            const $row = $(this);
+            // Показывается ли строка
+            if ($row.css('display') !== 'none') {
+                // Количество (5-й столбец, индекс 5, но нумерация с 0)
+                const quantityText = $row.find('td:nth-child(6)').text().trim();
+                const quantity = parseFloat(quantityText.replace(/\s/g, '')) || 0;
 
-                if (searchText === '' || title.includes(searchText)) {
-                    $row.show();
-                    if (searchText !== '') {
-                        highlightText(titleCell, searchText);
-                    } else {
-                        removeHighlight(titleCell);
-                    }
-                } else {
-                    $row.hide();
-                }
-            });
+                // Цена (4-й столбец)
+                const priceText = $row.find('td:nth-child(5)').text().trim();
+                const price = parseFloat(priceText.replace(',', '.')) || 0;
+
+                totalQuantity += quantity;
+                totalSum += quantity * price;
+            }
         });
+
+        // Обновляем итоги в подвале таблицы
+        $('.remain-table tfoot td:eq(1)').html('<strong>' + totalQuantity.toFixed(0) + '</strong>');
+        $('.total-summary .col-md-6.text-end').html(
+            '<span>📄 Всего позиций: <strong>' + rows.filter(':visible').length + '</strong></span>' +
+            '<span class="ms-3">💰 Общая стоимость: <strong>' + totalSum.toFixed(2) + '</strong> руб.</span>'
+        );
     }
 
+    searchInput.off('keyup').on('keyup', function() {
+        const searchText = $(this).val().toLowerCase().trim();
+
+        rows.each(function() {
+            const $row = $(this);
+            const titleCell = $row.find('td:nth-child(2)');
+            const categoryCell = $row.find('td:nth-child(3)');
+            const title = titleCell.text().toLowerCase();
+            const category = categoryCell.text().toLowerCase();
+
+            const matchesTitle = title.includes(searchText);
+            const matchesCategory = category.includes(searchText);
+            const shouldShow = (searchText === '' || matchesTitle || matchesCategory);
+
+            if (shouldShow) {
+                $row.show();
+                if (searchText !== '' && matchesTitle) {
+                    highlightText(titleCell, searchText);
+                } else {
+                    removeHighlight(titleCell);
+                }
+            } else {
+                $row.hide();
+            }
+        });
+
+        // Пересчитываем итоги после фильтрации
+        updateTotals();
+    });
+
+    // Первоначальный расчёт итогов
+    updateTotals();
+}
     function highlightText($element, searchText) {
         const originalText = $element.text();
         const regex = new RegExp(`(${searchText})`, 'gi');

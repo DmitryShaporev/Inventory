@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Автоматическая подстановка номера в документ перемешения">
-      <change afterPath="$PROJECT_DIR$/inventory_project/requirements.txt" afterDir="false" />
+    <list default="true" id="7c2a1559-78cb-409d-8928-1dd0b4174bb0" name="Changes" comment="Немного переделок.. И requirements.txt">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/doc_journal.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/registration/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/registration/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/templates/inventory/reports/remain_report_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory_project/inventory/views/report_views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -359,7 +359,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775533357232</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Немного переделок.. И requirements.txt">
+      <option name="closed" value="true" />
+      <created>1775535523821</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1775535523821</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -377,7 +385,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Окончательные миграции.Скрипт для переноса дат в нормальное поле Date" />
     <MESSAGE value="Первые шаблоны" />
     <MESSAGE value="Основные шаблоны меню" />
     <MESSAGE value="Разработка единого шаблона для простых справочников" />
@@ -402,6 +409,7 @@
     <MESSAGE value="Отчеты продолжение. Утилита для исправления НДС" />
     <MESSAGE value="Простая авторизация и батник для автозагрузки. Проект в основном готов!" />
     <MESSAGE value="Автоматическая подстановка номера в документ перемешения" />
-    <option name="LAST_COMMIT_MESSAGE" value="Автоматическая подстановка номера в документ перемешения" />
+    <MESSAGE value="Немного переделок.. И requirements.txt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Немного переделок.. И requirements.txt" />
   </component>
 </project>
