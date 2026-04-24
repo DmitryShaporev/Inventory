@@ -452,7 +452,7 @@ def render_remain_report_table(request, show_zero='all'):
         total_sum = 0
 
         for key, item in temp_dict.items():
-            quantity = round(item['quantity'], 0)
+            quantity = item['quantity']
 
             if show_zero == 'positive' and quantity <= 0:
                 continue

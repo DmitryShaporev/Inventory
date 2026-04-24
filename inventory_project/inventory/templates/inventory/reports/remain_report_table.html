@@ -35,9 +35,9 @@
                 <td class="text-end">{{ item.price|floatformat:2 }}</td>
                 <td class="text-end">
                     {% if item.quantity == 0 %}
-                        <strong class="text-danger">{{ item.quantity|floatformat:0 }}</strong>
+                        <strong class="text-danger">{{ item.quantity|floatformat:3 }}</strong>
                     {% else %}
-                        <strong>{{ item.quantity|floatformat:0 }}</strong>
+                        <strong>{{ item.quantity|floatformat:3 }}</strong>
                     {% endif %}
                     {{ item.izm }}
                 </td>
@@ -58,7 +58,7 @@
         <tfoot>
             <tr>
                 <td colspan="5" class="text-end"><strong>ИТОГО:</strong></td>
-                <td class="text-end"><strong>{{ total_quantity|floatformat:0 }}</strong></td>
+                <td class="text-end"><strong>{{ total_quantity|floatformat:3 }}</strong></td>
                 <td></td>
             </tr>
         </tfoot>

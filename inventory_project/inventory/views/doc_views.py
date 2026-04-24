@@ -482,7 +482,7 @@ def api_remains(request):
 
         remains = []
         for key, item in temp_dict.items():
-            quantity = round(item['quantity'], 0)
+            quantity = item['quantity']
 
             # Показываем только положительные остатки
             if quantity > 0:

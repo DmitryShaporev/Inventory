@@ -120,15 +120,16 @@
                 <div class="table-container">
                     <table class="table table-bordered table-hover mb-0" id="itemsTable">
                         <thead class="table-light">
-                            <tr>
-                                <th style="width: 40px">
-                                    <input type="checkbox" id="headerSelectAll">
-                                </th>
-                                <th>Наименование</th>
-                                <th style="width: 100px">Цена</th>
-                                <th style="width: 80px">Ед.изм.</th>
-                                <th style="width: 120px">Категория</th>
-                             </thead>
+    <tr>
+        <th style="width: 40px">
+            <input type="checkbox" id="headerSelectAll">
+        </th>
+        <th>Наименование</th>
+        <th style="width: 100px">Цена</th>
+        <th style="width: 100px">Количество</th>
+        <th style="width: 80px">Ед.изм.</th>
+        <th style="width: 120px">Категория</th>
+     </thead>
                         <tbody id="itemsTableBody">
                             <!-- Данные загружаются через AJAX -->
                              <tr id="loadingRow">
@@ -162,7 +163,7 @@ function loadItems() {
                 renderTable();
             } else {
                 $('#itemsTableBody').html(`
-                    <tr><td colspan="5" class="text-center text-danger py-4">
+                    <tr><td colspan="6" class="text-center text-danger py-4">
                         Ошибка загрузки данных
                     </td></tr>
                 `);
@@ -182,7 +183,7 @@ function loadItems() {
 function renderTable() {
     if (filteredItems.length === 0) {
         $('#itemsTableBody').html(`
-            <tr><td colspan="5" class="text-center text-muted py-4">
+            <tr><td colspan="6" class="text-center text-muted py-4">
                 Нет товаров для отображения
             </td></tr>
         `);
@@ -194,16 +195,17 @@ function renderTable() {
     for (let item of filteredItems) {
         const isChecked = selectedItems.has(item.id);
         html += `
-            <tr data-id="${item.id}">
-                <td class="text-center">
-                    <input type="checkbox" class="item-checkbox" data-id="${item.id}" ${isChecked ? 'checked' : ''}>
-                </td>
-                <td>${escapeHtml(item.title)}</td>
-                <td class="text-end">${item.price.toFixed(2).replace('.', ',')} руб.</td>
-                <td class="text-center">${item.izm}</td>
-                <td>${item.category || '—'}</td>
-            </tr>
-        `;
+    <tr data-id="${item.id}">
+        <td class="text-center">
+            <input type="checkbox" class="item-checkbox" data-id="${item.id}" ${isChecked ? 'checked' : ''}>
+        </td>
+        <td>${escapeHtml(item.title)}</td>
+        <td class="text-end">${item.price.toFixed(2).replace('.', ',')} руб.</td>
+        <td class="text-end"><strong>${Math.round(item.quantity)}</strong> ${item.izm}</td>
+        <td class="text-center">${item.izm}</td>
+        <td>${item.category || '—'}</td>
+    </tr>
+`;
     }
     $('#itemsTableBody').html(html);
 

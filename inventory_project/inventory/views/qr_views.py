@@ -59,35 +59,46 @@ def qr_selector(request):
 
 
 def api_qr_items(request):
-    """API для получения товаров с ценами для QR-печати"""
-    # Получаем уникальные сочетания товар + цена
-    items = Detail.objects.filter(
-        Q(id_doc__oper=2) | Q(id_doc__oper=1)  # Приход и начальные остатки
-    ).values(
-        'id_nom',
-        'id_nom__title',
-        'id_nom__izm__title',
-        'id_nom__category__title',
-        'id_nom__category_id',
-        'price'
-    ).annotate(
-        total_quantity=Sum('kolvo')
-    ).filter(total_quantity__gt=0)
+    """API для получения товаров с ценами для QR-печати (только товары в наличии)"""
+    from django.db.models import Sum, Q, F
+    from django.db import connection
+
+    # Более точный запрос через raw SQL (как в отчёте остатков)
+    query = """
+        SELECT 
+            n.id as nom_id,
+            n.title as title,
+            COALESCE(i.title, 'шт') as izm,
+            c.id as category_id,
+            COALESCE(c.title, 'Без категории') as category_title,
+            d.price,
+            SUM(d.kolvo) as quantity
+        FROM detail d
+        INNER JOIN nom n ON d.id_nom = n.id
+        LEFT JOIN izm i ON n.izm_id = i.id
+        LEFT JOIN category c ON n.category_id = c.id
+        INNER JOIN doc ON d.id_doc = doc.id
+        WHERE doc.oper IN (1, 2, 4, 3, 5)
+        GROUP BY n.id, n.title, i.title, c.id, c.title, d.price
+        HAVING SUM(d.kolvo) > 0
+        ORDER BY n.title, d.price
+    """
+
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = cursor.fetchall()
 
     result = []
-    for item in items:
+    for row in rows:
         result.append({
-            'id': item['id_nom'],
-            'title': item['id_nom__title'],
-            'izm': item['id_nom__izm__title'] or 'шт',
-            'category': item['id_nom__category__title'] or 'Без категории',
-            'category_id': item['id_nom__category_id'],
-            'price': float(item['price']),
-            'quantity': float(item['total_quantity'])
+            'id': row[0],
+            'title': row[1] or 'Без названия',
+            'izm': row[2] or 'шт',
+            'category_id': row[3],
+            'category': row[4] or 'Без категории',
+            'price': float(row[5]),
+            'quantity': float(row[6])  # ← добавляем количество
         })
-
-    # Сортируем по наименованию
-    result.sort(key=lambda x: x['title'])
 
     return JsonResponse({'status': 'ok', 'data': result})
 

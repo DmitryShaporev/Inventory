@@ -520,17 +520,18 @@ function loadRemains() {
             if (response.status === 'ok' && response.data && response.data.length > 0) {
                 let html = '';
                 for (let item of response.data) {
-                    const priceFormatted = item.price.toFixed(2).replace('.', ',');
-                    html += `
-                        <tr style="cursor: pointer;" onclick="selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.quantity})">
-                            <td>${item.title}<\/td>
-                            <td class="text-center">${item.izm}<\/td>
-                            <td class="text-end">${priceFormatted}<\/td>
-                            <td class="text-end">${item.quantity}<\/td>
-                            <td class="text-center"><button class="btn btn-sm btn-warning" onclick="event.stopPropagation(); selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.quantity})">Выбрать<\/button><\/td>
-                        <\/tr>
-                    `;
-                }
+    const priceFormatted = item.price.toFixed(2).replace('.', ',');
+    const quantityFormatted = item.quantity.toFixed(3).replace('.', ',');  // ← добавляем форматирование
+    html += `
+        <tr style="cursor: pointer;" onclick="selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.quantity})">
+            <td>${item.title}<\/td>
+            <td class="text-center">${item.izm}<\/td>
+            <td class="text-end">${priceFormatted}<\/td>
+            <td class="text-end">${quantityFormatted}<\/td>
+            <td class="text-center"><button class="btn btn-sm btn-warning" onclick="event.stopPropagation(); selectRemainsItem(${item.nom_id}, '${item.title.replace(/'/g, "\\'")}', '${item.izm}', ${item.price}, ${item.quantity})">Выбрать<\/button><\/td>
+        <\/tr>
+    `;
+}
                 $('#remainsTableBody').html(html);
             } else {
                 $('#remainsTableBody').html(`<td colspan="5" class="text-center text-muted py-3">Нет товаров на складе<\/td><\/tr>`);
